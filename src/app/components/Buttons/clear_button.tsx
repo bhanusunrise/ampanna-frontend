@@ -4,20 +4,18 @@ import React from 'react';
 import { Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-interface AddButtonProps {
+interface ClearButtonProps {
   label: string;
   onClickButton: () => void;
   btn_id: string;
 }
 
-const AddButton: React.FC<AddButtonProps> = ({ label, onClickButton, btn_id }) => {
+const ClearButton: React.FC<ClearButtonProps> = ({ label, onClickButton, btn_id }) => {
   return (
-    <Button variant="primary" onClick={onClickButton} id={btn_id}>
+    <Button variant="secondary" onClick={onClickButton} id={btn_id}>
       {label}
     </Button>
   );
 };
 
-export default AddButton;
-
-
+export default ClearButton;
