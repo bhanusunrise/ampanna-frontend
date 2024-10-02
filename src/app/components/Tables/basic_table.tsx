@@ -9,20 +9,21 @@ interface BasicTableProps {
   table_records: string[][];
 }
 
-const Basictable: React.FC<BasicTableProps> = ({ table_fields, table_records }) => {
+const BasicTable: React.FC<BasicTableProps> = ({ table_fields, table_records }) => {
   return (
-    <Table responsive bordered>
+    <Table responsive bordered striped hover>
       <thead>
         <tr>
-          <th>#</th>
-
+          {/* Apply bg-primary and text-white to style the header */}
+          <th className='bg-primary text-white'>#</th>
           {table_fields.map((field, index) => (
-            <th key={index}>{field}</th>
+            <th key={index} className="bg-primary text-white">
+              {field}
+            </th>
           ))}
         </tr>
       </thead>
       <tbody>
-
         {table_records.map((record, rowIndex) => (
           <tr key={rowIndex}>
             <td>{rowIndex + 1}</td>
@@ -36,4 +37,4 @@ const Basictable: React.FC<BasicTableProps> = ({ table_fields, table_records }) 
   );
 };
 
-export default Basictable;
+export default BasicTable;
