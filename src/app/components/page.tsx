@@ -9,6 +9,7 @@ import BasicTable from './Tables/basic_table';
 import TextInput from './Forms/text_input';
 import PasswordInput from './Forms/password_input';
 import EmailInput from './Forms/email_input';
+import NumberInput from './Forms/number_input';
 
 const Print = () => {
   console.log("Hello World");
@@ -29,6 +30,7 @@ const Components: React.FC = () => {
       <TextInput label="Text Input" onChangeText={Print} form_id="text_input" form_message="Text Input Message" placeholder_text='Type something'/><br/>
       <PasswordInput label="Password Input" onChangeText={Print} form_id="password_input" form_message="Password Input Message" placeholder_text='********'/>
       <EmailInput label="Email Input" onChangeText={Print} form_id="email_input" form_message="Email Input Message" placeholder_text='Type something'/>
+      <NumberInput label="Number Input" onChangeText={Print} form_id="number_input" form_message="Number Input Message" placeholder_text='Type something' min_value={0} max_value={100}/>
     </div>
   );
 };
