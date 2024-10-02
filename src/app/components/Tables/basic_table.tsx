@@ -7,11 +7,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 interface BasicTableProps {
   table_fields: string[];
   table_records: string[][];
+  table_id: string;
 }
 
-const BasicTable: React.FC<BasicTableProps> = ({ table_fields, table_records }) => {
+const BasicTable: React.FC<BasicTableProps> = ({ table_fields, table_records, table_id }) => {
   return (
-    <Table responsive bordered striped hover>
+    <Table responsive bordered striped hover id={table_id}>
       <thead>
         <tr>
           {/* Apply bg-primary and text-white to style the header */}

@@ -21,7 +21,7 @@ const Components: React.FC = () => {
       <DeleteButton label="Delete Button" onClickButton={Print} btn_id="delete"/>
       <ClearButton label="Clear Button" onClickButton={Print} btn_id="clear"/>
       <h3>Tables</h3>
-      <BasicTable table_fields={['Field 1', 'Field 2', 'Field 3']} table_records={[['Row 1', 'Row 2', 'Row 3'], ['Row 4', 'Row 5', 'Row 6']]} />
+      <BasicTable table_fields={['Field 1', 'Field 2', 'Field 3']} table_records={[['Row 1', 'Row 2', 'Row 3'], ['Row 4', 'Row 5', 'Row 6']]} table_id='table_1'/>
       <h3>Forms</h3>
 
     </div>
