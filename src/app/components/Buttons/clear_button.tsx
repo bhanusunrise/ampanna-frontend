@@ -7,11 +7,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 interface ClearButtonProps {
   label: string;
   onClickButton: () => void;
+  btn_id: string;
 }
 
-const ClearButton: React.FC<ClearButtonProps> = ({ label, onClickButton }) => {
+const ClearButton: React.FC<ClearButtonProps> = ({ label, onClickButton, btn_id }) => {
   return (
-    <Button variant="secondary" onClick={onClickButton}>
+    <Button variant="secondary" onClick={onClickButton} id={btn_id}>
       {label}
     </Button>
   );

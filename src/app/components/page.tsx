@@ -16,12 +16,14 @@ const Components: React.FC = () => {
     <div>
       <h1>Components</h1>
       <h3>Buttons</h3>
-      <AddButton label="Submit Button" onClickButton={Print} />
-      <UpdateButton label="Update Button" onClickButton={Print} />
-      <DeleteButton label="Delete Button" onClickButton={Print} />
-      <ClearButton label="Clear Button" onClickButton={Print} />
+      <AddButton label="Submit Button" onClickButton={Print} btn_id="add"/>
+      <UpdateButton label="Update Button" onClickButton={Print} btn_id="update"/>
+      <DeleteButton label="Delete Button" onClickButton={Print} btn_id="delete"/>
+      <ClearButton label="Clear Button" onClickButton={Print} btn_id="clear"/>
       <h3>Tables</h3>
       <BasicTable table_fields={['Field 1', 'Field 2', 'Field 3']} table_records={[['Row 1', 'Row 2', 'Row 3'], ['Row 4', 'Row 5', 'Row 6']]} />
+      <h3>Forms</h3>
+
     </div>
   );
 };
