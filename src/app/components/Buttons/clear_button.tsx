@@ -4,18 +4,18 @@ import React from 'react';
 import { Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-interface DeleteButtonProps {
+interface ClearButtonProps {
   label: string;
   onClickButton: () => void;
   btn_id: string;
 }
 
-const DeleteButton: React.FC<DeleteButtonProps> = ({ label, onClickButton, btn_id }) => {
+const ClearButton: React.FC<ClearButtonProps> = ({ label, onClickButton, btn_id }) => {
   return (
-    <Button variant="danger" onClick={onClickButton} id={btn_id}>
+    <Button variant="secondary" onClick={onClickButton} id={btn_id}>
       {label}
     </Button>
   );
 };
 
-export default DeleteButton;
+export default ClearButton;
