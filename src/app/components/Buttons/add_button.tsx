@@ -12,7 +12,7 @@ interface AddButtonProps {
 
 const AddButton: React.FC<AddButtonProps> = ({ label, onClickButton, btn_id }) => {
   return (
-    <Button variant="primary" onClick={onClickButton} id={btn_id}>
+    <Button variant="success" onClick={onClickButton} id={btn_id}>
       {label}
     </Button>
   );

@@ -12,7 +12,7 @@ interface BasicTableProps {
 
 const BasicTable: React.FC<BasicTableProps> = ({ table_fields, table_records, table_id }) => {
   return (
-    <Table responsive bordered striped hover id={table_id}>
+    <Table responsive bordered striped hover id={table_id} size="sm">
       <thead>
         <tr>
           {/* Apply bg-primary and text-white to style the header */}
