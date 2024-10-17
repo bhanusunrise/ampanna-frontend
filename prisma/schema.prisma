@@ -8,7 +8,20 @@ datasource db {
 }
 
 model Unit {
-  unit_id      Int      @id @default(autoincrement())
+  unit_id      String   @id @db.VarChar(7)
   unit_name    String   @db.VarChar(50)
   abbreviation String   @db.VarChar(10)
+  
+  unitConversionsFrom Unit_Conversions[] @relation("FromUnit")
+  unitConversionsTo   Unit_Conversions[] @relation("ToUnit")
+}
+
+model Unit_Conversions {
+  conversion_id String  @id @db.VarChar(8) 
+  from_unit     String  @db.VarChar(10)    
+  value         Float   
+  to_unit       String  @db.VarChar(10)   
+
+  UnitFrom Unit @relation("FromUnit", fields: [from_unit], references: [unit_id])
+  UnitTo   Unit @relation("ToUnit", fields: [to_unit], references: [unit_id])
 }
