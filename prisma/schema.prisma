@@ -1,3 +1,5 @@
+// configurations
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,6 +9,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// tables
+
+// units
 model Unit {
   unit_id      String              @id @db.VarChar(7)
   unit_name    String              @db.VarChar(50)
@@ -28,6 +33,7 @@ model Unit_Conversions {
   UnitTo   Unit @relation("ToUnit", fields: [to_unit], references: [unit_id])
 }
 
+// items
 model Items {
   item_id          String          @id @db.VarChar(10)
   item_name        String          @db.VarChar(50)
@@ -36,6 +42,8 @@ model Items {
   itemCategory Item_Category? @relation("ItemCategory", fields: [item_category_id], references: [category_id])
   
   itemUnits ItemUnit[] @relation("ItemUnitRelation")
+  
+  stocks Stock[] @relation("ItemStockRelation")
 }
 
 model Item_Category {
@@ -46,12 +54,22 @@ model Item_Category {
 }
 
 model ItemUnit {
-  id       Int    @id @default(autoincrement())
-  item_id  String @db.VarChar(10)
-  unit_id  String @db.VarChar(7)
+  id       String   @id @db.VarChar(6)
+  item_id  String   @db.VarChar(10)
+  unit_id  String   @db.VarChar(7)
 
   item Items @relation("ItemUnitRelation", fields: [item_id], references: [item_id])
   unit Unit @relation("UnitItemRelation", fields: [unit_id], references: [unit_id])
 
-  @@unique([item_id, unit_id]) // Ensure uniqueness
+  @@unique([item_id, unit_id])
 }
+
+// stocks
+model Stock {
+  stock_id   Int      @id @default(autoincrement())
+  quantity   Int      @db.Int
+
+  item_id    String   @db.VarChar(10) 
+  item       Items    @relation("ItemStockRelation", fields: [item_id], references: [item_id])
+}
+
