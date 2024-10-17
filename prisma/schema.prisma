@@ -12,64 +12,126 @@ datasource db {
 // tables
 
 // units
-model Unit {
-  unit_id      String              @id @db.VarChar(7)
-  unit_name    String              @db.VarChar(50)
-  abbreviation String              @db.VarChar(10)
+model Units {
+  unit_id      String @id @db.VarChar(7)
+  unit_name    String @db.VarChar(50)
+  abbreviation String @db.VarChar(10)
 
   unitConversionsFrom Unit_Conversions[] @relation("FromUnit")
   unitConversionsTo   Unit_Conversions[] @relation("ToUnit")
-  
-  itemUnits ItemUnit[] @relation("UnitItemRelation")
+
+  itemUnits ItemUnits[] @relation("UnitItemRelation")
 }
 
 model Unit_Conversions {
-  conversion_id String  @id @db.VarChar(8) 
-  from_unit     String  @db.VarChar(10)    
-  value         Float   
-  to_unit       String  @db.VarChar(10)   
+  conversion_id String @id @db.VarChar(8)
+  from_unit     String @db.VarChar(10)
+  value         Float
+  to_unit       String @db.VarChar(10)
 
-  UnitFrom Unit @relation("FromUnit", fields: [from_unit], references: [unit_id])
-  UnitTo   Unit @relation("ToUnit", fields: [to_unit], references: [unit_id])
+  UnitFrom Units @relation("FromUnit", fields: [from_unit], references: [unit_id])
+  UnitTo   Units @relation("ToUnit", fields: [to_unit], references: [unit_id])
 }
 
 // items
 model Items {
-  item_id          String          @id @db.VarChar(10)
-  item_name        String          @db.VarChar(50)
-  item_category_id String          @db.VarChar(6)
+  item_id          String @id @db.VarChar(10)
+  item_name        String @db.VarChar(50)
+  item_category_id String @db.VarChar(6)
 
-  itemCategory Item_Category? @relation("ItemCategory", fields: [item_category_id], references: [category_id])
-  
-  itemUnits ItemUnit[] @relation("ItemUnitRelation")
-  
-  stocks Stock[] @relation("ItemStockRelation")
+  itemCategory Item_Categories? @relation("ItemCategory", fields: [item_category_id], references: [category_id])
+
+  itemUnits ItemUnits[] @relation("ItemUnitRelation")
+
+  stocks Stocks[] @relation("ItemStockRelation")
 }
 
-model Item_Category {
-  category_id    String   @id @db.VarChar(6)
-  category_name  String   @db.VarChar(30)
+model Item_Categories {
+  category_id   String @id @db.VarChar(6)
+  category_name String @db.VarChar(30)
 
   itemCategoryItems Items[] @relation("ItemCategory")
 }
 
-model ItemUnit {
-  id       String   @id @db.VarChar(6)
-  item_id  String   @db.VarChar(10)
-  unit_id  String   @db.VarChar(7)
+model ItemUnits {
+  id      String @id @db.VarChar(6)
+  item_id String @db.VarChar(10)
+  unit_id String @db.VarChar(7)
 
   item Items @relation("ItemUnitRelation", fields: [item_id], references: [item_id])
-  unit Unit @relation("UnitItemRelation", fields: [unit_id], references: [unit_id])
+  unit Units @relation("UnitItemRelation", fields: [unit_id], references: [unit_id])
 
   @@unique([item_id, unit_id])
 }
 
 // stocks
-model Stock {
-  stock_id   Int      @id @default(autoincrement())
-  quantity   Int      @db.Int
+model Stocks {
+  stock_id         String   @id @db.VarChar(10)
+  total_quantity   Int      @db.Int
+  damaged_quantity Int      @db.Int
+  sold_quantity    Int      @db.Int
+  item_id          String   @db.VarChar(10)
+  buying_date      DateTime @db.Date
+  buying_price     Float
+  selling_price    Float
+  barcode_url      String   @db.VarChar(20)
+  supplier_id      String   @db.VarChar(8)
 
-  item_id    String   @db.VarChar(10) 
-  item       Items    @relation("ItemStockRelation", fields: [item_id], references: [item_id])
+  item     Items     @relation("ItemStockRelation", fields: [item_id], references: [item_id])
+  supplier Suppliers @relation("SupplierStockRelation", fields: [supplier_id], references: [supplier_id])
+
+  billStocks BillStocks[] @relation("StockBillRelation")
+
+  Returned_Items Returned_Items[]
 }
 
+// suppliers
+model Suppliers {
+  supplier_id   String   @id @db.VarChar(8)
+  supplier_name String   @db.VarChar(50)
+  email         String   @db.VarChar(100)
+  phone         Int      @db.Int
+  address       String   @db.VarChar(200)
+  stocks        Stocks[] @relation("SupplierStockRelation")
+}
+
+// bills
+model Bills {
+  bill_id          String   @id @db.VarChar(10)
+  bill_date        DateTime     @db.Date
+  barcode_url      String       @db.VarChar(20)
+  sub_total_amount Float
+  discount_amount  Float
+  returned_amount  Float
+  billStocks       BillStocks[] @relation("BillStockRelation")
+
+  Returned_Items Returned_Items[]
+}
+
+model BillStocks {
+  bill_id  String
+  stock_id String
+  quantity Int @db.Int
+
+  bill  Bills  @relation("BillStockRelation", fields: [bill_id], references: [bill_id])
+  stock Stocks @relation("StockBillRelation", fields: [stock_id], references: [stock_id])
+
+  @@id([bill_id, stock_id])
+}
+
+// returned_items
+model Returned_Items {
+  returned_id     String   @id @db.VarChar(10) @default(uuid())
+  returned_date   DateTime @db.Date
+  returned_quantity Int    @db.Int
+  reason          String   @db.VarChar(255)
+  bill_id         String
+  stock_id        String
+  bill  Bills  @relation(fields: [bill_id], references: [bill_id])
+  stock Stocks @relation(fields: [stock_id], references: [stock_id])
+
+  @@index([bill_id])
+  @@index([stock_id])
+}
+
+// reports
