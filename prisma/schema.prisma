@@ -1,5 +1,4 @@
 // configurations
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -23,6 +22,7 @@ model Units {
   itemUnits ItemUnits[] @relation("UnitItemRelation")
 }
 
+// unit_conversions
 model Unit_Conversions {
   conversion_id String @id @db.VarChar(8)
   from_unit     String @db.VarChar(10)
@@ -42,10 +42,12 @@ model Items {
   itemCategory Item_Categories? @relation("ItemCategory", fields: [item_category_id], references: [category_id])
 
   itemUnits ItemUnits[] @relation("ItemUnitRelation")
+  stocks    Stocks[]    @relation("ItemStockRelation")
 
-  stocks Stocks[] @relation("ItemStockRelation")
+  @@index([item_category_id])
 }
 
+// item_categories
 model Item_Categories {
   category_id   String @id @db.VarChar(6)
   category_name String @db.VarChar(30)
@@ -53,6 +55,7 @@ model Item_Categories {
   itemCategoryItems Items[] @relation("ItemCategory")
 }
 
+// item_units
 model ItemUnits {
   id      String @id @db.VarChar(6)
   item_id String @db.VarChar(10)
@@ -81,8 +84,10 @@ model Stocks {
   supplier Suppliers @relation("SupplierStockRelation", fields: [supplier_id], references: [supplier_id])
 
   billStocks BillStocks[] @relation("StockBillRelation")
-
   Returned_Items Returned_Items[]
+
+  @@index([item_id])
+  @@index([supplier_id])
 }
 
 // suppliers
@@ -92,22 +97,28 @@ model Suppliers {
   email         String   @db.VarChar(100)
   phone         Int      @db.Int
   address       String   @db.VarChar(200)
-  stocks        Stocks[] @relation("SupplierStockRelation")
+
+  stocks Stocks[] @relation("SupplierStockRelation")
+
+  @@index([supplier_id])
 }
 
 // bills
 model Bills {
   bill_id          String   @id @db.VarChar(10)
-  bill_date        DateTime     @db.Date
-  barcode_url      String       @db.VarChar(20)
+  bill_date        DateTime @db.Date
+  barcode_url      String   @db.VarChar(20)
   sub_total_amount Float
   discount_amount  Float
   returned_amount  Float
-  billStocks       BillStocks[] @relation("BillStockRelation")
 
+  billStocks BillStocks[] @relation("BillStockRelation")
   Returned_Items Returned_Items[]
+
+  @@index([bill_date])
 }
 
+// bill_stocks
 model BillStocks {
   bill_id  String
   stock_id String
@@ -121,17 +132,16 @@ model BillStocks {
 
 // returned_items
 model Returned_Items {
-  returned_id     String   @id @db.VarChar(10) @default(uuid())
-  returned_date   DateTime @db.Date
-  returned_quantity Int    @db.Int
-  reason          String   @db.VarChar(255)
-  bill_id         String
-  stock_id        String
+  returned_id      String   @id @db.VarChar(10) @default(uuid())
+  returned_date    DateTime @db.Date
+  returned_quantity Int     @db.Int
+  reason           String   @db.VarChar(255)
+  bill_id          String
+  stock_id         String
+
   bill  Bills  @relation(fields: [bill_id], references: [bill_id])
   stock Stocks @relation(fields: [stock_id], references: [stock_id])
 
   @@index([bill_id])
   @@index([stock_id])
 }
-
-// reports
