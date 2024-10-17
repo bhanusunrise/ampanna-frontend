@@ -8,12 +8,14 @@ datasource db {
 }
 
 model Unit {
-  unit_id      String   @id @db.VarChar(7)
-  unit_name    String   @db.VarChar(50)
-  abbreviation String   @db.VarChar(10)
-  
+  unit_id      String              @id @db.VarChar(7)
+  unit_name    String              @db.VarChar(50)
+  abbreviation String              @db.VarChar(10)
+
   unitConversionsFrom Unit_Conversions[] @relation("FromUnit")
   unitConversionsTo   Unit_Conversions[] @relation("ToUnit")
+  
+  itemUnits ItemUnit[] @relation("UnitItemRelation")
 }
 
 model Unit_Conversions {
@@ -24,4 +26,32 @@ model Unit_Conversions {
 
   UnitFrom Unit @relation("FromUnit", fields: [from_unit], references: [unit_id])
   UnitTo   Unit @relation("ToUnit", fields: [to_unit], references: [unit_id])
+}
+
+model Items {
+  item_id          String          @id @db.VarChar(10)
+  item_name        String          @db.VarChar(50)
+  item_category_id String          @db.VarChar(6)
+
+  itemCategory Item_Category? @relation("ItemCategory", fields: [item_category_id], references: [category_id])
+  
+  itemUnits ItemUnit[] @relation("ItemUnitRelation")
+}
+
+model Item_Category {
+  category_id    String   @id @db.VarChar(6)
+  category_name  String   @db.VarChar(30)
+
+  itemCategoryItems Items[] @relation("ItemCategory")
+}
+
+model ItemUnit {
+  id       Int    @id @default(autoincrement())
+  item_id  String @db.VarChar(10)
+  unit_id  String @db.VarChar(7)
+
+  item Items @relation("ItemUnitRelation", fields: [item_id], references: [item_id])
+  unit Unit @relation("UnitItemRelation", fields: [unit_id], references: [unit_id])
+
+  @@unique([item_id, unit_id]) // Ensure uniqueness
 }
