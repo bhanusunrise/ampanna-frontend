@@ -29,3 +29,10 @@ export const ITEMS_TABLE_FIELDS = [
     "Item_Units",
     "Actions"
 ]
+
+export const UNIT_TABLE_FIELDS = [
+    "Unit_ID",
+    "Unit_Name",
+    "Unit_Abbrevation",
+    "Actions"
+]
