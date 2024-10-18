@@ -3,10 +3,7 @@ import mysql from 'mysql2/promise';
 let connection;
 
 export async function dbConnect() {
-    if (connection) {
-        console.log("Connected from previous connection");
-        return connection;
-    }
+
 
     const conString = {
         host: process.env.DB_SERVER_NAME,
