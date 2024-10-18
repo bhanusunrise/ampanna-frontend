@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { BiCoin, BiDiamond, BiDollar, BiNote, BiPhoneCall } from 'react-icons/bi';
 import { BsCoin } from 'react-icons/bs';
 import { ImMan } from 'react-icons/im';
-import { CgCalculator, CgProfile } from 'react-icons/cg';
+import { CgCalculator, CgProfile, CgToolbarTop } from 'react-icons/cg';
 import { MdNumbers } from 'react-icons/md';
 import { GrGroup } from 'react-icons/gr';
 import { IoMdPaper } from 'react-icons/io';
@@ -33,6 +33,9 @@ const SideNav = () => {
       </Nav.Item>
       <Nav.Item>
         <Nav.Link href="/dashboard/customer" className="text-white"><BiDiamond size={20} className='m-2'/>Customers</Nav.Link>
+      </Nav.Item>
+      <Nav.Item>
+        <Nav.Link href="/dashboard/items" className="text-white"><CgToolbarTop size={20} className='m-2'/>Items</Nav.Link>
       </Nav.Item>
     </Nav>
   );
