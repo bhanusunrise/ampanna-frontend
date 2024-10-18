@@ -27,6 +27,6 @@
     "**/*.tsx", 
     ".next/types/**/*.ts",
     "prisma/**/*.ts"               // Include your Prisma scripts
-  ],
+, "src/app/lib/db.js"  ],
   "exclude": ["node_modules"]
 }

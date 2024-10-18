@@ -21,3 +21,11 @@ export const CUSTOMER_TABLE_FIELDS = [
     "Warrenty Items",
     "Warrenty Status"
 ]
+
+export const ITEMS_TABLE_FIELDS = [
+    "Item_ID",
+    "Item_Name",
+    "Item_Category",
+    "Item_Units",
+    "Actions"
+]
