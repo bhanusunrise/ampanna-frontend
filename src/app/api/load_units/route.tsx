@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { dbConnect } from '../../lib/db'; // Adjust the path if necessary
-
+import { dbConnect } from '../../lib/db'; 
 export async function GET() {
     const connection = await dbConnect();
     
@@ -11,7 +10,7 @@ export async function GET() {
         console.error("Error fetching units:", error);
         return NextResponse.error();
     } finally {
-        await connection.end(); // Close the connection after use
+        await connection.end();
     }
 }
 
