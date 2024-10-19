@@ -3,9 +3,7 @@
 import React from 'react';
 import { Nav } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css'; 
-import { BiCoin, BiDiamond, BiDollar, BiNote, BiPhoneCall } from 'react-icons/bi';
-import { BsCoin } from 'react-icons/bs';
-import { ImMan } from 'react-icons/im';
+import { BiCoin, BiDiamond} from 'react-icons/bi';
 import { CgCalculator, CgProfile, CgToolbarTop } from 'react-icons/cg';
 import { MdNumbers } from 'react-icons/md';
 import { GrGroup } from 'react-icons/gr';
