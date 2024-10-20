@@ -31,7 +31,7 @@ const AddUnitModal: React.FC<AddUnitModalProps> = ({ show, handleClose, handleAd
             <Form.Label>Unit Name</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Kilograms, Leters, 50Kg Pillows"
+              placeholder="Enter unit name"
               value={unitName}
               onChange={(e) => setUnitName(e.target.value)}
             />
@@ -41,7 +41,7 @@ const AddUnitModal: React.FC<AddUnitModalProps> = ({ show, handleClose, handleAd
             <Form.Label>Abbreviation</Form.Label>
             <Form.Control
               type="text"
-              placeholder="kg, l, Pillows"
+              placeholder="Enter abbreviation"
               value={abbreviation}
               onChange={(e) => setAbbreviation(e.target.value)}
             />
@@ -59,5 +59,6 @@ const AddUnitModal: React.FC<AddUnitModalProps> = ({ show, handleClose, handleAd
     </Modal>
   );
 };
+
 
 export default AddUnitModal;
