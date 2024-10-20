@@ -3,29 +3,30 @@
 import React, { useEffect, useState } from 'react';
 import BasicTable from '@/app/components/Tables/basic_table';
 import { UNIT_TABLE_FIELDS } from '@/app/constants/constants';
-import { fetchAllUnits } from './functions';
+import { fetchAllUnits, addUnit } from './functions'; // Ensure this import is correct
 import NavigateButtons from '@/app/components/Buttons/navigate_button';
 import { Col, Row } from 'react-bootstrap';
 import AddButton from '@/app/components/Buttons/add_button';
 import TextInput from '@/app/components/Forms/text_input';
+import AddUnitModal from '@/app/components/Models/Units/add_unit_model'
 
 export default function Page() {
   const [units, setUnits] = useState<string[][]>([]);
-  const [filteredUnits, setFilteredUnits] = useState<string[][]>([]); // To store filtered results
+  const [filteredUnits, setFilteredUnits] = useState<string[][]>([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [searchQuery, setSearchQuery] = useState(''); // For the search query
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showModal, setShowModal] = useState(false); // For controlling the modal
   const recordsPerPage = 10;
 
   useEffect(() => {
     async function fetchData() {
       const fetchedUnits = await fetchAllUnits();
-      console.log('Fetched Units:', fetchedUnits);
       setUnits(
         fetchedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation])
       );
       setFilteredUnits(
         fetchedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation])
-      ); // Initially display all units
+      );
     }
 
     fetchData();
@@ -45,36 +46,42 @@ export default function Page() {
 
   const currentRecords = filteredUnits.slice(currentPage * recordsPerPage, (currentPage + 1) * recordsPerPage);
 
-  // Calculate total pages
   const totalPages = Math.ceil(filteredUnits.length / recordsPerPage);
-
-  // Calculate the starting index for the current page
   const startingIndex = currentPage * recordsPerPage;
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     const query = event.target.value.toLowerCase();
     setSearchQuery(query);
-
-    // Filter the units based on the search query (unit_name or abbreviation)
     const filtered = units.filter(
       (unit) =>
         unit[1].toLowerCase().includes(query) || unit[2].toLowerCase().includes(query)
     );
     setFilteredUnits(filtered);
-    setCurrentPage(0); // Reset to the first page after search
+    setCurrentPage(0);
   };
+
+  // Update units after adding a new unit
+  const handleAddUnit = async (unitData: { unit_name: string; abbreviation: string }) => {
+  await addUnit(unitData.unit_name, unitData.abbreviation); // Add unit to the database
+  
+  const updatedUnits = await fetchAllUnits(); // Re-fetch the units after adding
+  
+  // Update units and filteredUnits with the correct transformation to maintain consistency
+  const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation]);
+  setUnits(formattedUnits);
+  setFilteredUnits(formattedUnits); // Reset filteredUnits to match the new data
+};
 
   return (
     <>
       <Row>
         <Col md={6}><h1>Units</h1></Col>
         <Col md={6}>
-          {/* Wrapping AddButton and TextInput inside a div with flexbox */}
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', alignItems: 'center', flexWrap: 'nowrap' }}>
-            <AddButton label="New Unit" onClickButton={() => {}} btn_id="add_unit" />
+            <AddButton label="New Unit" onClickButton={() => setShowModal(true)} btn_id="add_unit" />
             <TextInput
               form_id="search_unit"
-              onChangeText={handleSearch} // Trigger filtering when input changes
+              onChangeText={handleSearch}
               form_message=""
               placeholder_text="Search"
               label=""
@@ -88,7 +95,7 @@ export default function Page() {
           table_fields={UNIT_TABLE_FIELDS} 
           table_records={currentRecords} 
           table_id="units_table" 
-          startingIndex={startingIndex} // Pass the starting index
+          startingIndex={startingIndex}
         />
         <NavigateButtons
           currentPage={currentPage}
@@ -97,6 +104,13 @@ export default function Page() {
           onPrevious={handlePrevious}
         />
       </Row>
+
+      {/* AddUnitModal */}
+      <AddUnitModal
+        show={showModal}
+        handleClose={() => setShowModal(false)}
+        handleAddUnit={handleAddUnit} // Pass the handleAddUnit function
+      />
     </>
   );
 }
