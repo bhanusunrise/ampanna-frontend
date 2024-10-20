@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface NavigateButtonsProps {
@@ -11,6 +11,23 @@ interface NavigateButtonsProps {
 }
 
 const NavigateButtons: React.FC<NavigateButtonsProps> = ({ currentPage, totalPages, onNext, onPrevious }) => {
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'ArrowRight' && currentPage < totalPages - 1) {
+        onNext(); // Trigger the next button when right arrow is pressed
+      } else if (event.key === 'ArrowLeft' && currentPage > 0) {
+        onPrevious(); // Trigger the prev button when left arrow is pressed
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    
+    // Cleanup the event listener when the component unmounts
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [currentPage, totalPages, onNext, onPrevious]);
+
   return (
     <div>
       <button
@@ -24,7 +41,7 @@ const NavigateButtons: React.FC<NavigateButtonsProps> = ({ currentPage, totalPag
       <button
         type='button'
         onClick={onNext}
-        disabled={currentPage >= totalPages - 1}  // Disable if on the last page
+        disabled={currentPage >= totalPages - 1} 
         className='btn btn-primary'
       >
         Next
@@ -34,4 +51,3 @@ const NavigateButtons: React.FC<NavigateButtonsProps> = ({ currentPage, totalPag
 };
 
 export default NavigateButtons;
-
