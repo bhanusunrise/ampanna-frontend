@@ -57,3 +57,7 @@ export const updateUnit = async (unit_id: string, unit_name: string, abbreviatio
     return { success: false, message: 'Failed to update unit' };
   }
 };
+
+export const blankFunction = () =>{
+  console.log('Function is blanked');
+}

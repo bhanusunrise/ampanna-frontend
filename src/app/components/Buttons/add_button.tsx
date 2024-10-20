@@ -27,7 +27,7 @@ const AddButton: React.FC<AddButtonProps> = ({ label, onClickButton, btn_id }) =
   }, [onClickButton]);
 
   return (
-    <Button variant="success" onClick={onClickButton} id={btn_id}>
+    <Button variant="success" onClick={onClickButton} id={btn_id} className={'me-2'}>
       {label}
     </Button>
   );
