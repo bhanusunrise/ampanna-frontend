@@ -87,6 +87,7 @@ const BasicTable: React.FC<BasicTableProps> = ({
                   label="Update"
                   onClickButton={() => onUpdate(rowIndex)}
                   btn_id={`update_button_${startingIndex + rowIndex}`}
+                  rowIndex={rowIndex}
                 />
                 <DeleteButton
                   label="Delete"
