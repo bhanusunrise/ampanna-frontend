@@ -15,7 +15,7 @@ const UpdateButton: React.FC<UpdateButtonProps> = ({ label, onClickButton, btn_i
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       // Check if the Shift key and the corresponding number key are pressed
-      if (event.altKey && event.key === (rowIndex + 1).toString()) {
+      if (!event.ctrlKey && event.altKey && event.key === (rowIndex + 1).toString()) {
         console.log(`Updating row: ${rowIndex}`); // Debugging output
         onClickButton(); // Trigger the update action
       }

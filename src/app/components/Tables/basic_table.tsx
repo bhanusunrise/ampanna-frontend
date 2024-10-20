@@ -44,14 +44,14 @@ const BasicTable: React.FC<BasicTableProps> = ({
       // If a valid rowIndex is found
       if (rowIndex !== null && rowIndex < table_records.length) {
         setSelectedRow(rowIndex);
-
+          /*
         if (event.shiftKey) {
           console.log(`Updating row: ${rowIndex}`); // Debugging output
           onUpdate(rowIndex);
         } else if (event.key === "Delete") {
           console.log(`Deleting row: ${rowIndex}`); // Debugging output
           onDelete(rowIndex);
-        }
+        }*/
       }
     };
 
@@ -93,7 +93,9 @@ const BasicTable: React.FC<BasicTableProps> = ({
                   label="Delete"
                   onClickButton={() => onDelete(rowIndex)}
                   btn_id={`delete_button_${startingIndex + rowIndex}`}
+                  rowIndex={rowIndex} // Pass the current row index
                 />
+
               </td>
             </tr>
           ))
