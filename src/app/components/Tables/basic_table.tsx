@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import UpdateButton from '@/app/components/Buttons/update_button';
@@ -15,7 +15,52 @@ interface BasicTableProps {
   onDelete: (rowIndex: number) => void; // New prop for handling delete
 }
 
-const BasicTable: React.FC<BasicTableProps> = ({ table_fields, table_records, table_id, startingIndex, onUpdate, onDelete }) => {
+const BasicTable: React.FC<BasicTableProps> = ({
+  table_fields,
+  table_records,
+  table_id,
+  startingIndex,
+  onUpdate,
+  onDelete,
+}) => {
+  const [selectedRow, setSelectedRow] = useState<number | null>(null);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const key = event.key; // Get the pressed key
+      let rowIndex: number | null = null;
+
+      console.log(`Key pressed: ${key}`); // Debugging output
+
+      // Check for number keys 1-9 and 0
+      if (key >= '1' && key <= '9') {
+        rowIndex = parseInt(key) - 1; // Convert to zero-based index
+      } else if (key === '0') {
+        rowIndex = 9; // Zero-based index for the 10th row
+      }else{
+        console.log("error")
+      }
+
+      // If a valid rowIndex is found
+      if (rowIndex !== null && rowIndex < table_records.length) {
+        setSelectedRow(rowIndex);
+
+        if (event.shiftKey) {
+          console.log(`Updating row: ${rowIndex}`); // Debugging output
+          onUpdate(rowIndex);
+        } else if (event.key === "Delete") {
+          console.log(`Deleting row: ${rowIndex}`); // Debugging output
+          onDelete(rowIndex);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown); // Cleanup event listener
+    };
+  }, [table_records.length, onUpdate, onDelete]);
+
   return (
     <Table responsive bordered striped hover id={table_id} size="sm">
       <thead>
@@ -26,27 +71,27 @@ const BasicTable: React.FC<BasicTableProps> = ({ table_fields, table_records, ta
               {field}
             </th>
           ))}
-          <th className='bg-primary text-white'>Actions</th> {/* Add a header for actions */}
+          <th className='bg-primary text-white'>Actions</th>
         </tr>
       </thead>
       <tbody>
         {table_records && table_records.length > 0 ? (
           table_records.map((record, rowIndex) => (
-            <tr key={rowIndex} className='text-center'>
+            <tr key={rowIndex} className={`text-center ${selectedRow === rowIndex ? 'table-warning' : ''}`}>
               <td>{startingIndex + rowIndex + 1}</td>
               {Array.isArray(record) && record.map((cell, cellIndex) => (
                 <td key={cellIndex}>{cell}</td>
               ))}
               <td>
-                <UpdateButton 
-                  label="Update" 
-                  onClickButton={() => onUpdate(rowIndex)} 
-                  btn_id={`update_button_${startingIndex + rowIndex}`} 
+                <UpdateButton
+                  label="Update"
+                  onClickButton={() => onUpdate(rowIndex)}
+                  btn_id={`update_button_${startingIndex + rowIndex}`}
                 />
-                <DeleteButton 
-                  label="Delete" 
-                  onClickButton={() => onDelete(rowIndex)} 
-                  btn_id={`delete_button_${startingIndex + rowIndex}`} 
+                <DeleteButton
+                  label="Delete"
+                  onClickButton={() => onDelete(rowIndex)}
+                  btn_id={`delete_button_${startingIndex + rowIndex}`}
                 />
               </td>
             </tr>

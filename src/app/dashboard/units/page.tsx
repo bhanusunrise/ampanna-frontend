@@ -1,9 +1,9 @@
-'use client'; 
+'use client';
 
 import React, { useEffect, useState } from 'react';
 import BasicTable from '@/app/components/Tables/basic_table';
 import { UNIT_TABLE_FIELDS } from '@/app/constants/constants';
-import { fetchAllUnits, addUnit, deleteUnit } from './functions'; // Ensure this import is correct
+import { fetchAllUnits, addUnit } from './functions'; // Ensure this import is correct
 import NavigateButtons from '@/app/components/Buttons/navigate_button';
 import { Col, Row } from 'react-bootstrap';
 import AddButton from '@/app/components/Buttons/add_button';
@@ -80,9 +80,8 @@ export default function Page() {
     const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation]);
     setUnits(formattedUnits);
     setFilteredUnits(formattedUnits);
-    
     */
-   console.log(`Delete record at index: ${rowIndex}`);
+    console.log(`Delete record at index: ${rowIndex}`);
   };
 
   return (
@@ -104,10 +103,10 @@ export default function Page() {
         </Col>
       </Row>
       <Row className='text-center'>
-        <BasicTable 
-          table_fields={UNIT_TABLE_FIELDS} 
-          table_records={currentRecords} 
-          table_id="units_table" 
+        <BasicTable
+          table_fields={UNIT_TABLE_FIELDS}
+          table_records={currentRecords}
+          table_id="units_table"
           startingIndex={startingIndex}
           onUpdate={handleUpdate} // Pass handleUpdate
           onDelete={handleDelete} // Pass handleDelete
