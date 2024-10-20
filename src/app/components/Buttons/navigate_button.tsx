@@ -19,7 +19,7 @@ const NavigateButtons: React.FC<NavigateButtonsProps> = ({ currentPage, totalPag
         disabled={currentPage === 0} 
         className='btn btn-primary m-2'
       >
-        Previous
+        Prev
       </button>
       <button
         type='button'

@@ -1,21 +1,21 @@
-'use client';
+'use client'; 
 
 import React, { useEffect, useState } from 'react';
 import BasicTable from '@/app/components/Tables/basic_table';
 import { UNIT_TABLE_FIELDS } from '@/app/constants/constants';
-import { fetchAllUnits, addUnit } from './functions'; // Ensure this import is correct
+import { fetchAllUnits, addUnit, deleteUnit } from './functions'; // Ensure this import is correct
 import NavigateButtons from '@/app/components/Buttons/navigate_button';
 import { Col, Row } from 'react-bootstrap';
 import AddButton from '@/app/components/Buttons/add_button';
 import TextInput from '@/app/components/Forms/text_input';
-import AddUnitModal from '@/app/components/Models/Units/add_unit_model'
+import AddUnitModal from '@/app/components/Models/Units/add_unit_model';
 
 export default function Page() {
   const [units, setUnits] = useState<string[][]>([]);
   const [filteredUnits, setFilteredUnits] = useState<string[][]>([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
-  const [showModal, setShowModal] = useState(false); // For controlling the modal
+  const [showModal, setShowModal] = useState(false);
   const recordsPerPage = 10;
 
   useEffect(() => {
@@ -45,7 +45,6 @@ export default function Page() {
   };
 
   const currentRecords = filteredUnits.slice(currentPage * recordsPerPage, (currentPage + 1) * recordsPerPage);
-
   const totalPages = Math.ceil(filteredUnits.length / recordsPerPage);
   const startingIndex = currentPage * recordsPerPage;
 
@@ -60,17 +59,31 @@ export default function Page() {
     setCurrentPage(0);
   };
 
-  // Update units after adding a new unit
   const handleAddUnit = async (unitData: { unit_name: string; abbreviation: string }) => {
-  await addUnit(unitData.unit_name, unitData.abbreviation); // Add unit to the database
-  
-  const updatedUnits = await fetchAllUnits(); // Re-fetch the units after adding
-  
-  // Update units and filteredUnits with the correct transformation to maintain consistency
-  const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation]);
-  setUnits(formattedUnits);
-  setFilteredUnits(formattedUnits); // Reset filteredUnits to match the new data
-};
+    await addUnit(unitData.unit_name, unitData.abbreviation);
+    const updatedUnits = await fetchAllUnits();
+    const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation]);
+    setUnits(formattedUnits);
+    setFilteredUnits(formattedUnits);
+  };
+
+  const handleUpdate = (rowIndex: number) => {
+    // Handle the update functionality here, e.g., open a modal with the record details
+    console.log(`Update record at index: ${rowIndex}`);
+  };
+
+  const handleDelete = async (rowIndex: number) => {
+    /*
+    const unitId = filteredUnits[rowIndex][0]; // Assuming unit_id is the first element
+    await deleteUnit(unitId); // Call the function to delete the unit
+    const updatedUnits = await fetchAllUnits();
+    const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation]);
+    setUnits(formattedUnits);
+    setFilteredUnits(formattedUnits);
+    
+    */
+   console.log(`Delete record at index: ${rowIndex}`);
+  };
 
   return (
     <>
@@ -90,12 +103,14 @@ export default function Page() {
           <br />
         </Col>
       </Row>
-      <Row>
+      <Row className='text-center'>
         <BasicTable 
           table_fields={UNIT_TABLE_FIELDS} 
           table_records={currentRecords} 
           table_id="units_table" 
           startingIndex={startingIndex}
+          onUpdate={handleUpdate} // Pass handleUpdate
+          onDelete={handleDelete} // Pass handleDelete
         />
         <NavigateButtons
           currentPage={currentPage}
@@ -105,11 +120,10 @@ export default function Page() {
         />
       </Row>
 
-      {/* AddUnitModal */}
       <AddUnitModal
         show={showModal}
         handleClose={() => setShowModal(false)}
-        handleAddUnit={handleAddUnit} // Pass the handleAddUnit function
+        handleAddUnit={handleAddUnit}
       />
     </>
   );

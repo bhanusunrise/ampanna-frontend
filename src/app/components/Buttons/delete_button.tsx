@@ -12,7 +12,7 @@ interface DeleteButtonProps {
 
 const DeleteButton: React.FC<DeleteButtonProps> = ({ label, onClickButton, btn_id }) => {
   return (
-    <Button variant="danger" onClick={onClickButton} id={btn_id}>
+    <Button variant="danger" onClick={onClickButton} id={btn_id} className='ms-2'>
       {label}
     </Button>
   );
