@@ -26,10 +26,10 @@ export default function Page() {
     async function fetchData() {
       const fetchedUnits = await fetchAllUnits();
       setUnits(
-        fetchedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation])
+        fetchedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.status])
       );
       setFilteredUnits(
-        fetchedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation])
+        fetchedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.status])
       );
     }
 
