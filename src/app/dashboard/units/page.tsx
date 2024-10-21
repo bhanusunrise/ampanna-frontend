@@ -3,12 +3,13 @@
 import React, { useEffect, useState } from 'react';
 import BasicTable from '@/app/components/Tables/basic_table';
 import { UNIT_TABLE_FIELDS } from '@/app/constants/constants';
-import { fetchAllUnits, addUnit } from './functions';
+import { fetchAllUnits, addUnit, updateUnit } from './functions';
 import NavigateButtons from '@/app/components/Buttons/navigate_button';
 import { Col, Row } from 'react-bootstrap';
 import AddButton from '@/app/components/Buttons/add_button';
 import TextInput from '@/app/components/Forms/text_input';
 import ClearButton from '@/app/components/Buttons/clear_button';
+import UpdateUnitModal from '@/app/components/Models/Units/update_unit_model'; // Import the modal
 
 export default function Page() {
   const [units, setUnits] = useState<string[][]>([]);
@@ -17,6 +18,8 @@ export default function Page() {
   const [searchQuery, setSearchQuery] = useState('');
   const [unitName, setUnitName] = useState(''); // State for unit name
   const [unitAbbreviation, setUnitAbbreviation] = useState(''); // State for unit abbreviation
+  const [showModal, setShowModal] = useState(false); // State to control modal visibility
+  const [selectedUnit, setSelectedUnit] = useState<any>(null); // State for the selected unit
   const recordsPerPage = 10;
 
   useEffect(() => {
@@ -85,12 +88,40 @@ export default function Page() {
   };
 
   const handleUpdate = (rowIndex: number) => {
-    // Handle the update functionality here, e.g., open a modal with the record details
-    console.log(`Update record at index: ${rowIndex}`);
+    // Get the selected unit's data
+    const selectedUnitData = filteredUnits[rowIndex];
+
+    // Set the selected unit and show the modal
+    setSelectedUnit({
+      unit_id: selectedUnitData[0],
+      unit_name: selectedUnitData[1],
+      abbreviation: selectedUnitData[2],
+    });
+    setShowModal(true); // Open the modal
   };
+
+const handleUpdateUnit = async (unitData: { unit_name: string; abbreviation: string }) => {
+  // Update the unit logic here
+  const result = await updateUnit(selectedUnit.unit_id, unitData.unit_name, unitData.abbreviation);
+
+  alert(result.message);
+  
+  handleCloseModal(); // Close modal after update
+  const updatedUnits = await fetchAllUnits();
+    const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation]);
+    setUnits(formattedUnits);
+    setFilteredUnits(formattedUnits); // Update the filtered units as well
+};
+
+
 
   const handleDelete = async (rowIndex: number) => {    
     console.log(`Delete record at index: ${rowIndex}`);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedUnit(null); // Reset the selected unit when closing the modal
   };
 
   return (
@@ -105,6 +136,7 @@ export default function Page() {
               form_message=""
               placeholder_text="Search"
               label=""
+              value={""}
             />
           </div>
           <br />
@@ -162,6 +194,18 @@ export default function Page() {
           <h3 className='text-primary'>Total Units</h3>
         </Col>
       </Row>
+
+      {/* Update Unit Modal */}
+      {selectedUnit && (
+        <UpdateUnitModal
+  show={showModal}
+  handleClose={handleCloseModal}
+  handleUpdateUnit={handleUpdateUnit} // Use handleUpdateUnit for updating
+  unitName={selectedUnit.unit_name} // Pass unitName separately
+  abbreviation={selectedUnit.abbreviation} // Pass abbreviation separately
+/>
+
+      )}
     </>
   );
 }
