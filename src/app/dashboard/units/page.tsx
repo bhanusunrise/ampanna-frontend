@@ -10,6 +10,7 @@ import AddButton from '@/app/components/Buttons/add_button';
 import TextInput from '@/app/components/Forms/text_input';
 import ClearButton from '@/app/components/Buttons/clear_button';
 import UpdateUnitModal from '@/app/components/Models/Units/update_unit_model'; // Import the modal
+import Summary from '@/app/components/Summeris/summery';
 
 export default function Page() {
   const [units, setUnits] = useState<string[][]>([]);
@@ -75,7 +76,7 @@ export default function Page() {
     // Check if the addition was successful
     if (result.success) {
       const updatedUnits = await fetchAllUnits();
-      const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation]);
+      const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.status]);
       setUnits(formattedUnits);
       setFilteredUnits(formattedUnits);
       
@@ -100,15 +101,17 @@ export default function Page() {
     setShowModal(true); // Open the modal
   };
 
-const handleUpdateUnit = async (unitData: { unit_name: string; abbreviation: string }) => {
+const handleUpdateUnit = async (unitData: {
+  status: any; unit_name: string; abbreviation: string 
+}) => {
   // Update the unit logic here
-  const result = await updateUnit(selectedUnit.unit_id, unitData.unit_name, unitData.abbreviation);
+  const result = await updateUnit(selectedUnit.unit_id, unitData.unit_name, unitData.abbreviation, unitData.status);
 
   alert(result.message);
   
   handleCloseModal(); // Close modal after update
   const updatedUnits = await fetchAllUnits();
-    const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation]);
+    const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, status]);
     setUnits(formattedUnits);
     setFilteredUnits(formattedUnits); // Update the filtered units as well
 };
@@ -191,7 +194,9 @@ const handleUpdateUnit = async (unitData: { unit_name: string; abbreviation: str
           />
           <AddButton label="Add New" onClickButton={handleAddUnit} btn_id="add_unit" />
           <br/><br/>
-          <h3 className='text-primary'>Total Units</h3>
+          <Summary 
+            fields ={["Total Units","Active Units", "Updated Units", "Deleted Units"]}
+            values={[units.length, units.filter((unit) => unit[3] === 'active').length, units.filter((unit) => unit[3] === 'updated').length, units.filter((unit) => unit[3] === 'deleted').length]}/>
         </Col>
       </Row>
 

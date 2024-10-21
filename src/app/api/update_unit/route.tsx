@@ -22,7 +22,7 @@ export async function PUT(req: Request) {
         }
 
         // Update the unit in the database
-        const query = 'UPDATE units SET unit_name = ?, abbreviation = ? WHERE unit_id = ?';
+        const query = 'UPDATE units SET unit_name = ?, abbreviation = ?, status = "updated" WHERE unit_id = ?';
         const [result] = await connection.execute(query, [unit_name, abbreviation, unit_id]);
 
         // Check if any rows were affected (i.e., if the update was successful)
@@ -35,7 +35,8 @@ export async function PUT(req: Request) {
             message: 'Unit updated successfully',
             unit_id,
             unit_name,
-            abbreviation
+            abbreviation,
+            status: "edited"
         });
     } catch (error) {
         console.error('Error updating unit:', error);

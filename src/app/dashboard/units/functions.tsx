@@ -38,7 +38,7 @@ export const addUnit = async (unit_name: string, abbreviation: string) => {
 
 
 // New function to update an existing unit
-export const updateUnit = async (unit_id: string, unit_name: string, abbreviation: string) => {
+export const updateUnit = async (unit_id: string, unit_name: string, abbreviation: string, status: any) => {
   try {
     const response = await fetch('/api/update_unit', {
       method: 'PUT', // Use PUT to update the unit
