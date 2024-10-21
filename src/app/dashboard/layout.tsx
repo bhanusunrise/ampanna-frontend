@@ -8,7 +8,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <Container fluid>
       <Row>       
-        <Col md={2} className="p-0 bg-dark">
+        <Col md={2} className="p-0 bg-primary">
           <SideNav />
         </Col>
         

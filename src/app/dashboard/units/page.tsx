@@ -3,12 +3,11 @@
 import React, { useEffect, useState } from 'react';
 import BasicTable from '@/app/components/Tables/basic_table';
 import { UNIT_TABLE_FIELDS } from '@/app/constants/constants';
-import { fetchAllUnits, addUnit, blankFunction } from './functions'; // Ensure this import is correct
+import { fetchAllUnits, addUnit } from './functions';
 import NavigateButtons from '@/app/components/Buttons/navigate_button';
 import { Col, Row } from 'react-bootstrap';
 import AddButton from '@/app/components/Buttons/add_button';
 import TextInput from '@/app/components/Forms/text_input';
-import AddUnitModal from '@/app/components/Models/Units/add_unit_model';
 import ClearButton from '@/app/components/Buttons/clear_button';
 
 export default function Page() {
@@ -16,7 +15,8 @@ export default function Page() {
   const [filteredUnits, setFilteredUnits] = useState<string[][]>([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
-  const [showModal, setShowModal] = useState(false);
+  const [unitName, setUnitName] = useState(''); // State for unit name
+  const [unitAbbreviation, setUnitAbbreviation] = useState(''); // State for unit abbreviation
   const recordsPerPage = 10;
 
   useEffect(() => {
@@ -60,12 +60,28 @@ export default function Page() {
     setCurrentPage(0);
   };
 
-  const handleAddUnit = async (unitData: { unit_name: string; abbreviation: string }) => {
-    await addUnit(unitData.unit_name, unitData.abbreviation);
-    const updatedUnits = await fetchAllUnits();
-    const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation]);
-    setUnits(formattedUnits);
-    setFilteredUnits(formattedUnits);
+  const handleAddUnit = async () => {
+    if (!unitName || !unitAbbreviation) {
+      alert('Please fill in both unit name and abbreviation.'); // Simple validation
+      return;
+    }
+
+    const unitData = { unit_name: unitName, abbreviation: unitAbbreviation }; // Create unit data object
+    const result = await addUnit(unitData.unit_name, unitData.abbreviation);
+
+    // Check if the addition was successful
+    if (result.success) {
+      const updatedUnits = await fetchAllUnits();
+      const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation]);
+      setUnits(formattedUnits);
+      setFilteredUnits(formattedUnits);
+      
+      // Clear the input fields after adding
+      setUnitName('');
+      setUnitAbbreviation('');
+    } else {
+      alert(result.message); // Show error message if addition failed
+    }
   };
 
   const handleUpdate = (rowIndex: number) => {
@@ -73,25 +89,16 @@ export default function Page() {
     console.log(`Update record at index: ${rowIndex}`);
   };
 
-  const handleDelete = async (rowIndex: number) => {
-    /*
-    const unitId = filteredUnits[rowIndex][0]; // Assuming unit_id is the first element
-    await deleteUnit(unitId); // Call the function to delete the unit
-    const updatedUnits = await fetchAllUnits();
-    const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation]);
-    setUnits(formattedUnits);
-    setFilteredUnits(formattedUnits);
-    */
+  const handleDelete = async (rowIndex: number) => {    
     console.log(`Delete record at index: ${rowIndex}`);
   };
 
   return (
     <>
       <Row>
-        <Col md={3}><h1>Units</h1></Col>
+        <Col md={3}><h3 className={'text-primary'}>Units</h3></Col>
         <Col md={5}>
           <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', flexWrap: 'nowrap' }}>
-            <AddButton label="New" onClickButton={() => setShowModal(true)} btn_id="add_unit" />
             <TextInput
               form_id="search_unit"
               onChangeText={handleSearch}
@@ -106,47 +113,55 @@ export default function Page() {
       </Row>
       <Row>
         <Col md={8}>
-        <BasicTable
-          table_fields={UNIT_TABLE_FIELDS}
-          table_records={currentRecords}
-          table_id="units_table"
-          startingIndex={startingIndex}
-          onUpdate={handleUpdate} // Pass handleUpdate
-          onDelete={handleDelete} // Pass handleDelete
-        />
-        <NavigateButtons
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onNext={handleNext}
-          onPrevious={handlePrevious}
-        />
-        
+          <BasicTable
+            table_fields={UNIT_TABLE_FIELDS}
+            table_records={currentRecords}
+            table_id="units_table"
+            startingIndex={startingIndex}
+            onUpdate={handleUpdate} // Pass handleUpdate
+            onDelete={handleDelete} // Pass handleDelete
+          />
+          <NavigateButtons
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onNext={handleNext}
+            onPrevious={handlePrevious}
+          />
         </Col>
         <Col md={4}>
-          <h3 className='text-success'>New Unit</h3>
-          <TextInput form_id="unit_name"
-              onChangeText={blankFunction}
-              form_message=""
-              placeholder_text="5m wirepack, 3l can, 50kg pillow etc"
-              label="Unit Name :"
-            />
-            <TextInput form_id="unit_abbrevation"
-              onChangeText={blankFunction}
-              form_message=""
-              placeholder_text="5m wre, 3l can, 50k Pil"
-              label="Unit Abbrevation :"
-            />
-            <br/>
-            <AddButton label="Save" onClickButton={() => setShowModal(true)} btn_id="add_unit" />
-            <ClearButton label="Clear" onClickButton={() => setShowModal(true)} btn_id="clear_unit" />
+          <h3 className='text-primary'>New Unit</h3>
+          <TextInput 
+            form_id="unit_name"
+            onChangeText={(event) => setUnitName(event.target.value)} // Update unit name state
+            form_message=""
+            placeholder_text="Enter Unit Name"
+            label="Unit Name :"
+            value={unitName} // Bind the value to unitName state
+          />
+          <TextInput 
+            form_id="unit_abbreviation"
+            onChangeText={(event) => setUnitAbbreviation(event.target.value)} // Update unit abbreviation state
+            form_message=""
+            placeholder_text="Enter Unit Abbreviation"
+            label="Unit Abbreviation :"
+            value={unitAbbreviation} // Bind the value to unitAbbreviation state
+          />
+
+          <br/>
+
+          <ClearButton 
+            label="Clear" 
+            onClickButton={() => { 
+              setUnitName(''); 
+              setUnitAbbreviation(''); 
+            }} 
+            btn_id="clear_unit" 
+          />
+          <AddButton label="Add New" onClickButton={handleAddUnit} btn_id="add_unit" />
+          <br/><br/>
+          <h3 className='text-primary'>Total Units</h3>
         </Col>
       </Row>
-
-      <AddUnitModal
-        show={showModal}
-        handleClose={() => setShowModal(false)}
-        handleAddUnit={handleAddUnit}
-      />
     </>
   );
 }

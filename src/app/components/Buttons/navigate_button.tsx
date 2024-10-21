@@ -29,7 +29,7 @@ const NavigateButtons: React.FC<NavigateButtonsProps> = ({ currentPage, totalPag
   }, [currentPage, totalPages, onNext, onPrevious]);
 
   return (
-    <div>
+    <div className={'text-center'}>
       <button
         type='button'
         onClick={onPrevious}

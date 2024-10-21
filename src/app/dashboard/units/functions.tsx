@@ -13,6 +13,7 @@ export const fetchAllUnits = async () => {
 };
 
 // Function to add a unit
+// Function to add a unit
 export const addUnit = async (unit_name: string, abbreviation: string) => {
   try {
     const response = await fetch('/api/add_unit', {
@@ -28,12 +29,13 @@ export const addUnit = async (unit_name: string, abbreviation: string) => {
     }
 
     const data = await response.json();
-    return data;
+    return { success: true, message: 'Unit added successfully!' }; // Adjust return data
   } catch (error) {
     console.error('Error adding unit:', error);
     return { success: false, message: 'Failed to add unit' };
   }
 };
+
 
 // New function to update an existing unit
 export const updateUnit = async (unit_id: string, unit_name: string, abbreviation: string) => {

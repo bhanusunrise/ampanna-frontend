@@ -7,9 +7,10 @@ interface TextInputProps {
   form_id: string;
   form_message: string;
   placeholder_text: string;
+  value: string
 }
 
-const TextInput: React.FC<TextInputProps> = ({ label, onChangeText, form_id, form_message, placeholder_text }) => {
+const TextInput: React.FC<TextInputProps> = ({ label, onChangeText, form_id, form_message, placeholder_text, value }) => {
   return (
     <>
       <Form.Label htmlFor={form_id}>{label}</Form.Label>
@@ -19,7 +20,8 @@ const TextInput: React.FC<TextInputProps> = ({ label, onChangeText, form_id, for
         aria-describedby="passwordHelpBlock"
         onChange={onChangeText} // Attach onChangeText prop
         placeholder={placeholder_text}
-        style ={{maxWidth: '300px'}}
+        style={{ maxWidth: '300px' }}
+        value={value}
       />
       <Form.Text id="passwordHelpBlock" muted>
         {form_message}
@@ -29,5 +31,3 @@ const TextInput: React.FC<TextInputProps> = ({ label, onChangeText, form_id, for
 };
 
 export default TextInput;
-
-

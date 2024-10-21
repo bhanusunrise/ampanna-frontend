@@ -10,7 +10,7 @@ import { GrGroup } from 'react-icons/gr';
 import { IoMdPaper } from 'react-icons/io';
 const SideNav = () => {
   return (
-    <Nav className="flex-column vh-100 bg-dark text-white" variant="pills" style={{paddingTop: 100}}>
+    <Nav className="flex-column vh-100 bg-primary text-white" variant="pills" style={{paddingTop: 100}}>
       <Nav.Item>
         <Nav.Link href="/dashboard/calculator" className="text-white"><CgCalculator size={20} className='m-2'/>Calculator</Nav.Link>
       </Nav.Item>
