@@ -32,5 +32,6 @@ export const ITEMS_TABLE_FIELDS = [
 export const UNIT_TABLE_FIELDS = [
     "Unit ID",
     "Unit Name",
-    "Unit Abbrevation",
+    "Abbrevation",
+    "Status"
 ]
