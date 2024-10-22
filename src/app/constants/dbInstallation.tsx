@@ -27,7 +27,7 @@ module.exports.UNIT_LIST = [
     { unit_id: 'unit26', unit_name: '5L Tub', abbreviation: '5L_Tubs' },
     { unit_id: 'unit27', unit_name: '10L Tub', abbreviation: '10L_Tubs' },
     { unit_id: 'unit28', unit_name: '500ml Tub', abbreviation: '500ML_Tubs' },
-    { unit_id: 'unit29', unit_name: '50KG Pillow', abbreviation: 'Cement Pillows' },
+    { unit_id: 'unit29', unit_name: '50KG Pillow', abbreviation: 'Pillows' },
 ];
 
 

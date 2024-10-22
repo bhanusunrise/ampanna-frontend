@@ -3,11 +3,12 @@
 import SideNav from '@/app/components/Nabars/sidenav';
 import { Col, Container, Row } from 'react-bootstrap';
 
+
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <Container fluid>
       <Row>       
-        <Col md={2} className="p-0">
+        <Col md={2} className="p-0 bg-primary">
           <SideNav />
         </Col>
         

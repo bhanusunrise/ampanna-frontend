@@ -5,7 +5,7 @@ export async function GET() {
     const connection = await dbConnect();
 
     try {
-        const [rows] = await connection.execute('SELECT * FROM units ORDER BY unit_id DESC');
+        const [rows] = await connection.execute('SELECT * FROM units');
         const totalCount = rows[0].count;
         
         return NextResponse.json({ count: totalCount });

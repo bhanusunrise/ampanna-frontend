@@ -15,11 +15,13 @@ model Units {
   unit_id      String @id @db.VarChar(7)
   unit_name    String @db.VarChar(50)
   abbreviation String @db.VarChar(10)
+  status      String   @default("active")
 
   unitConversionsFrom Unit_Conversions[] @relation("FromUnit")
   unitConversionsTo   Unit_Conversions[] @relation("ToUnit")
 
   itemUnits ItemUnits[] @relation("UnitItemRelation")
+
 }
 
 // unit_conversions
