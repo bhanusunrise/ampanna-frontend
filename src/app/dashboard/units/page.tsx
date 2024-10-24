@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import BasicTable from '@/app/components/Tables/basic_table';
 import { UNIT_TABLE_FIELDS } from '@/app/constants/constants';
-import { fetchAllUnits, addUnit, updateUnit } from './functions';
+import { fetchAllUnits, addUnit, updateUnit, blankFunction } from './functions';
 import NavigateButtons from '@/app/components/Buttons/navigate_button';
 import { Col, Row } from 'react-bootstrap';
 import AddButton from '@/app/components/Buttons/add_button';
@@ -195,8 +195,8 @@ const handleUpdateUnit = async (unitData: {
           <AddButton label="Add New" onClickButton={handleAddUnit} btn_id="add_unit" />
           <br/><br/>
           <Summary 
-            fields ={["Total Units","Active Units", "Updated Units", "Deleted Units"]}
-            values={[units.length, units.filter((unit) => unit[3] === 'active').length, units.filter((unit) => unit[3] === 'updated').length, units.filter((unit) => unit[3] === 'deleted').length]}/>
+            fields ={["Active Units", "Updated Units", "Deleted Units"]}
+            values={[units.filter((unit) => unit[3] === 'active').length, units.filter((unit) => unit[3] === 'updated').length, units.filter((unit) => unit[3] === 'deleted').length]}/>
         </Col>
       </Row>
 
