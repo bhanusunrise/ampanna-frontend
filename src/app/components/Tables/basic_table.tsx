@@ -63,7 +63,7 @@ const BasicTable: React.FC<BasicTableProps> = ({
   return (
     <Table responsive bordered striped hover id={table_id} size="sm">
       <thead>
-        <tr className='text-center'>
+        <tr className=''>
           <th className='bg-primary text-white'>#</th>
           {table_fields.map((field, index) => (
             <th key={index} className="bg-primary text-white">
@@ -76,7 +76,7 @@ const BasicTable: React.FC<BasicTableProps> = ({
       <tbody>
         {table_records && table_records.length > 0 ? (
           table_records.map((record, rowIndex) => (
-            <tr key={rowIndex} className={`text-center ${selectedRow === rowIndex ? 'table-warning' : ''}`}>
+            <tr key={rowIndex} className={`${selectedRow === rowIndex ? 'table-warning' : ''}`}>
               <td>{startingIndex + rowIndex + 1}</td>
               {Array.isArray(record) && record.map((cell, cellIndex) => (
                 <td key={cellIndex}>{cell}</td>

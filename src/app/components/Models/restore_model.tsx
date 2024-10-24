@@ -3,28 +3,28 @@
 import React, { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
-interface DeleteModalProps {
+interface RestoreModalProps {
   show: boolean;
   handleClose: () => void;
-  handleDelete: () => void;
+  handleRestore: () => void;
   itemName: string;
 }
 
-export default function DeleteModal({ show, handleClose, handleDelete, itemName }: DeleteModalProps) {
+export default function RestoreModal({ show, handleClose, handleRestore, itemName }: RestoreModalProps) {
   return (
     <Modal show={show} onHide={handleClose}>
-      <Modal.Header closeButton className={"bg-danger"}>
-        <Modal.Title className={"text-white"}>Are you sure?</Modal.Title>
+      <Modal.Header closeButton className={"bg-success"}>
+        <Modal.Title>Restore Confirmation</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        Are you sure you want to delete {itemName}?
+        Are you sure you want to Restore {itemName}?
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
           Cancel
         </Button>
-        <Button variant="danger" onClick={handleDelete}>
-          Delete
+        <Button variant="success" onClick={handleRestore}>
+          Restore
         </Button>
       </Modal.Footer>
     </Modal>

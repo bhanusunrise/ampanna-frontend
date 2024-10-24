@@ -28,7 +28,7 @@ const RestoreButton: React.FC<RestoreButtonProps> = ({ label, onClickButton, btn
   }, [onClickButton, rowIndex]);
 
   return (
-    <Button variant="success" onClick={onClickButton} id={btn_id} className={'btn-sm ms-2'}>
+    <Button variant="success" onClick={onClickButton} id={btn_id} className={'btn-sm'}>
       {label}
     </Button>
   );
