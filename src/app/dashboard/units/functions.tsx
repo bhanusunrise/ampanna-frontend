@@ -13,7 +13,6 @@ export const fetchAllUnits = async () => {
 };
 
 // Function to add a unit
-// Function to add a unit
 export const addUnit = async (unit_name: string, abbreviation: string) => {
   try {
     const response = await fetch('/api/add_unit', {
@@ -63,3 +62,47 @@ export const updateUnit = async (unit_id: string, unit_name: string, abbreviatio
 export const blankFunction = () =>{
   console.log('Function is blanked');
 }
+
+export const deleteUnit = async (unit_id: string) => {
+  try {
+    const response = await fetch('/api/delete_unit', {
+      method: 'PUT', // Use PUT to update the unit
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ unit_id}),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to delete unit');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error delete unit:', error);
+    return { success: false, message: 'Failed to delete unit' };
+  }
+};
+
+export const RestoreUnit = async (unit_id: string) => {
+  try {
+    const response = await fetch('/api/restore_unit', {
+      method: 'PUT', // Using PUT to restore the unit
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ unit_id }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to restore unit');
+    }
+
+    const data = await response.json();
+    return { success: true, message: 'Unit restored successfully!' };
+  } catch (error) {
+    console.error('Error restoring unit:', error);
+    return { success: false, message: 'Failed to restore unit' };
+  }
+};

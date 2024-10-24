@@ -12,7 +12,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <SideNav />
         </Col>
         
-        <Col md={10} className="p-4">
+        <Col md={10} className="p-4 bg-white">
           <Container fluid>
           {children}
           </Container>
