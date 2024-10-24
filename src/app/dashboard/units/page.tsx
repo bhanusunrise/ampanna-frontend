@@ -3,13 +3,14 @@
 import React, { useEffect, useState } from 'react';
 import BasicTable from '@/app/components/Tables/basic_table';
 import { UNIT_TABLE_FIELDS } from '@/app/constants/constants';
-import { fetchAllUnits, addUnit, updateUnit, blankFunction } from './functions';
+import { fetchAllUnits, addUnit, updateUnit, blankFunction, deleteUnit } from './functions';
 import NavigateButtons from '@/app/components/Buttons/navigate_button';
 import { Col, Row } from 'react-bootstrap';
 import AddButton from '@/app/components/Buttons/add_button';
 import TextInput from '@/app/components/Forms/text_input';
 import ClearButton from '@/app/components/Buttons/clear_button';
-import UpdateUnitModal from '@/app/components/Models/Units/update_unit_model'; // Import the modal
+import UpdateUnitModal from '@/app/components/Models/Units/update_unit_model';
+import DeleteModal from '@/app/components/Models/delete_model'; // Import DeleteModal
 import Summary from '@/app/components/Summeris/summery';
 
 export default function Page() {
@@ -17,21 +18,19 @@ export default function Page() {
   const [filteredUnits, setFilteredUnits] = useState<string[][]>([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
-  const [unitName, setUnitName] = useState(''); // State for unit name
-  const [unitAbbreviation, setUnitAbbreviation] = useState(''); // State for unit abbreviation
-  const [showModal, setShowModal] = useState(false); // State to control modal visibility
-  const [selectedUnit, setSelectedUnit] = useState<any>(null); // State for the selected unit
+  const [unitName, setUnitName] = useState('');
+  const [unitAbbreviation, setUnitAbbreviation] = useState('');
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false); // State for delete modal
+  const [selectedUnit, setSelectedUnit] = useState<any>(null);
   const recordsPerPage = 10;
+  const [itemToDelete, setItemToDelete] = useState<any>(null); // Track item to be deleted
 
   useEffect(() => {
     async function fetchData() {
       const fetchedUnits = await fetchAllUnits();
-      setUnits(
-        fetchedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.status])
-      );
-      setFilteredUnits(
-        fetchedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.status])
-      );
+      setUnits(fetchedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.status]));
+      setFilteredUnits(fetchedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.status]));
     }
 
     fetchData();
@@ -66,65 +65,81 @@ export default function Page() {
 
   const handleAddUnit = async () => {
     if (!unitName || !unitAbbreviation) {
-      alert('Please fill in both unit name and abbreviation.'); // Simple validation
       return;
     }
 
-    const unitData = { unit_name: unitName, abbreviation: unitAbbreviation }; // Create unit data object
+    const unitData = { unit_name: unitName, abbreviation: unitAbbreviation };
     const result = await addUnit(unitData.unit_name, unitData.abbreviation);
 
-    // Check if the addition was successful
     if (result.success) {
       const updatedUnits = await fetchAllUnits();
       const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.status]);
       setUnits(formattedUnits);
       setFilteredUnits(formattedUnits);
-      
-      // Clear the input fields after adding
+
       setUnitName('');
       setUnitAbbreviation('');
-    } else {
-      alert(result.message); // Show error message if addition failed
     }
   };
 
   const handleUpdate = (rowIndex: number) => {
-    // Get the selected unit's data
     const selectedUnitData = filteredUnits[rowIndex];
 
-    // Set the selected unit and show the modal
     setSelectedUnit({
       unit_id: selectedUnitData[0],
       unit_name: selectedUnitData[1],
       abbreviation: selectedUnitData[2],
     });
-    setShowModal(true); // Open the modal
+    setShowUpdateModal(true);
   };
 
-const handleUpdateUnit = async (unitData: {
-  status: any; unit_name: string; abbreviation: string 
-}) => {
-  // Update the unit logic here
-  const result = await updateUnit(selectedUnit.unit_id, unitData.unit_name, unitData.abbreviation, unitData.status);
+  const handleUpdateUnit = async (unitData: { status: any; unit_name: string; abbreviation: string }) => {
+    const result = await updateUnit(selectedUnit.unit_id, unitData.unit_name, unitData.abbreviation, unitData.status);
 
-  alert(result.message);
-  
-  handleCloseModal(); // Close modal after update
-  const updatedUnits = await fetchAllUnits();
-    const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, status]);
+    handleCloseModal();
+    const updatedUnits = await fetchAllUnits();
+    const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.status]);
     setUnits(formattedUnits);
-    setFilteredUnits(formattedUnits); // Update the filtered units as well
-};
+    setFilteredUnits(formattedUnits);
+  };
 
+  const handleDelete = (rowIndex: number) => {
+    const unitToDelete = filteredUnits[rowIndex];
+    setItemToDelete({
+      unit_id: unitToDelete[0],
+      unit_name: unitToDelete[1],
+    });
+    setShowDeleteModal(true); // Open the delete modal
+  };
 
+  const confirmDelete = async () => {
+    if (itemToDelete) {
+      const result = await deleteUnit(itemToDelete.unit_id);/*
+      if (result.success) {
+        const updatedUnits = await fetchAllUnits();
+        const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.status]);
+        setUnits(formattedUnits);
+        setFilteredUnits(formattedUnits);
+      }*/
 
-  const handleDelete = async (rowIndex: number) => {    
-    console.log(`Delete record at index: ${rowIndex}`);
+      const updatedUnits = await fetchAllUnits();
+        const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.status]);
+        setUnits(formattedUnits);
+        setFilteredUnits(formattedUnits);
+
+      setShowDeleteModal(false); // Close modal after deletion
+      setItemToDelete(null); // Clear the selected item
+    }
   };
 
   const handleCloseModal = () => {
-    setShowModal(false);
-    setSelectedUnit(null); // Reset the selected unit when closing the modal
+    setShowUpdateModal(false);
+    setSelectedUnit(null);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+    setItemToDelete(null);
   };
 
   return (
@@ -139,7 +154,7 @@ const handleUpdateUnit = async (unitData: {
               form_message=""
               placeholder_text="Search"
               label=""
-              value={""}
+              value={searchQuery}
             />
           </div>
           <br />
@@ -153,8 +168,9 @@ const handleUpdateUnit = async (unitData: {
             table_records={currentRecords}
             table_id="units_table"
             startingIndex={startingIndex}
-            onUpdate={handleUpdate} // Pass handleUpdate
-            onDelete={handleDelete} // Pass handleDelete
+            onUpdate={handleUpdate}
+            onDelete={handleDelete}
+            onRestore={blankFunction}
           />
           <NavigateButtons
             currentPage={currentPage}
@@ -167,23 +183,21 @@ const handleUpdateUnit = async (unitData: {
           <h3 className='text-primary'>New Unit</h3>
           <TextInput 
             form_id="unit_name"
-            onChangeText={(event) => setUnitName(event.target.value)} // Update unit name state
+            onChangeText={(event) => setUnitName(event.target.value)}
             form_message=""
             placeholder_text="Enter Unit Name"
             label="Unit Name :"
-            value={unitName} // Bind the value to unitName state
+            value={unitName}
           />
           <TextInput 
             form_id="unit_abbreviation"
-            onChangeText={(event) => setUnitAbbreviation(event.target.value)} // Update unit abbreviation state
+            onChangeText={(event) => setUnitAbbreviation(event.target.value)}
             form_message=""
             placeholder_text="Enter Unit Abbreviation"
             label="Unit Abbreviation :"
-            value={unitAbbreviation} // Bind the value to unitAbbreviation state
+            value={unitAbbreviation}
           />
-
           <br/>
-
           <ClearButton 
             label="Clear" 
             onClickButton={() => { 
@@ -195,21 +209,31 @@ const handleUpdateUnit = async (unitData: {
           <AddButton label="Add New" onClickButton={handleAddUnit} btn_id="add_unit" />
           <br/><br/>
           <Summary 
-            fields ={["Active Units", "Updated Units", "Deleted Units"]}
-            values={[units.filter((unit) => unit[3] === 'active').length, units.filter((unit) => unit[3] === 'updated').length, units.filter((unit) => unit[3] === 'deleted').length]}/>
+            fields={["Active Units", "Updated Units", "Deleted Units"]}
+            values={[units.filter((unit) => unit[3] === 'active').length, units.filter((unit) => unit[3] === 'updated').length, units.filter((unit) => unit[3] === 'deleted').length]}
+          />
         </Col>
       </Row>
 
       {/* Update Unit Modal */}
       {selectedUnit && (
         <UpdateUnitModal
-  show={showModal}
-  handleClose={handleCloseModal}
-  handleUpdateUnit={handleUpdateUnit} // Use handleUpdateUnit for updating
-  unitName={selectedUnit.unit_name} // Pass unitName separately
-  abbreviation={selectedUnit.abbreviation} // Pass abbreviation separately
-/>
+          show={showUpdateModal}
+          handleClose={handleCloseModal}
+          handleUpdateUnit={handleUpdateUnit}
+          unitName={selectedUnit.unit_name}
+          abbreviation={selectedUnit.abbreviation}
+        />
+      )}
 
+      {/* Delete Unit Modal */}
+      {itemToDelete && (
+        <DeleteModal
+          show={showDeleteModal}
+          handleClose={handleCloseDeleteModal}
+          handleDelete={confirmDelete}
+          itemName={itemToDelete.unit_name}
+        />
       )}
     </>
   );

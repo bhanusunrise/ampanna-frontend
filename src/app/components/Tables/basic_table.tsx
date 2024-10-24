@@ -5,6 +5,7 @@ import { Table } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import UpdateButton from '@/app/components/Buttons/update_button';
 import DeleteButton from '@/app/components/Buttons/delete_button';
+import RestoreButton from '@/app/components/Buttons/restore_button'; // Import RestoreButton
 
 interface BasicTableProps {
   table_fields: string[];
@@ -13,6 +14,7 @@ interface BasicTableProps {
   startingIndex: number; // New prop for starting index
   onUpdate: (rowIndex: number) => void; // New prop for handling update
   onDelete: (rowIndex: number) => void; // New prop for handling delete
+  onRestore: (rowIndex: number) => void; // New prop for handling restore
 }
 
 const BasicTable: React.FC<BasicTableProps> = ({
@@ -22,6 +24,7 @@ const BasicTable: React.FC<BasicTableProps> = ({
   startingIndex,
   onUpdate,
   onDelete,
+  onRestore,
 }) => {
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
 
@@ -37,21 +40,11 @@ const BasicTable: React.FC<BasicTableProps> = ({
         rowIndex = parseInt(key) - 1; // Convert to zero-based index
       } else if (key === '0') {
         rowIndex = 9; // Zero-based index for the 10th row
-      }else{
-        console.log("error")
       }
 
       // If a valid rowIndex is found
       if (rowIndex !== null && rowIndex < table_records.length) {
         setSelectedRow(rowIndex);
-          /*
-        if (event.shiftKey) {
-          console.log(`Updating row: ${rowIndex}`); // Debugging output
-          onUpdate(rowIndex);
-        } else if (event.key === "Delete") {
-          console.log(`Deleting row: ${rowIndex}`); // Debugging output
-          onDelete(rowIndex);
-        }*/
       }
     };
 
@@ -59,7 +52,13 @@ const BasicTable: React.FC<BasicTableProps> = ({
     return () => {
       window.removeEventListener('keydown', handleKeyDown); // Cleanup event listener
     };
-  }, [table_records.length, onUpdate, onDelete]);
+  }, [table_records.length]);
+
+  // Function to check if 'status' is present in the fields and the status of the row
+  const isDeleted = (record: string[]) => {
+    const statusIndex = table_fields.indexOf('Status'); // Find the index of 'status'
+    return statusIndex !== -1 && record[statusIndex] == 'deleted'; // Check if 'status' field is 'deleted'
+  };
 
   return (
     <Table responsive bordered striped hover id={table_id} size="sm">
@@ -83,19 +82,30 @@ const BasicTable: React.FC<BasicTableProps> = ({
                 <td key={cellIndex}>{cell}</td>
               ))}
               <td>
-                <UpdateButton
-                  label="Update"
-                  onClickButton={() => onUpdate(rowIndex)}
-                  btn_id={`update_button_${startingIndex + rowIndex}`}
-                  rowIndex={rowIndex}
-                />
-                <DeleteButton
-                  label="Delete"
-                  onClickButton={() => onDelete(rowIndex)}
-                  btn_id={`delete_button_${startingIndex + rowIndex}`}
-                  rowIndex={rowIndex} // Pass the current row index
-                />
-
+                {isDeleted(record) ? (
+                  // If status is "deleted", show the Restore button
+                  <RestoreButton
+                    label="Restore"
+                    onClickButton={() => onRestore(rowIndex)}
+                    btn_id={`restore_button_${startingIndex + rowIndex}`}
+                    rowIndex={rowIndex}
+                  />
+                ) : (
+                  <>
+                    <UpdateButton
+                      label="Update"
+                      onClickButton={() => onUpdate(rowIndex)}
+                      btn_id={`update_button_${startingIndex + rowIndex}`}
+                      rowIndex={rowIndex}
+                    />
+                    <DeleteButton
+                      label="Delete"
+                      onClickButton={() => onDelete(rowIndex)}
+                      btn_id={`delete_button_${startingIndex + rowIndex}`}
+                      rowIndex={rowIndex}
+                    />
+                  </>
+                )}
               </td>
             </tr>
           ))
