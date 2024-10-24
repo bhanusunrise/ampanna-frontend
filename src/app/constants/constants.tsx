@@ -38,3 +38,4 @@ export const UNIT_TABLE_FIELDS = [
 
 /** API BASE ROUTES */
 export const UNIT_API = "/api/units/"
+export const UNIT_CONVERSION_API = "/api/unit_conversions/"
