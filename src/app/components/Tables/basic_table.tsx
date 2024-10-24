@@ -94,16 +94,17 @@ const BasicTable: React.FC<BasicTableProps> = ({
                   <>
                     <UpdateButton
                       label="Update"
-                      onClickButton={() => onUpdate(rowIndex)}
+                      onClickButton={() => onUpdate(startingIndex + rowIndex)} // Pass the global index based on the current page
                       btn_id={`update_button_${startingIndex + rowIndex}`}
-                      rowIndex={rowIndex}
+                      rowIndex={startingIndex + rowIndex} // Pass the global index here as well
                     />
                     <DeleteButton
                       label="Delete"
-                      onClickButton={() => onDelete(rowIndex)}
+                      onClickButton={() => onDelete(startingIndex + rowIndex)} // Pass the global index
                       btn_id={`delete_button_${startingIndex + rowIndex}`}
-                      rowIndex={rowIndex}
+                      rowIndex={startingIndex + rowIndex} // Pass the global index
                     />
+
                   </>
                 )}
               </td>
