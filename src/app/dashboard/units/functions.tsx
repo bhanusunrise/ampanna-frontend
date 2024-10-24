@@ -1,6 +1,10 @@
+import { UNIT_API } from "@/app/constants/constants";
+
 export const fetchAllUnits = async () => {
+
+  const uri = UNIT_API + 'load_units'
   try {
-    const response = await fetch('/api/load_units');
+    const response = await fetch(uri);
     if (!response.ok) {
       throw new Error('Failed to fetch units');
     }
@@ -14,8 +18,10 @@ export const fetchAllUnits = async () => {
 
 // Function to add a unit
 export const addUnit = async (unit_name: string, abbreviation: string) => {
+
+  const uri = UNIT_API + 'add_unit'
   try {
-    const response = await fetch('/api/add_unit', {
+    const response = await fetch(uri, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -38,8 +44,10 @@ export const addUnit = async (unit_name: string, abbreviation: string) => {
 
 // New function to update an existing unit
 export const updateUnit = async (unit_id: string, unit_name: string, abbreviation: string, status: any) => {
+
+  const uri = UNIT_API + 'update_unit'
   try {
-    const response = await fetch('/api/update_unit', {
+    const response = await fetch(uri, {
       method: 'PUT', // Use PUT to update the unit
       headers: {
         'Content-Type': 'application/json',
@@ -64,8 +72,9 @@ export const blankFunction = () =>{
 }
 
 export const deleteUnit = async (unit_id: string) => {
+  const uri = UNIT_API + 'delete_unit'
   try {
-    const response = await fetch('/api/delete_unit', {
+    const response = await fetch(uri, {
       method: 'PUT', // Use PUT to update the unit
       headers: {
         'Content-Type': 'application/json',
@@ -86,8 +95,10 @@ export const deleteUnit = async (unit_id: string) => {
 };
 
 export const RestoreUnit = async (unit_id: string) => {
+
+  const uri = UNIT_API + 'restore_unit'
   try {
-    const response = await fetch('/api/restore_unit', {
+    const response = await fetch(uri, {
       method: 'PUT', // Using PUT to restore the unit
       headers: {
         'Content-Type': 'application/json',

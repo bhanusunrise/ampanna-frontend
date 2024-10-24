@@ -35,3 +35,6 @@ export const UNIT_TABLE_FIELDS = [
     "Abbrevation",
     "Status"
 ]
+
+/** API BASE ROUTES */
+export const UNIT_API = "/api/units/"

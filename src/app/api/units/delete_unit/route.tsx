@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { dbConnect } from '../../lib/db'; // Adjust the path if necessary
+import { dbConnect } from '../../../lib/db'; // Adjust the path if necessary
 
 export async function PUT(req: Request) {
     const connection = await dbConnect();
@@ -18,7 +18,7 @@ export async function PUT(req: Request) {
         }
 
         // Update the unit in the database
-        const query = 'UPDATE units SET status = "updated" WHERE unit_id = ?';
+        const query = 'UPDATE units SET status = "deleted" WHERE unit_id = ?';
         const [result] = await connection.execute(query, [unit_id]);
 
         // Check if any rows were affected (i.e., if the update was successful)
@@ -28,13 +28,13 @@ export async function PUT(req: Request) {
 
         // Return a success response
         return NextResponse.json({
-            message: 'Unit Restored successfully',
+            message: 'Unit deleted successfully',
             unit_id,
-            status: "restored"
+            status: "deleted"
         });
     } catch (error) {
-        console.error('Error restoring unit:', error);
-        return NextResponse.json({ message: 'Failed to restore unit' }, { status: 500 });
+        console.error('Error deleting unit:', error);
+        return NextResponse.json({ message: 'Failed to delete unit' }, { status: 500 });
     } finally {
         await connection.end(); // Close the connection after use
     }
