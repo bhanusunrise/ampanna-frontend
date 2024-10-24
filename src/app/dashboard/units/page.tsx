@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import BasicTable from '@/app/components/Tables/basic_table';
 import { UNIT_TABLE_FIELDS } from '@/app/constants/constants';
-import { fetchAllUnits, addUnit, updateUnit, blankFunction, deleteUnit } from './functions';
+import { fetchAllUnits, addUnit, updateUnit, blankFunction, deleteUnit, RestoreUnit } from './functions';
 import NavigateButtons from '@/app/components/Buttons/navigate_button';
 import { Col, Row } from 'react-bootstrap';
 import AddButton from '@/app/components/Buttons/add_button';
@@ -12,6 +12,7 @@ import ClearButton from '@/app/components/Buttons/clear_button';
 import UpdateUnitModal from '@/app/components/Models/Units/update_unit_model';
 import DeleteModal from '@/app/components/Models/delete_model'; // Import DeleteModal
 import Summary from '@/app/components/Summeris/summery';
+import RestoreModal from '@/app/components/Models/restore_model';
 
 export default function Page() {
   const [units, setUnits] = useState<string[][]>([]);
@@ -25,6 +26,8 @@ export default function Page() {
   const [selectedUnit, setSelectedUnit] = useState<any>(null);
   const recordsPerPage = 10;
   const [itemToDelete, setItemToDelete] = useState<any>(null); // Track item to be deleted
+  const [showRestoreModal, setShowRestoreModal] = useState(false); // State for restore modal
+
 
   useEffect(() => {
     async function fetchData() {
@@ -132,6 +135,37 @@ export default function Page() {
     }
   };
 
+  const handleRestore = (rowIndex: number) => {
+  const unitToRestore = filteredUnits[rowIndex];
+  setItemToDelete({
+    unit_id: unitToRestore[0],
+    unit_name: unitToRestore[1],
+  });
+  setShowRestoreModal(true); // Open the restore modal
+};
+
+const confirmRestore = async () => {
+  if (itemToDelete) {
+    const result = await RestoreUnit(itemToDelete.unit_id);
+    
+    if (result.success) {
+      const updatedUnits = await fetchAllUnits();
+      const formattedUnits = updatedUnits.map((unit: any) => [
+        unit.unit_id,
+        unit.unit_name,
+        unit.abbreviation,
+        unit.status,
+      ]);
+      setUnits(formattedUnits);
+      setFilteredUnits(formattedUnits);
+    }
+    
+    setShowRestoreModal(false); // Close modal after restoration
+    setItemToDelete(null); // Clear the selected item
+  }
+};
+
+
   const handleCloseModal = () => {
     setShowUpdateModal(false);
     setSelectedUnit(null);
@@ -141,6 +175,12 @@ export default function Page() {
     setShowDeleteModal(false);
     setItemToDelete(null);
   };
+
+  const handleCloseRestoreModal = () => {
+  setShowRestoreModal(false);
+  setItemToDelete(null);
+};
+
 
   return (
     <>
@@ -164,14 +204,15 @@ export default function Page() {
       <Row>
         <Col md={8}>
           <BasicTable
-            table_fields={UNIT_TABLE_FIELDS}
-            table_records={currentRecords}
-            table_id="units_table"
-            startingIndex={startingIndex}
-            onUpdate={handleUpdate}
-            onDelete={handleDelete}
-            onRestore={blankFunction}
-          />
+  table_fields={UNIT_TABLE_FIELDS}
+  table_records={currentRecords}
+  table_id="units_table"
+  startingIndex={startingIndex}
+  onUpdate={handleUpdate}
+  onDelete={handleDelete}
+  onRestore={handleRestore}  // <-- Add this line
+/>
+
           <NavigateButtons
             currentPage={currentPage}
             totalPages={totalPages}
@@ -235,6 +276,17 @@ export default function Page() {
           itemName={itemToDelete.unit_name}
         />
       )}
+
+      {/* Restore Unit Modal */}
+{itemToDelete && (
+  <RestoreModal
+    show={showRestoreModal}
+    handleClose={handleCloseRestoreModal}
+    handleRestore={confirmRestore}
+    itemName={itemToDelete.unit_name}
+  />
+)}
+
     </>
   );
 }

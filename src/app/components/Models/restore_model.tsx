@@ -14,10 +14,10 @@ export default function RestoreModal({ show, handleClose, handleRestore, itemNam
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton className={"bg-success"}>
-        <Modal.Title>Restore Confirmation</Modal.Title>
+        <Modal.Title className='text-white'>Are you sure?</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        Are you sure you want to Restore {itemName}?
+        Are you sure you want to restore {itemName}?
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>

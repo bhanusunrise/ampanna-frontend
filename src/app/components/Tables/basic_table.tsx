@@ -86,9 +86,9 @@ const BasicTable: React.FC<BasicTableProps> = ({
                   // If status is "deleted", show the Restore button
                   <RestoreButton
                     label="Restore"
-                    onClickButton={() => onRestore(rowIndex)}
+                    onClickButton={() => onRestore(startingIndex + rowIndex)}
                     btn_id={`restore_button_${startingIndex + rowIndex}`}
-                    rowIndex={rowIndex}
+                    rowIndex={startingIndex + rowIndex}
                   />
                 ) : (
                   <>

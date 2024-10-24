@@ -88,11 +88,11 @@ export const deleteUnit = async (unit_id: string) => {
 export const RestoreUnit = async (unit_id: string) => {
   try {
     const response = await fetch('/api/restore_unit', {
-      method: 'PUT', // Use PUT to update the unit
+      method: 'PUT', // Using PUT to restore the unit
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ unit_id}),
+      body: JSON.stringify({ unit_id }),
     });
 
     if (!response.ok) {
@@ -100,7 +100,7 @@ export const RestoreUnit = async (unit_id: string) => {
     }
 
     const data = await response.json();
-    return data;
+    return { success: true, message: 'Unit restored successfully!' };
   } catch (error) {
     console.error('Error restoring unit:', error);
     return { success: false, message: 'Failed to restore unit' };
