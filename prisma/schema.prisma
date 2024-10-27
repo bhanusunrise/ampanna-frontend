@@ -10,10 +10,9 @@ datasource db {
 
 // tables
 
-//unit categories
 // unit_categories
 model Unit_Categories {
-  unit_category_id   String @id @db.VarChar(7)
+  unit_category_id   String @id @db.VarChar(6)
   unit_category_name String @db.VarChar(10)
   status             String @default("active")
   default_status     String @db.VarChar(10)
@@ -27,7 +26,7 @@ model Units {
   unit_name        String @db.VarChar(50)
   abbreviation     String @db.VarChar(10)
   status           String @default("active")
-  unit_category_id String @db.VarChar(7)
+  unit_category_id String @db.VarChar(6)
 
   unitCategory Unit_Categories @relation("UnitCategoryRelation", fields: [unit_category_id], references: [unit_category_id])
 
