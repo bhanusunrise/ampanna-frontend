@@ -10,18 +10,31 @@ datasource db {
 
 // tables
 
+//unit categories
+// unit_categories
+model Unit_Categories {
+  unit_category_id   String @id @db.VarChar(7)
+  unit_category_name String @db.VarChar(10)
+  status             String @default("active")
+  default_status     String @db.VarChar(10)
+
+  units Units[] @relation("UnitCategoryRelation")
+}
+
 // units
 model Units {
-  unit_id      String @id @db.VarChar(7)
-  unit_name    String @db.VarChar(50)
-  abbreviation String @db.VarChar(10)
-  status      String   @default("active")
+  unit_id          String @id @db.VarChar(7)
+  unit_name        String @db.VarChar(50)
+  abbreviation     String @db.VarChar(10)
+  status           String @default("active")
+  unit_category_id String @db.VarChar(7)
+
+  unitCategory Unit_Categories @relation("UnitCategoryRelation", fields: [unit_category_id], references: [unit_category_id])
 
   unitConversionsFrom Unit_Conversions[] @relation("FromUnit")
   unitConversionsTo   Unit_Conversions[] @relation("ToUnit")
 
   itemUnits ItemUnits[] @relation("UnitItemRelation")
-
 }
 
 // unit_conversions
@@ -85,7 +98,7 @@ model Stocks {
   item     Items     @relation("ItemStockRelation", fields: [item_id], references: [item_id])
   supplier Suppliers @relation("SupplierStockRelation", fields: [supplier_id], references: [supplier_id])
 
-  billStocks BillStocks[] @relation("StockBillRelation")
+  billStocks     BillStocks[]     @relation("StockBillRelation")
   Returned_Items Returned_Items[]
 
   @@index([item_id])
@@ -94,11 +107,11 @@ model Stocks {
 
 // suppliers
 model Suppliers {
-  supplier_id   String   @id @db.VarChar(8)
-  supplier_name String   @db.VarChar(50)
-  email         String   @db.VarChar(100)
-  phone         Int      @db.Int
-  address       String   @db.VarChar(200)
+  supplier_id   String @id @db.VarChar(8)
+  supplier_name String @db.VarChar(50)
+  email         String @db.VarChar(100)
+  phone         Int    @db.Int
+  address       String @db.VarChar(200)
 
   stocks Stocks[] @relation("SupplierStockRelation")
 
@@ -114,7 +127,7 @@ model Bills {
   discount_amount  Float
   returned_amount  Float
 
-  billStocks BillStocks[] @relation("BillStockRelation")
+  billStocks     BillStocks[]     @relation("BillStockRelation")
   Returned_Items Returned_Items[]
 
   @@index([bill_date])
@@ -124,7 +137,7 @@ model Bills {
 model BillStocks {
   bill_id  String
   stock_id String
-  quantity Int @db.Int
+  quantity Int    @db.Int
 
   bill  Bills  @relation("BillStockRelation", fields: [bill_id], references: [bill_id])
   stock Stocks @relation("StockBillRelation", fields: [stock_id], references: [stock_id])
@@ -134,12 +147,12 @@ model BillStocks {
 
 // returned_items
 model Returned_Items {
-  returned_id      String   @id @db.VarChar(10) @default(uuid())
-  returned_date    DateTime @db.Date
-  returned_quantity Int     @db.Int
-  reason           String   @db.VarChar(255)
-  bill_id          String
-  stock_id         String
+  returned_id       String   @id @default(uuid()) @db.VarChar(10)
+  returned_date     DateTime @db.Date
+  returned_quantity Int      @db.Int
+  reason            String   @db.VarChar(255)
+  bill_id           String
+  stock_id          String
 
   bill  Bills  @relation(fields: [bill_id], references: [bill_id])
   stock Stocks @relation(fields: [stock_id], references: [stock_id])

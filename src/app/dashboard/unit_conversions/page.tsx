@@ -1,4 +1,4 @@
-'use client';
+ 'use client';
 
 import TextInput from "@/app/components/Forms/text_input";
 import SelectBox from "@/app/components/Forms/select_box";
