@@ -12,21 +12,25 @@ datasource db {
 
 // unit_categories
 model Unit_Categories {
-  unit_category_id   String @id @db.VarChar(6)
-  unit_category_name String @db.VarChar(10)
-  status             String @default("active")
-  default_status     String @db.VarChar(10)
+  unit_category_id   String   @id @db.VarChar(6)
+  unit_category_name String   @db.VarChar(10)
+  status             String   @default("active")
+  default_status     String   @db.VarChar(12)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @default(now())
 
   units Units[] @relation("UnitCategoryRelation")
 }
 
 // units
 model Units {
-  unit_id          String @id @db.VarChar(7)
-  unit_name        String @db.VarChar(50)
-  abbreviation     String @db.VarChar(10)
-  status           String @default("active")
-  unit_category_id String @db.VarChar(6)
+  unit_id          String   @id @db.VarChar(7)
+  unit_name        String   @db.VarChar(50)
+  abbreviation     String   @db.VarChar(10)
+  status           String   @default("active")
+  unit_category_id String   @db.VarChar(6)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @default(now())
 
   unitCategory Unit_Categories @relation("UnitCategoryRelation", fields: [unit_category_id], references: [unit_category_id])
 
@@ -38,10 +42,12 @@ model Units {
 
 // unit_conversions
 model Unit_Conversions {
-  conversion_id String @id @db.VarChar(8)
-  from_unit     String @db.VarChar(10)
+  conversion_id String   @id @db.VarChar(8)
+  from_unit     String   @db.VarChar(10)
   value         Float
-  to_unit       String @db.VarChar(10)
+  to_unit       String   @db.VarChar(10)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now())
 
   UnitFrom Units @relation("FromUnit", fields: [from_unit], references: [unit_id])
   UnitTo   Units @relation("ToUnit", fields: [to_unit], references: [unit_id])
@@ -49,9 +55,11 @@ model Unit_Conversions {
 
 // items
 model Items {
-  item_id          String @id @db.VarChar(10)
-  item_name        String @db.VarChar(50)
-  item_category_id String @db.VarChar(6)
+  item_id          String   @id @db.VarChar(10)
+  item_name        String   @db.VarChar(50)
+  item_category_id String   @db.VarChar(6)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @default(now())
 
   itemCategory Item_Categories? @relation("ItemCategory", fields: [item_category_id], references: [category_id])
 
@@ -63,17 +71,21 @@ model Items {
 
 // item_categories
 model Item_Categories {
-  category_id   String @id @db.VarChar(6)
-  category_name String @db.VarChar(30)
+  category_id   String   @id @db.VarChar(6)
+  category_name String   @db.VarChar(30)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now())
 
   itemCategoryItems Items[] @relation("ItemCategory")
 }
 
 // item_units
 model ItemUnits {
-  id      String @id @db.VarChar(6)
-  item_id String @db.VarChar(10)
-  unit_id String @db.VarChar(7)
+  id        String   @id @db.VarChar(6)
+  item_id   String   @db.VarChar(10)
+  unit_id   String   @db.VarChar(7)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 
   item Items @relation("ItemUnitRelation", fields: [item_id], references: [item_id])
   unit Units @relation("UnitItemRelation", fields: [unit_id], references: [unit_id])
@@ -93,6 +105,8 @@ model Stocks {
   selling_price    Float
   barcode_url      String   @db.VarChar(20)
   supplier_id      String   @db.VarChar(8)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @default(now())
 
   item     Items     @relation("ItemStockRelation", fields: [item_id], references: [item_id])
   supplier Suppliers @relation("SupplierStockRelation", fields: [supplier_id], references: [supplier_id])
@@ -106,11 +120,13 @@ model Stocks {
 
 // suppliers
 model Suppliers {
-  supplier_id   String @id @db.VarChar(8)
-  supplier_name String @db.VarChar(50)
-  email         String @db.VarChar(100)
-  phone         Int    @db.Int
-  address       String @db.VarChar(200)
+  supplier_id   String   @id @db.VarChar(8)
+  supplier_name String   @db.VarChar(50)
+  email         String   @db.VarChar(100)
+  phone         Int      @db.Int
+  address       String   @db.VarChar(200)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now())
 
   stocks Stocks[] @relation("SupplierStockRelation")
 
@@ -125,6 +141,8 @@ model Bills {
   sub_total_amount Float
   discount_amount  Float
   returned_amount  Float
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @default(now())
 
   billStocks     BillStocks[]     @relation("BillStockRelation")
   Returned_Items Returned_Items[]
@@ -134,9 +152,11 @@ model Bills {
 
 // bill_stocks
 model BillStocks {
-  bill_id  String
-  stock_id String
-  quantity Int    @db.Int
+  bill_id   String
+  stock_id  String
+  quantity  Int      @db.Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 
   bill  Bills  @relation("BillStockRelation", fields: [bill_id], references: [bill_id])
   stock Stocks @relation("StockBillRelation", fields: [stock_id], references: [stock_id])
@@ -152,6 +172,8 @@ model Returned_Items {
   reason            String   @db.VarChar(255)
   bill_id           String
   stock_id          String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @default(now())
 
   bill  Bills  @relation(fields: [bill_id], references: [bill_id])
   stock Stocks @relation(fields: [stock_id], references: [stock_id])

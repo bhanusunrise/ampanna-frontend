@@ -42,33 +42,59 @@ export const UNIT_CONVERSION_API = "/api/unit_conversions/"
 export const UNIT_CATEGORY_API = "/api/unit_categories/"
 
 
+/** Default DB values */
+export const COMPULSARY = "අත්‍යාවශ්‍ය"
+export const OPTIONAL = "අවශ්‍ය"
+
+
 
 /** Log messages */
 
 /** Base */
 
-const BASE_FILL_MESSAGE = "Please fill "
+const BASE_FILL_MESSAGE = " කොටස පුරවන්න"
 
-const BASE_SUCCESSFULLY_ADDED_MESSAGE = "Added "
-const BASE_FAILED_ADD_MESSAGE = "Failed to add "
+const BASE_SUCCESSFULLY_ADDED_MESSAGE = " එකතු කිරීම සාර්තකයි!"
+const BASE_FAILED_ADD_MESSAGE = " එකතු කිරීම අසාර්තකයි!"
 
-const BASE_SUCCESSFULLY_UPDATED_MESSAGE = "Updated "
-const BASE_FAILED_UPDATE_MESSAGE = "Failed to update "
+const BASE_SUCCESSFULLY_UPDATED_MESSAGE = " වෙනස් කිරීම සාර්තකයි!"
+const BASE_FAILED_UPDATE_MESSAGE = " වෙනස් කිරීම අසාර්තකයි!"
 
-const BASE_SUCCESSFULLY_DELETED_MESSAGE = "Deleted "
-const BASE_FAILED_DELETE_MESSAGE = "Failed to delete "
+const BASE_SUCCESSFULLY_DELETED_MESSAGE = " ඉවත් කිරීම සාර්තකයි! "
+const BASE_FAILED_DELETE_MESSAGE = " ඉවත් කිරීම අසාර්තකයි!"
+
+const BASE_SUCCESSFULLY_RESTORE_MESSAGE = " ප්‍රතිස්ථාපනය කිරීම සාර්ථකයි!"
+const BASE_FAILED_RESTORE_MESSAGE = " ප්‍රතිස්ථාපනය කිරීම අසාර්ථකයි!"
+
+const CANNOT_FIND = " සොයාගත නොහැකිය."
+const CANNOT_FIND_COUNT = "න් ගණන සොයාගත නොහැකිය"
+
+const DIDNT_CHANGED = " කිසිවක් වෙනස් වූයේ නැත."
+
+
+
 
 /** Unit Category */
 
-export const FILL_UNIT_CATEGORY = BASE_FILL_MESSAGE +  "unit category."
-export const ADDED_UNIT_CATEGORY = BASE_SUCCESSFULLY_ADDED_MESSAGE + "unit category."
-export const FAILED_TO_ADD_UNIT_CATEGORY = BASE_FAILED_ADD_MESSAGE + "unit category."
+const UNIT_CATEGORY = "ඒකක වර්ගය"
 
-export const UPDATED_UNIT_CATEGORY = BASE_SUCCESSFULLY_UPDATED_MESSAGE + "unit category."
-export const FAILED_TO_UPDATE_UNIT_CATEGORY = BASE_FAILED_UPDATE_MESSAGE + "unit category."
+export const FILL_UNIT_CATEGORY = UNIT_CATEGORY + BASE_FILL_MESSAGE
+export const ADDED_UNIT_CATEGORY = UNIT_CATEGORY + BASE_SUCCESSFULLY_ADDED_MESSAGE
+export const FAILED_TO_ADD_UNIT_CATEGORY = UNIT_CATEGORY + BASE_FAILED_ADD_MESSAGE
 
-export const DELETED_UNIT_CATEGORY = BASE_SUCCESSFULLY_DELETED_MESSAGE + "unit category."
-export const FAILED_TO_DELETE_UNIT_CATEGORY = BASE_FAILED_DELETE_MESSAGE + "unit category."
+export const UPDATED_UNIT_CATEGORY = UNIT_CATEGORY + BASE_SUCCESSFULLY_UPDATED_MESSAGE
+export const FAILED_TO_UPDATE_UNIT_CATEGORY = UNIT_CATEGORY + BASE_FAILED_UPDATE_MESSAGE
+
+export const DELETED_UNIT_CATEGORY = UNIT_CATEGORY + BASE_SUCCESSFULLY_DELETED_MESSAGE
+export const FAILED_TO_DELETE_UNIT_CATEGORY = UNIT_CATEGORY + BASE_FAILED_DELETE_MESSAGE
+
+export const RESTORE_UNIT_CATEGORY = UNIT_CATEGORY + BASE_SUCCESSFULLY_RESTORE_MESSAGE
+export const FAILED_TO_RESTORE_UNIT_CATEGORY = UNIT_CATEGORY + BASE_FAILED_RESTORE_MESSAGE
+
+export const CANNOT_FIND_UNIT_CATEGORY = UNIT_CATEGORY + CANNOT_FIND
+export const DIDNT_CHANGED_UNIT_CATEGORY = UNIT_CATEGORY + DIDNT_CHANGED
+
+export const CANNOT_FIND_UNIT_CATEGORY_COUNT = UNIT_CATEGORY + CANNOT_FIND_COUNT
 
 
 
