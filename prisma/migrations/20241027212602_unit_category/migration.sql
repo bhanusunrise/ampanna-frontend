@@ -1,8 +1,20 @@
 -- CreateTable
+CREATE TABLE `Unit_Categories` (
+    `unit_category_id` VARCHAR(7) NOT NULL,
+    `unit_category_name` VARCHAR(10) NOT NULL,
+    `status` VARCHAR(191) NOT NULL DEFAULT 'active',
+    `default_status` VARCHAR(10) NOT NULL,
+
+    PRIMARY KEY (`unit_category_id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `Units` (
     `unit_id` VARCHAR(7) NOT NULL,
     `unit_name` VARCHAR(50) NOT NULL,
     `abbreviation` VARCHAR(10) NOT NULL,
+    `status` VARCHAR(191) NOT NULL DEFAULT 'active',
+    `unit_category_id` VARCHAR(7) NOT NULL,
 
     PRIMARY KEY (`unit_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -110,6 +122,9 @@ CREATE TABLE `Returned_Items` (
     INDEX `Returned_Items_stock_id_idx`(`stock_id`),
     PRIMARY KEY (`returned_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- AddForeignKey
+ALTER TABLE `Units` ADD CONSTRAINT `Units_unit_category_id_fkey` FOREIGN KEY (`unit_category_id`) REFERENCES `Unit_Categories`(`unit_category_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Unit_Conversions` ADD CONSTRAINT `Unit_Conversions_from_unit_fkey` FOREIGN KEY (`from_unit`) REFERENCES `Units`(`unit_id`) ON DELETE RESTRICT ON UPDATE CASCADE;

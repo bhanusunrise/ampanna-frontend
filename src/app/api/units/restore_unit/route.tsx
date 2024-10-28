@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { dbConnect } from '../../lib/db'; // Adjust the path if necessary
+import { dbConnect } from '../../../lib/db'; // Adjust the path if necessary
 
 export async function PUT(req: Request) {
     const connection = await dbConnect();
@@ -7,12 +7,8 @@ export async function PUT(req: Request) {
     try {
         // Parse the incoming request data (assumes JSON input)
         const body = await req.json();
-        const { unit_id, unit_name, abbreviation } = body;
+        const { unit_id} = body;
 
-        // Validate input
-        if (!unit_id || !unit_name || !abbreviation) {
-            return NextResponse.json({ message: 'Missing required fields' }, { status: 400 });
-        }
 
         // Check if the unit exists
         const [rows] = await connection.execute('SELECT * FROM units WHERE unit_id = ?', [unit_id]);
@@ -22,8 +18,8 @@ export async function PUT(req: Request) {
         }
 
         // Update the unit in the database
-        const query = 'UPDATE units SET unit_name = ?, abbreviation = ?, status = "updated" WHERE unit_id = ?';
-        const [result] = await connection.execute(query, [unit_name, abbreviation, unit_id]);
+        const query = 'UPDATE units SET status = "updated" WHERE unit_id = ?';
+        const [result] = await connection.execute(query, [unit_id]);
 
         // Check if any rows were affected (i.e., if the update was successful)
         if (result.affectedRows === 0) {
@@ -32,15 +28,13 @@ export async function PUT(req: Request) {
 
         // Return a success response
         return NextResponse.json({
-            message: 'Unit updated successfully',
+            message: 'Unit Restored successfully',
             unit_id,
-            unit_name,
-            abbreviation,
-            status: "edited"
+            status: "restored"
         });
     } catch (error) {
-        console.error('Error updating unit:', error);
-        return NextResponse.json({ message: 'Failed to update unit' }, { status: 500 });
+        console.error('Error restoring unit:', error);
+        return NextResponse.json({ message: 'Failed to restore unit' }, { status: 500 });
     } finally {
         await connection.end(); // Close the connection after use
     }

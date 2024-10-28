@@ -13,7 +13,7 @@ interface SelectBoxProps {
 
 const SelectBox: React.FC<SelectBoxProps> = ({ values, display_values, label_name, form_id }) => {
   return (
-    <><Form.Label htmlFor={form_id}>{label_name}</Form.Label><Form.Select aria-label="Default select example">
+    <><Form.Label htmlFor={form_id}>{label_name}</Form.Label><Form.Select aria-label="Default select example" style={{ maxWidth: '300px' }}>
           {values.map((value, index) => (
               <option key={index} value={value}>
                   {display_values[index]}

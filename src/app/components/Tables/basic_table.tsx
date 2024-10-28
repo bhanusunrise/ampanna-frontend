@@ -27,13 +27,35 @@ const BasicTable: React.FC<BasicTableProps> = ({
   onRestore,
 }) => {
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
+  const [tableSize, setTableSize] = useState<'sm' | 'md'>('sm'); // State for table size
+
+  // Function to detect screen size and update table size accordingly
+  useEffect(() => {
+    const updateTableSize = () => {
+      console.log(window.innerWidth)
+      if (window.innerWidth > 1366) {
+        setTableSize('md'); // Set to 'md' for larger screens (above 992px width)
+      } else {
+        setTableSize('sm'); // Default to 'sm' for smaller screens
+      }
+    };
+
+    // Initial check
+    updateTableSize();
+
+    // Add event listener to handle window resize
+    window.addEventListener('resize', updateTableSize);
+
+    // Cleanup event listener on unmount
+    return () => {
+      window.removeEventListener('resize', updateTableSize);
+    };
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       const key = event.key; // Get the pressed key
       let rowIndex: number | null = null;
-
-      console.log(`Key pressed: ${key}`); // Debugging output
 
       // Check for number keys 1-9 and 0
       if (key >= '1' && key <= '9') {
@@ -61,9 +83,9 @@ const BasicTable: React.FC<BasicTableProps> = ({
   };
 
   return (
-    <Table responsive bordered striped hover id={table_id} size="sm">
+    <Table responsive bordered striped hover id={table_id} size={tableSize}> {/* Use dynamic table size */}
       <thead>
-        <tr className=''>
+        <tr>
           <th className='bg-primary text-white'>#</th>
           {table_fields.map((field, index) => (
             <th key={index} className="bg-primary text-white">
@@ -104,7 +126,6 @@ const BasicTable: React.FC<BasicTableProps> = ({
                       btn_id={`delete_button_${startingIndex + rowIndex}`}
                       rowIndex={startingIndex + rowIndex} // Pass the global index
                     />
-
                   </>
                 )}
               </td>

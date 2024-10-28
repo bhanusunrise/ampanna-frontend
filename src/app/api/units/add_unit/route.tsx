@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { dbConnect } from '../../lib/db'; // Adjust the path if necessary
+import { dbConnect } from '../../../lib/db'; // Adjust the path if necessary
 
 export async function POST(req: Request) {
     const connection = await dbConnect();
