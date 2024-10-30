@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import BasicTable from '@/app/components/Tables/basic_table';
 import { UNIT_TABLE_FIELDS } from '@/app/constants/constants';
-import { fetchAllUnits, addUnit, updateUnit, blankFunction, deleteUnit, RestoreUnit } from './functions';
+import { fetchAllUnits, addUnit, updateUnit, blankFunction, deleteUnit, RestoreUnit, fetchAllUnitCategories } from './functions';
 import NavigateButtons from '@/app/components/Buttons/navigate_button';
 import { Col, Row } from 'react-bootstrap';
 import AddButton from '@/app/components/Buttons/add_button';
@@ -13,14 +13,17 @@ import UpdateUnitModal from '@/app/components/Models/Units/update_unit_model';
 import DeleteModal from '@/app/components/Models/delete_model'; // Import DeleteModal
 import Summary from '@/app/components/Summeris/summery';
 import RestoreModal from '@/app/components/Models/restore_model';
+import SelectBox from '@/app/components/Forms/select_box';
 
 export default function Page() {
   const [units, setUnits] = useState<string[][]>([]);
   const [filteredUnits, setFilteredUnits] = useState<string[][]>([]);
+  const [unitCategories, setUnitCategories] = useState<{ id: string; name: string }[]>([]); // State for unit categories
   const [currentPage, setCurrentPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [unitName, setUnitName] = useState('');
   const [unitAbbreviation, setUnitAbbreviation] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>(''); // State for selected category
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false); // State for delete modal
   const [selectedUnit, setSelectedUnit] = useState<any>(null);
@@ -28,12 +31,23 @@ export default function Page() {
   const [itemToDelete, setItemToDelete] = useState<any>(null); // Track item to be deleted
   const [showRestoreModal, setShowRestoreModal] = useState(false); // State for restore modal
 
+    // Utility function to format date
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toISOString().split('T')[0]; // Get YYYY-MM-DD format
+  };
+
 
   useEffect(() => {
     async function fetchData() {
       const fetchedUnits = await fetchAllUnits();
-      setUnits(fetchedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.status]));
-      setFilteredUnits(fetchedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.status]));
+      setUnits(fetchedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.status, formatDate(unit.createdAt), formatDate(unit.updatedAt)]));
+      setFilteredUnits(fetchedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.status,  formatDate(unit.createdAt), formatDate(unit.updatedAt)]));
+      
+      // Fetch unit categories
+      const fetchedCategories = await fetchAllUnitCategories();
+      setUnitCategories(fetchedCategories.map((category: any) => ({ id: category.unit_category_id, name: category.unit_category_name })));
+    
     }
 
     fetchData();
@@ -66,24 +80,30 @@ export default function Page() {
     setCurrentPage(0);
   };
 
-  const handleAddUnit = async () => {
-    if (!unitName || !unitAbbreviation) {
-      return;
+    const handleAddUnit = async () => {
+      console.log(selectedCategory)
+    if (!unitName || !unitAbbreviation || !selectedCategory) {
+        console.log("Please fill in all fields");
+        return;
     }
 
-    const unitData = { unit_name: unitName, abbreviation: unitAbbreviation };
-    const result = await addUnit(unitData.unit_name, unitData.abbreviation);
+    const unitData = { unit_name: unitName, abbreviation: unitAbbreviation, unit_category_id: selectedCategory };
+    console.log("Adding unit:", unitData); // Log the unit data
+
+    const result = await addUnit(unitData.unit_name, unitData.abbreviation, unitData.unit_category_id);
+    console.log("Add Unit Result:", result); // Log the result of the addition
 
     if (result.success) {
-      const updatedUnits = await fetchAllUnits();
-      const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.status]);
-      setUnits(formattedUnits);
-      setFilteredUnits(formattedUnits);
+        const updatedUnits = await fetchAllUnits();
+        const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.status]);
+        setUnits(formattedUnits);
+        setFilteredUnits(formattedUnits);
 
-      setUnitName('');
-      setUnitAbbreviation('');
+        setUnitName('');
+        setUnitAbbreviation('');
+        setSelectedCategory(''); // Clear selected category
     }
-  };
+};
 
   const handleUpdate = (rowIndex: number) => {
     const selectedUnitData = filteredUnits[rowIndex];
@@ -204,14 +224,14 @@ const confirmRestore = async () => {
       <Row>
         <Col md={8}>
           <BasicTable
-  table_fields={UNIT_TABLE_FIELDS}
-  table_records={currentRecords}
-  table_id="units_table"
-  startingIndex={startingIndex}
-  onUpdate={handleUpdate}
-  onDelete={handleDelete}
-  onRestore={handleRestore}  // <-- Add this line
-/>
+          table_fields={UNIT_TABLE_FIELDS}
+          table_records={currentRecords}
+          table_id="units_table"
+          startingIndex={startingIndex}
+          onUpdate={handleUpdate}
+          onDelete={handleDelete}
+          onRestore={handleRestore}  // <-- Add this line
+          />
 
           <NavigateButtons
             currentPage={currentPage}
@@ -237,6 +257,13 @@ const confirmRestore = async () => {
             placeholder_text="Enter Unit Abbreviation"
             label="Unit Abbreviation :"
             value={unitAbbreviation}
+          />
+          <SelectBox 
+            values={unitCategories.map(category => category.id)} // Use category IDs as values
+            display_values={unitCategories.map(category => category.name)} // Use category names as display values
+            label_name="Status :"
+            form_id="unit_categories"
+            onChange={(value) => setSelectedCategory(value)} // Handle category selection
           />
           <br/>
           <ClearButton 

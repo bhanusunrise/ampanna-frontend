@@ -7,7 +7,7 @@ export async function POST(req: Request) {
     try {
         // Parse the incoming request data (assumes JSON input)
         const body = await req.json();
-        const { unit_name, abbreviation } = body;
+        const { unit_name, abbreviation, unit_category_id } = body;
 
         // Validate input
         if (!unit_name || !abbreviation) {
@@ -31,14 +31,15 @@ export async function POST(req: Request) {
         }
 
         // Insert the new unit into the database
-        const query = 'INSERT INTO units (unit_id, unit_name, abbreviation) VALUES (?, ?, ?)';
-        const [result] = await connection.execute(query, [newUnitId, unit_name, abbreviation]);
+        const query = 'INSERT INTO units (unit_id, unit_name, abbreviation, unit_category_id) VALUES (?, ?, ?, ?)';
+        const [result] = await connection.execute(query, [newUnitId, unit_name, abbreviation, unit_category_id]);
 
         // Return a success response
         return NextResponse.json({
             message: 'Unit added successfully',
             unit_id: newUnitId,
             unit_name,
+            unit_category_id,
             abbreviation
         });
     } catch (error) {

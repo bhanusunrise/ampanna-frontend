@@ -30,10 +30,12 @@ export const ITEMS_TABLE_FIELDS = [
 ]
 
 export const UNIT_TABLE_FIELDS = [
-    "Unit ID",
+    //"Unit ID",
     "Unit Name",
     "Abbrevation",
-    "Status"
+    "Status",
+    "Created",
+    "Modified"
 ]
 
 /** API base routes */
