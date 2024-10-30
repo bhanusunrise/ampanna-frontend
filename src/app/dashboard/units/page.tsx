@@ -112,6 +112,7 @@ export default function Page() {
       unit_id: selectedUnitData[0],
       unit_name: selectedUnitData[1],
       abbreviation: selectedUnitData[2],
+      unit_category_id: selectedUnitData[3]
     });
     setShowUpdateModal(true);
   };

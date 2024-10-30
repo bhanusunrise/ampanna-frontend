@@ -2,11 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
+import SelectBox from '@/app/components/Forms/select_box'; // Adjust the import path as necessary
+import { fetchAllUnitCategories } from '@/app/dashboard/units/functions'; // Adjust the import path as necessary
 
 interface UpdateUnitModalProps {
   show: boolean;
   handleClose: () => void;
-  handleUpdateUnit: (unitData: { unit_name: string; abbreviation: string }) => Promise<void>; // For updating the unit
+  handleUpdateUnit: (unitData: { unit_name: string; abbreviation: string; unit_category_id: string }) => Promise<void>;
   unitName: string; // Current unit name
   abbreviation: string; // Current abbreviation
 }
@@ -15,22 +17,34 @@ const UpdateUnitModal: React.FC<UpdateUnitModalProps> = ({
   show, 
   handleClose, 
   handleUpdateUnit, 
-  unitName: initialUnitName, // Use initial value from props
-  abbreviation: initialAbbreviation // Use initial value from props
+  unitName: initialUnitName, 
+  abbreviation: initialAbbreviation 
 }) => {
-  const [unitName, setUnitName] = useState(initialUnitName); // State for unit name
-  const [abbreviation, setAbbreviation] = useState(initialAbbreviation); // State for abbreviation
+  const [unitName, setUnitName] = useState(initialUnitName);
+  const [abbreviation, setAbbreviation] = useState(initialAbbreviation);
+  const [unitCategories, setUnitCategories] = useState<string[]>([]); // State for unit categories
+  const [unitCategoryId, setUnitCategoryId] = useState<string>(''); // State for selected category ID
 
-  // Use effect to reset state when modal opens or when props change
+  useEffect(() => {
+    const loadUnitCategories = async () => {
+      const categories = await fetchAllUnitCategories();
+       setUnitCategories(categories.map((category: any) => ({ id: category.unit_category_id, name: category.unit_category_name })));
+    };
+
+    loadUnitCategories();
+  }, []);
+
+  // Reset state when modal opens or when props change
   useEffect(() => {
     if (show) {
       setUnitName(initialUnitName);
       setAbbreviation(initialAbbreviation);
+      setUnitCategoryId(''); // Reset selected category when modal opens
     }
   }, [show, initialUnitName, initialAbbreviation]);
 
   const handleSubmit = async () => {
-    await handleUpdateUnit({ unit_name: unitName, abbreviation });
+    await handleUpdateUnit({ unit_name: unitName, abbreviation, unit_category_id: unitCategoryId });
     handleClose(); // Close modal after update
   };
 
@@ -60,6 +74,15 @@ const UpdateUnitModal: React.FC<UpdateUnitModalProps> = ({
               onChange={(e) => setAbbreviation(e.target.value)}
             />
           </Form.Group>
+
+          {/* Select box for unit categories */}
+          <SelectBox
+            values={unitCategories.map(category => category.id)} // Provide the category IDs
+            display_values={unitCategories.map(category => category.name)} // Adjust based on your data structure
+            label_name="Select Unit Category"
+            form_id="formUnitCategory"
+            onChange={setUnitCategoryId} // Update selected category ID
+          />
         </Form>
       </Modal.Body>
       <Modal.Footer>
