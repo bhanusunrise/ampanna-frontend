@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "migrate": "ts-node prisma/migrationPrevent.tsx && prisma migrate dev"
+    "migrate": "ts-node prisma/migrationPrevent.tsx && prisma migrate dev",
+    "docker-start": "docker-compose up --build"
   },
   "dependencies": {
     "@prisma/client": "^5.21.1",

@@ -1,9 +1,11 @@
 -- CreateTable
 CREATE TABLE `Unit_Categories` (
-    `unit_category_id` VARCHAR(7) NOT NULL,
+    `unit_category_id` VARCHAR(6) NOT NULL,
     `unit_category_name` VARCHAR(10) NOT NULL,
     `status` VARCHAR(191) NOT NULL DEFAULT 'active',
-    `default_status` VARCHAR(10) NOT NULL,
+    `default_status` VARCHAR(12) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`unit_category_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -14,7 +16,9 @@ CREATE TABLE `Units` (
     `unit_name` VARCHAR(50) NOT NULL,
     `abbreviation` VARCHAR(10) NOT NULL,
     `status` VARCHAR(191) NOT NULL DEFAULT 'active',
-    `unit_category_id` VARCHAR(7) NOT NULL,
+    `unit_category_id` VARCHAR(6) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`unit_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -25,6 +29,8 @@ CREATE TABLE `Unit_Conversions` (
     `from_unit` VARCHAR(10) NOT NULL,
     `value` DOUBLE NOT NULL,
     `to_unit` VARCHAR(10) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`conversion_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -34,6 +40,8 @@ CREATE TABLE `Items` (
     `item_id` VARCHAR(10) NOT NULL,
     `item_name` VARCHAR(50) NOT NULL,
     `item_category_id` VARCHAR(6) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     INDEX `Items_item_category_id_idx`(`item_category_id`),
     PRIMARY KEY (`item_id`)
@@ -43,6 +51,8 @@ CREATE TABLE `Items` (
 CREATE TABLE `Item_Categories` (
     `category_id` VARCHAR(6) NOT NULL,
     `category_name` VARCHAR(30) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`category_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -52,6 +62,8 @@ CREATE TABLE `ItemUnits` (
     `id` VARCHAR(6) NOT NULL,
     `item_id` VARCHAR(10) NOT NULL,
     `unit_id` VARCHAR(7) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     UNIQUE INDEX `ItemUnits_item_id_unit_id_key`(`item_id`, `unit_id`),
     PRIMARY KEY (`id`)
@@ -69,6 +81,8 @@ CREATE TABLE `Stocks` (
     `selling_price` DOUBLE NOT NULL,
     `barcode_url` VARCHAR(20) NOT NULL,
     `supplier_id` VARCHAR(8) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     INDEX `Stocks_item_id_idx`(`item_id`),
     INDEX `Stocks_supplier_id_idx`(`supplier_id`),
@@ -82,6 +96,8 @@ CREATE TABLE `Suppliers` (
     `email` VARCHAR(100) NOT NULL,
     `phone` INTEGER NOT NULL,
     `address` VARCHAR(200) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     INDEX `Suppliers_supplier_id_idx`(`supplier_id`),
     PRIMARY KEY (`supplier_id`)
@@ -95,6 +111,8 @@ CREATE TABLE `Bills` (
     `sub_total_amount` DOUBLE NOT NULL,
     `discount_amount` DOUBLE NOT NULL,
     `returned_amount` DOUBLE NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     INDEX `Bills_bill_date_idx`(`bill_date`),
     PRIMARY KEY (`bill_id`)
@@ -105,6 +123,8 @@ CREATE TABLE `BillStocks` (
     `bill_id` VARCHAR(191) NOT NULL,
     `stock_id` VARCHAR(191) NOT NULL,
     `quantity` INTEGER NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`bill_id`, `stock_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -117,6 +137,8 @@ CREATE TABLE `Returned_Items` (
     `reason` VARCHAR(255) NOT NULL,
     `bill_id` VARCHAR(191) NOT NULL,
     `stock_id` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     INDEX `Returned_Items_bill_id_idx`(`bill_id`),
     INDEX `Returned_Items_stock_id_idx`(`stock_id`),

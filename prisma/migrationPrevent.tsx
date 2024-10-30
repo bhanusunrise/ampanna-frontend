@@ -1,10 +1,8 @@
 const { PrismaClient } = require('@prisma/client');
-const { UNIT_LIST, UNIT_CONVERSIONS } = require('../src/app/constants/dbInstallation'); 
+const { UNIT_CATEGORY_LIST, UNIT_LIST, UNIT_CONVERSIONS } = require('../src/app/constants/dbInstallation');
 
 const prisma = new PrismaClient();
 
-
-// Main function to prevent migration and insert data
 async function preventMigration() {
   try {
     // Get the list of tables and check for existing records
@@ -26,26 +24,29 @@ async function preventMigration() {
 
     console.log('No data found in any tables (except _prisma_migrations). Migration can proceed.');
 
-    // Insert all units from UNIT_LIST into the Units table
+    // Insert all unit categories first, as units depend on them
+    for (const category of UNIT_CATEGORY_LIST) {
+      await prisma.unit_Categories.create({ data: category });
+    }
+
+    // Insert all units next, as unit conversions depend on them
     for (const unit of UNIT_LIST) {
       await prisma.units.create({ data: unit });
     }
 
-    // Insert unit conversions
+    // Insert unit conversions last to resolve foreign key dependencies
     for (const conversion of UNIT_CONVERSIONS) {
-      
-
       await prisma.unit_Conversions.create({
         data: {
           conversion_id: conversion.conversion_id,
           from_unit: conversion.from_unit,
-          value: conversion.value,
           to_unit: conversion.to_unit,
+          value: conversion.value,
         },
       });
     }
 
-    console.log('Inserted units and conversions.');
+    console.log('Inserted units, categories, and conversions successfully.');
 
   } catch (error) {
     console.error('Error:', error);
