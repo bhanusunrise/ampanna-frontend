@@ -8,7 +8,7 @@ export async function PUT(req: Request) {
     try {
         // Parse the incoming request data (assumes JSON input)
         const body = await req.json();
-        const { unit_category_id } = body;
+        const { unit_category_id, unit_category_name } = body;
 
         // Validate input
         if (!unit_category_id) {
