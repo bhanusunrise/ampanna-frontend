@@ -28,6 +28,11 @@ const NavigateButtons: React.FC<NavigateButtonsProps> = ({ currentPage, totalPag
     };
   }, [currentPage, totalPages, onNext, onPrevious]);
 
+  // Hide component if totalPages is 1 or less
+  if (totalPages <= 1) {
+    return null;
+  }
+
   return (
     <div className={'text-center'}>
       <button
