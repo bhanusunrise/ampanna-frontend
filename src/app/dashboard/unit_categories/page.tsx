@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import BasicTable from '@/app/components/Tables/basic_table';
 import { UNIT_CATEGORY_TABLE_FIELDS } from '@/app/constants/constants';
 //import { fetchAllUnits, addUnit, updateUnit, blankFunction, deleteUnit, RestoreUnit, fetchAllUnitCategories } from './functions';
+import { fetchAllUnitCategories } from './functions';
 import NavigateButtons from '@/app/components/Buttons/navigate_button';
 import { Col, Row } from 'react-bootstrap';
 import AddButton from '@/app/components/Buttons/add_button';
@@ -17,7 +18,7 @@ import SelectBox from '@/app/components/Forms/select_box';
 
 export default function Page() {
   const [units, setUnits] = useState<string[][]>([]);
-  const [filteredUnits, setFilteredUnits] = useState<string[][]>([]);
+  const [filteredUnitCategories, setFilteredUnitCategories] = useState<string[][]>([]);
   const [unitCategories, setUnitCategories] = useState<{ id: string; name: string }[]>([]); // State for unit categories
   const [currentPage, setCurrentPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
@@ -40,21 +41,23 @@ export default function Page() {
 
   useEffect(() => {
     async function fetchData() {
-      const fetchedUnits = await fetchAllUnits();
-      setUnits(fetchedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.unit_category_name ,unit.status, formatDate(unit.createdAt), formatDate(unit.updatedAt)]));
-      setFilteredUnits(fetchedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.unit_category_name ,unit.status,  formatDate(unit.createdAt), formatDate(unit.updatedAt)]));
+      const fetchedUnitCategories = await fetchAllUnitCategories();
+      setUnitCategories(fetchedUnitCategories.map((unit_category: any) => [unit_category.unit_category_id, unit_category.unit_category_name ,unit_category.status,unit_category.default_status, formatDate(unit_category.createdAt), formatDate(unit_category.updatedAt)]));
+      setFilteredUnitCategories(fetchedUnitCategories.map((unit_category: any) => [unit_category.unit_category_id, unit_category.unit_category_name ,unit_category.status,unit_category.default_status,  formatDate(unit_category.createdAt), formatDate(unit_category.updatedAt)]));
       
+      /*
       // Fetch unit categories
       const fetchedCategories = await fetchAllUnitCategories();
-      setUnitCategories(fetchedCategories.map((category: any) => ({ id: category.unit_category_id, name: category.unit_category_name })));
+      setUnitCategories(fetchedCategories.map((category: any) => ({ id: category.unit_category_id, name: category.unit_category_name })));*/
     
     }
 
     fetchData();
   }, []);
 
+  
   const handleNext = () => {
-    if (currentPage < Math.ceil(filteredUnits.length / recordsPerPage) - 1) {
+    if (currentPage < Math.ceil(filteredUnitCategories.length / recordsPerPage) - 1) {
       setCurrentPage(currentPage + 1);
     }
   };
@@ -65,8 +68,8 @@ export default function Page() {
     }
   };
 
-  const currentRecords = filteredUnits.slice(currentPage * recordsPerPage, (currentPage + 1) * recordsPerPage);
-  const totalPages = Math.ceil(filteredUnits.length / recordsPerPage);
+  const currentRecords = filteredUnitCategories.slice(currentPage * recordsPerPage, (currentPage + 1) * recordsPerPage);
+  const totalPages = Math.ceil(filteredUnitCategories.length / recordsPerPage);
   const startingIndex = currentPage * recordsPerPage;
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
