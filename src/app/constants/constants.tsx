@@ -39,6 +39,15 @@ export const UNIT_TABLE_FIELDS = [
     "Modified"
 ]
 
+
+export const UNIT_CATEGORY_TABLE_FIELDS = [
+    //"Unit Category ID",
+    "Unit Category Name",
+    "Status",
+    "Default",
+    "Created",
+    "Modified"
+]
 /** API base routes */
 export const UNIT_API = "/api/units/"
 export const UNIT_CONVERSION_API = "/api/unit_conversions/"

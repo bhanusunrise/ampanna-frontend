@@ -5,7 +5,7 @@ import { Nav } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css'; 
 import { BiCoin, BiDiamond} from 'react-icons/bi';
 import { CgCalculator, CgProfile, CgToolbarTop } from 'react-icons/cg';
-import { MdNumbers, MdRecycling } from 'react-icons/md';
+import { Md10K, MdNumbers, MdRecycling } from 'react-icons/md';
 import { GrGroup } from 'react-icons/gr';
 import { IoMdPaper } from 'react-icons/io';
 const SideNav = () => {
@@ -19,6 +19,9 @@ const SideNav = () => {
       </Nav.Item>
       <Nav.Item>
         <Nav.Link href="/dashboard/stocks" className="text-white"><BiCoin size={20} className='m-2'/>Stocks</Nav.Link>
+      </Nav.Item>
+      <Nav.Item>
+        <Nav.Link href="/dashboard/unit_categories" className="text-white"><Md10K size={20} className='m-2'/>Unit Categories</Nav.Link>
       </Nav.Item>
       <Nav.Item>
         <Nav.Link href="/dashboard/units" className="text-white"><MdNumbers size={20} className='m-2'/>Units</Nav.Link>
