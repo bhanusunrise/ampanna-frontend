@@ -21,8 +21,8 @@ export async function PUT(req: Request) {
             return NextResponse.json({ message: 'Unit not found' }, { status: 404 });
         }
 
-        // Update the unit in the database
-        const query = 'UPDATE units SET unit_name = ?, abbreviation = ?, status = "updated" WHERE unit_id = ?';
+        // Update the unit in the database, setting updatedAt to the current time
+        const query = 'UPDATE units SET unit_name = ?, abbreviation = ?, updatedAt = NOW() WHERE unit_id = ?';
         const [result] = await connection.execute(query, [unit_name, abbreviation, unit_id]);
 
         // Check if any rows were affected (i.e., if the update was successful)
@@ -36,7 +36,6 @@ export async function PUT(req: Request) {
             unit_id,
             unit_name,
             abbreviation,
-            status: "edited"
         });
     } catch (error) {
         console.error('Error updating unit:', error);

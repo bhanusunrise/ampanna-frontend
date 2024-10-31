@@ -9,7 +9,8 @@ interface SelectBoxProps {
   display_values: string[];
   label_name: string;
   form_id: string;
-  onChange: (value: string) => void; // Add onChange prop to handle selection changes
+  onChange: (value: string) => void;
+  selected_value?: string; // Add selected_value prop as optional
 }
 
 const SelectBox: React.FC<SelectBoxProps> = ({
@@ -18,6 +19,7 @@ const SelectBox: React.FC<SelectBoxProps> = ({
   label_name,
   form_id,
   onChange,
+  selected_value,
 }) => {
   return (
     <>
@@ -25,9 +27,10 @@ const SelectBox: React.FC<SelectBoxProps> = ({
       <Form.Select
         aria-label="Default select example"
         style={{ maxWidth: '300px' }}
-        onChange={(e) => onChange(e.target.value)} // Call onChange with the selected value
+        onChange={(e) => onChange(e.target.value)}
+        value={selected_value || ""} // Set the selected value if provided, otherwise keep default
       >
-        <option value="">Select an option</option> {/* Optional: Default option */}
+        <option value="">Select an option</option>
         {values.map((value, index) => (
           <option key={index} value={value}>
             {display_values[index]}

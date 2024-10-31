@@ -41,8 +41,8 @@ export default function Page() {
   useEffect(() => {
     async function fetchData() {
       const fetchedUnits = await fetchAllUnits();
-      setUnits(fetchedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.status, formatDate(unit.createdAt), formatDate(unit.updatedAt)]));
-      setFilteredUnits(fetchedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.status,  formatDate(unit.createdAt), formatDate(unit.updatedAt)]));
+      setUnits(fetchedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.unit_category_name ,unit.status, formatDate(unit.createdAt), formatDate(unit.updatedAt)]));
+      setFilteredUnits(fetchedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.unit_category_name ,unit.status,  formatDate(unit.createdAt), formatDate(unit.updatedAt)]));
       
       // Fetch unit categories
       const fetchedCategories = await fetchAllUnitCategories();
@@ -95,7 +95,7 @@ export default function Page() {
 
     if (result.success) {
         const updatedUnits = await fetchAllUnits();
-        const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.status]);
+        const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.unit_category_name ,unit.status, formatDate(unit.createdAt), formatDate(unit.updatedAt)]);
         setUnits(formattedUnits);
         setFilteredUnits(formattedUnits);
 
@@ -114,6 +114,8 @@ export default function Page() {
       abbreviation: selectedUnitData[2],
       unit_category_id: selectedUnitData[3]
     });
+
+    console.log(selectedUnit)
     setShowUpdateModal(true);
   };
 
@@ -122,7 +124,7 @@ export default function Page() {
 
     handleCloseModal();
     const updatedUnits = await fetchAllUnits();
-    const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.status]);
+    const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.unit_category_name ,unit.status, formatDate(unit.createdAt), formatDate(unit.updatedAt)]);
     setUnits(formattedUnits);
     setFilteredUnits(formattedUnits);
   };
@@ -147,7 +149,7 @@ export default function Page() {
       }*/
 
       const updatedUnits = await fetchAllUnits();
-        const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.status]);
+        const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.unit_category_name ,unit.status, formatDate(unit.createdAt), formatDate(unit.updatedAt)]);
         setUnits(formattedUnits);
         setFilteredUnits(formattedUnits);
 
@@ -292,6 +294,8 @@ const confirmRestore = async () => {
           handleUpdateUnit={handleUpdateUnit}
           unitName={selectedUnit.unit_name}
           abbreviation={selectedUnit.abbreviation}
+          selectedCategory={selectedUnit.unit_category_id}
+          
         />
       )}
 

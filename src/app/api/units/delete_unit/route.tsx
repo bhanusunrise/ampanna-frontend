@@ -18,7 +18,7 @@ export async function PUT(req: Request) {
         }
 
         // Update the unit in the database
-        const query = 'UPDATE units SET status = "deleted" WHERE unit_id = ?';
+        const query = 'UPDATE units SET status = "deleted", updatedAt = NOW() WHERE unit_id = ?';
         const [result] = await connection.execute(query, [unit_id]);
 
         // Check if any rows were affected (i.e., if the update was successful)

@@ -33,6 +33,7 @@ export const UNIT_TABLE_FIELDS = [
     //"Unit ID",
     "Unit Name",
     "Abbrevation",
+    "Category",
     "Status",
     "Created",
     "Modified"
