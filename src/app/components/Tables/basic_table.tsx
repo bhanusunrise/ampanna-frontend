@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import UpdateButton from '@/app/components/Buttons/update_button';
 import DeleteButton from '@/app/components/Buttons/delete_button';
 import RestoreButton from '@/app/components/Buttons/restore_button'; // Import RestoreButton
+import { ACTONS_FIELD } from '@/app/constants/constants';
 
 interface BasicTableProps {
   table_fields: string[];
@@ -92,7 +93,7 @@ const BasicTable: React.FC<BasicTableProps> = ({
               {field}
             </th>
           ))}
-          <th className='bg-primary text-white'>Actions</th>
+          <th className='bg-primary text-white'>{ACTONS_FIELD}</th>
         </tr>
       </thead>
       <tbody>

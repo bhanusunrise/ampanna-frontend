@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import BasicTable from '@/app/components/Tables/basic_table';
-import { UNIT_CATEGORY_TABLE_FIELDS } from '@/app/constants/constants';
+import { ADD_UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_TABLE_FIELDS, UNIT_CATEGORY_TYPE_LABAL, UNIT_CATEGORY_TYPES } from '@/app/constants/constants';
 //import { fetchAllUnits, addUnit, updateUnit, blankFunction, deleteUnit, RestoreUnit, fetchAllUnitCategories } from './functions';
 import { fetchAllUnitCategories } from './functions';
 import NavigateButtons from '@/app/components/Buttons/navigate_button';
@@ -15,6 +15,8 @@ import DeleteModal from '@/app/components/Models/delete_model'; // Import Delete
 import Summary from '@/app/components/Summeris/summery';
 import RestoreModal from '@/app/components/Models/restore_model';
 import SelectBox from '@/app/components/Forms/select_box';
+import { fetchAllUnits } from '../unit_conversions/functions';
+import { addUnit, updateUnit, deleteUnit, RestoreUnit } from '../units/functions';
 
 export default function Page() {
   const [units, setUnits] = useState<string[][]>([]);
@@ -211,7 +213,7 @@ const confirmRestore = async () => {
   return (
     <>
       <Row>
-        <Col md={3}><h3 className={'text-primary'}>Unit Categories</h3></Col>
+        <Col md={3}><h3 className={'text-primary'}>{UNIT_CATEGORY_PAGE_NAME}</h3></Col>
         <Col md={5}>
           <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', flexWrap: 'nowrap' }}>
             <TextInput
@@ -247,27 +249,19 @@ const confirmRestore = async () => {
           />
         </Col>
         <Col md={4}>
-          <h3 className='text-primary'>New Unit</h3>
+          <h3 className='text-primary'>{ADD_UNIT_CATEGORY_PAGE_NAME}</h3>
           <TextInput 
-            form_id="unit_name"
+            form_id="unit_category_name"
             onChangeText={(event) => setUnitName(event.target.value)}
             form_message=""
-            placeholder_text="Enter Unit Name"
-            label="Unit Name :"
+            placeholder_text={UNIT_CATEGORY_NAME_PLACEHOLDER}
+            label={UNIT_CATEGORY_NAME_LABAL}
             value={unitName}
           />
-          <TextInput 
-            form_id="unit_abbreviation"
-            onChangeText={(event) => setUnitAbbreviation(event.target.value)}
-            form_message=""
-            placeholder_text="Enter Unit Abbreviation"
-            label="Unit Abbreviation :"
-            value={unitAbbreviation}
-          />
           <SelectBox 
-            values={unitCategories.map(category => category.id)} // Use category IDs as values
-            display_values={unitCategories.map(category => category.name)} // Use category names as display values
-            label_name="Status :"
+            values={UNIT_CATEGORY_TYPES} // Use category IDs as values
+            display_values={UNIT_CATEGORY_TYPES} // Use category names as display values
+            label_name={UNIT_CATEGORY_TYPE_LABAL}
             form_id="unit_categories"
             onChange={(value) => setSelectedCategory(value)} // Handle category selection
           />
