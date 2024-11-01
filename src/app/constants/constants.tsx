@@ -128,9 +128,18 @@ export const UNIT_CATEGORY_PRIMARY_KEY_FIRST_VALUE = UNIT_CATEGORY_PRIMARY_KEY_L
 const NEW = "නව"
 
 /** Unit Category */
-export const UNIT_CATEGORY_PAGE_NAME = "ඒකක වර්ගය"
+export const UNIT_CATEGORY_PAGE_NAME = "ඒකක වර්ග"
 export const ADD_UNIT_CATEGORY_PAGE_NAME = NEW + " ඒකක වර්ගය"
 
 export const UNIT_CATEGORY_NAME_LABAL = "ඒකක වර්ගයේ නම :"
 export const UNIT_CATEGORY_TYPE_LABAL = "වර්ගය :"
 export const UNIT_CATEGORY_NAME_PLACEHOLDER = "ඒකක වර්ගයක් ඇතුලත් කරන්න"
+
+
+/** Unit */
+export const UNIT_PAGE_NAME = "ඒකක"
+export const ADD_UNIT_PAGE_NAME = NEW + " ඒකක වර්ගය"
+
+export const UNIT_NAME_LABAL = "ඒකකයේ නම :"
+export const UNIT_TYPE_LABAL = "වර්ගය :"
+export const UNIT_NAME_PLACEHOLDER = "ඒකකයක් ඇතුලත් කරන්න"

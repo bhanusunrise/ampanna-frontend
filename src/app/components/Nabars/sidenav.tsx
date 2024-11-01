@@ -11,7 +11,8 @@ import { IoMdPaper } from 'react-icons/io';
 import { UNIT_CATEGORY_PAGE_NAME } from '@/app/constants/constants';
 const SideNav = () => {
   return (
-    <Nav className="flex-column vh-100 bg-primary text-white" variant="pills" style={{paddingTop: 100}}>
+    <>
+    <Nav className="flex-column bg-primary text-white" variant="pills" style={{paddingTop: 100, paddingBottom: 100}}>
       <Nav.Item>
         <Nav.Link href="/dashboard/calculator" className="text-white"><CgCalculator size={20} className='m-2'/>Calculator</Nav.Link>
       </Nav.Item>
@@ -43,6 +44,7 @@ const SideNav = () => {
         <Nav.Link href="/dashboard/items" className="text-white"><CgToolbarTop size={20} className='m-2'/>Items</Nav.Link>
       </Nav.Item>
     </Nav>
+    </>
   );
 };
 

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import BasicTable from '@/app/components/Tables/basic_table';
-import { UNIT_TABLE_FIELDS } from '@/app/constants/constants';
+import { UNIT_PAGE_NAME, UNIT_TABLE_FIELDS } from '@/app/constants/constants';
 import { fetchAllUnits, addUnit, updateUnit, blankFunction, deleteUnit, RestoreUnit, fetchAllUnitCategories } from './functions';
 import NavigateButtons from '@/app/components/Buttons/navigate_button';
 import { Col, Row } from 'react-bootstrap';
@@ -208,8 +208,8 @@ const confirmRestore = async () => {
   return (
     <>
       <Row>
-        <Col md={3}><h3 className={'text-primary'}>Units</h3></Col>
-        <Col md={5}>
+        <Col md={3}><h3 className={'text-primary'}>{UNIT_PAGE_NAME}</h3></Col>
+        <Col md={6}>
           <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', flexWrap: 'nowrap' }}>
             <TextInput
               form_id="search_unit"
@@ -222,10 +222,10 @@ const confirmRestore = async () => {
           </div>
           <br />
         </Col>
-        <Col md={4}></Col>
+        <Col md={3}></Col>
       </Row>
       <Row>
-        <Col md={8}>
+        <Col md={9}>
           <BasicTable
           table_fields={UNIT_TABLE_FIELDS}
           table_records={currentRecords}
@@ -243,7 +243,7 @@ const confirmRestore = async () => {
             onPrevious={handlePrevious}
           />
         </Col>
-        <Col md={4}>
+        <Col md={3}>
           <h3 className='text-primary'>New Unit</h3>
           <TextInput 
             form_id="unit_name"
