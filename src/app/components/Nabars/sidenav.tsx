@@ -5,12 +5,14 @@ import { Nav } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css'; 
 import { BiCoin, BiDiamond} from 'react-icons/bi';
 import { CgCalculator, CgProfile, CgToolbarTop } from 'react-icons/cg';
-import { MdNumbers, MdRecycling } from 'react-icons/md';
+import { Md10K, MdNumbers, MdRecycling } from 'react-icons/md';
 import { GrGroup } from 'react-icons/gr';
 import { IoMdPaper } from 'react-icons/io';
+import { UNIT_CATEGORY_PAGE_NAME } from '@/app/constants/constants';
 const SideNav = () => {
   return (
-    <Nav className="flex-column vh-100 bg-primary text-white" variant="pills" style={{paddingTop: 100}}>
+    <>
+    <Nav className="flex-column bg-primary text-white" variant="pills" style={{paddingTop: 100, paddingBottom: 100}}>
       <Nav.Item>
         <Nav.Link href="/dashboard/calculator" className="text-white"><CgCalculator size={20} className='m-2'/>Calculator</Nav.Link>
       </Nav.Item>
@@ -19,6 +21,9 @@ const SideNav = () => {
       </Nav.Item>
       <Nav.Item>
         <Nav.Link href="/dashboard/stocks" className="text-white"><BiCoin size={20} className='m-2'/>Stocks</Nav.Link>
+      </Nav.Item>
+      <Nav.Item>
+        <Nav.Link href="/dashboard/unit_categories" className="text-white"><Md10K size={20} className='m-2'/>{UNIT_CATEGORY_PAGE_NAME}</Nav.Link>
       </Nav.Item>
       <Nav.Item>
         <Nav.Link href="/dashboard/units" className="text-white"><MdNumbers size={20} className='m-2'/>Units</Nav.Link>
@@ -39,6 +44,7 @@ const SideNav = () => {
         <Nav.Link href="/dashboard/items" className="text-white"><CgToolbarTop size={20} className='m-2'/>Items</Nav.Link>
       </Nav.Item>
     </Nav>
+    </>
   );
 };
 

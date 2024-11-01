@@ -1,4 +1,4 @@
-import { UNIT_API } from "@/app/constants/constants";
+import { UNIT_API, UNIT_CATEGORY_API } from "@/app/constants/constants";
 
 export const fetchAllUnits = async () => {
 
@@ -16,8 +16,24 @@ export const fetchAllUnits = async () => {
   }
 };
 
+export const fetchAllUnitCategories = async () => {
+
+  const uri = UNIT_CATEGORY_API + 'load_unit_categories'
+  try {
+    const response = await fetch(uri);
+    if (!response.ok) {
+      throw new Error('Failed to fetch unit categories');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching all unit categories:', error);
+    return [];
+  }
+};
+
 // Function to add a unit
-export const addUnit = async (unit_name: string, abbreviation: string) => {
+export const addUnit = async (unit_name: string, abbreviation: string, unit_category_id: string) => {
 
   const uri = UNIT_API + 'add_unit'
   try {
@@ -26,7 +42,7 @@ export const addUnit = async (unit_name: string, abbreviation: string) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ unit_name, abbreviation }),
+      body: JSON.stringify({ unit_name, abbreviation, unit_category_id }),
     });
 
     if (!response.ok) {

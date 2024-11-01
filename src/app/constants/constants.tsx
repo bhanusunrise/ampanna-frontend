@@ -1,4 +1,5 @@
 /** Table Fields */
+export const ACTONS_FIELD = "සැකසීම්"
 
 /** Calculator Table */
 export const CALCULATOR_TABLE_FIELDS = [
@@ -30,12 +31,23 @@ export const ITEMS_TABLE_FIELDS = [
 ]
 
 export const UNIT_TABLE_FIELDS = [
-    "Unit ID",
+    //"Unit ID",
     "Unit Name",
     "Abbrevation",
-    "Status"
+    "Category",
+    "Status",
+    "Created",
+    "Modified"
 ]
 
+
+export const UNIT_CATEGORY_TABLE_FIELDS = [
+    "ඒකක වර්ගය",
+    "තත්වය",
+    "වර්ගය",
+    "එකතු කිරීම",
+    "වෙනස් කිරීම"
+]
 /** API base routes */
 export const UNIT_API = "/api/units/"
 export const UNIT_CONVERSION_API = "/api/unit_conversions/"
@@ -45,6 +57,7 @@ export const UNIT_CATEGORY_API = "/api/unit_categories/"
 /** Default DB values */
 export const COMPULSARY = "අත්‍යාවශ්‍ය"
 export const OPTIONAL = "අවශ්‍ය"
+export const UNIT_CATEGORY_TYPES = [COMPULSARY, OPTIONAL]
 
 
 
@@ -106,3 +119,27 @@ export const CANNOT_FIND_UNIT_CATEGORY_COUNT = UNIT_CATEGORY + CANNOT_FIND_COUNT
 /** Unit Category */
 export const UNIT_CATEGORY_PRIMARY_KEY_LETTER = "UNCT"
 export const UNIT_CATEGORY_PRIMARY_KEY_FIRST_VALUE = UNIT_CATEGORY_PRIMARY_KEY_LETTER + "1"
+
+
+
+/** Page names and forms */
+
+/** Base */
+const NEW = "නව"
+
+/** Unit Category */
+export const UNIT_CATEGORY_PAGE_NAME = "ඒකක වර්ග"
+export const ADD_UNIT_CATEGORY_PAGE_NAME = NEW + " ඒකක වර්ගය"
+
+export const UNIT_CATEGORY_NAME_LABAL = "ඒකක වර්ගයේ නම :"
+export const UNIT_CATEGORY_TYPE_LABAL = "වර්ගය :"
+export const UNIT_CATEGORY_NAME_PLACEHOLDER = "ඒකක වර්ගයක් ඇතුලත් කරන්න"
+
+
+/** Unit */
+export const UNIT_PAGE_NAME = "ඒකක"
+export const ADD_UNIT_PAGE_NAME = NEW + " ඒකක වර්ගය"
+
+export const UNIT_NAME_LABAL = "ඒකකයේ නම :"
+export const UNIT_TYPE_LABAL = "වර්ගය :"
+export const UNIT_NAME_PLACEHOLDER = "ඒකකයක් ඇතුලත් කරන්න"

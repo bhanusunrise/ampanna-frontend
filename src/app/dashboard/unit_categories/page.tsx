@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import BasicTable from '@/app/components/Tables/basic_table';
-import { UNIT_PAGE_NAME, UNIT_TABLE_FIELDS } from '@/app/constants/constants';
-import { fetchAllUnits, addUnit, updateUnit, blankFunction, deleteUnit, RestoreUnit, fetchAllUnitCategories } from './functions';
+import { ADD_UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_TABLE_FIELDS, UNIT_CATEGORY_TYPE_LABAL, UNIT_CATEGORY_TYPES } from '@/app/constants/constants';
+//import { fetchAllUnits, addUnit, updateUnit, blankFunction, deleteUnit, RestoreUnit, fetchAllUnitCategories } from './functions';
+import { fetchAllUnitCategories } from './functions';
 import NavigateButtons from '@/app/components/Buttons/navigate_button';
 import { Col, Row } from 'react-bootstrap';
 import AddButton from '@/app/components/Buttons/add_button';
@@ -14,10 +15,12 @@ import DeleteModal from '@/app/components/Models/delete_model'; // Import Delete
 import Summary from '@/app/components/Summeris/summery';
 import RestoreModal from '@/app/components/Models/restore_model';
 import SelectBox from '@/app/components/Forms/select_box';
+import { fetchAllUnits } from '../unit_conversions/functions';
+import { addUnit, updateUnit, deleteUnit, RestoreUnit } from '../units/functions';
 
 export default function Page() {
   const [units, setUnits] = useState<string[][]>([]);
-  const [filteredUnits, setFilteredUnits] = useState<string[][]>([]);
+  const [filteredUnitCategories, setFilteredUnitCategories] = useState<string[][]>([]);
   const [unitCategories, setUnitCategories] = useState<{ id: string; name: string }[]>([]); // State for unit categories
   const [currentPage, setCurrentPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
@@ -40,21 +43,23 @@ export default function Page() {
 
   useEffect(() => {
     async function fetchData() {
-      const fetchedUnits = await fetchAllUnits();
-      setUnits(fetchedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.unit_category_name ,unit.status, formatDate(unit.createdAt), formatDate(unit.updatedAt)]));
-      setFilteredUnits(fetchedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.unit_category_name ,unit.status,  formatDate(unit.createdAt), formatDate(unit.updatedAt)]));
+      const fetchedUnitCategories = await fetchAllUnitCategories();
+      setUnitCategories(fetchedUnitCategories.map((unit_category: any) => [unit_category.unit_category_id, unit_category.unit_category_name ,unit_category.status,unit_category.default_status, formatDate(unit_category.createdAt), formatDate(unit_category.updatedAt)]));
+      setFilteredUnitCategories(fetchedUnitCategories.map((unit_category: any) => [unit_category.unit_category_id, unit_category.unit_category_name ,unit_category.status,unit_category.default_status,  formatDate(unit_category.createdAt), formatDate(unit_category.updatedAt)]));
       
+      /*
       // Fetch unit categories
       const fetchedCategories = await fetchAllUnitCategories();
-      setUnitCategories(fetchedCategories.map((category: any) => ({ id: category.unit_category_id, name: category.unit_category_name })));
+      setUnitCategories(fetchedCategories.map((category: any) => ({ id: category.unit_category_id, name: category.unit_category_name })));*/
     
     }
 
     fetchData();
   }, []);
 
+  
   const handleNext = () => {
-    if (currentPage < Math.ceil(filteredUnits.length / recordsPerPage) - 1) {
+    if (currentPage < Math.ceil(filteredUnitCategories.length / recordsPerPage) - 1) {
       setCurrentPage(currentPage + 1);
     }
   };
@@ -65,8 +70,8 @@ export default function Page() {
     }
   };
 
-  const currentRecords = filteredUnits.slice(currentPage * recordsPerPage, (currentPage + 1) * recordsPerPage);
-  const totalPages = Math.ceil(filteredUnits.length / recordsPerPage);
+  const currentRecords = filteredUnitCategories.slice(currentPage * recordsPerPage, (currentPage + 1) * recordsPerPage);
+  const totalPages = Math.ceil(filteredUnitCategories.length / recordsPerPage);
   const startingIndex = currentPage * recordsPerPage;
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -208,8 +213,8 @@ const confirmRestore = async () => {
   return (
     <>
       <Row>
-        <Col md={3}><h3 className={'text-primary'}>{UNIT_PAGE_NAME}</h3></Col>
-        <Col md={6}>
+        <Col md={3}><h3 className={'text-primary'}>{UNIT_CATEGORY_PAGE_NAME}</h3></Col>
+        <Col md={5}>
           <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', flexWrap: 'nowrap' }}>
             <TextInput
               form_id="search_unit"
@@ -222,12 +227,12 @@ const confirmRestore = async () => {
           </div>
           <br />
         </Col>
-        <Col md={3}></Col>
+        <Col md={4}></Col>
       </Row>
       <Row>
-        <Col md={9}>
+        <Col md={8}>
           <BasicTable
-          table_fields={UNIT_TABLE_FIELDS}
+          table_fields={UNIT_CATEGORY_TABLE_FIELDS}
           table_records={currentRecords}
           table_id="units_table"
           startingIndex={startingIndex}
@@ -243,28 +248,20 @@ const confirmRestore = async () => {
             onPrevious={handlePrevious}
           />
         </Col>
-        <Col md={3}>
-          <h3 className='text-primary'>New Unit</h3>
+        <Col md={4}>
+          <h3 className='text-primary'>{ADD_UNIT_CATEGORY_PAGE_NAME}</h3>
           <TextInput 
-            form_id="unit_name"
+            form_id="unit_category_name"
             onChangeText={(event) => setUnitName(event.target.value)}
             form_message=""
-            placeholder_text="Enter Unit Name"
-            label="Unit Name :"
+            placeholder_text={UNIT_CATEGORY_NAME_PLACEHOLDER}
+            label={UNIT_CATEGORY_NAME_LABAL}
             value={unitName}
           />
-          <TextInput 
-            form_id="unit_abbreviation"
-            onChangeText={(event) => setUnitAbbreviation(event.target.value)}
-            form_message=""
-            placeholder_text="Enter Unit Abbreviation"
-            label="Unit Abbreviation :"
-            value={unitAbbreviation}
-          />
           <SelectBox 
-            values={unitCategories.map(category => category.id)} // Use category IDs as values
-            display_values={unitCategories.map(category => category.name)} // Use category names as display values
-            label_name="Status :"
+            values={UNIT_CATEGORY_TYPES} // Use category IDs as values
+            display_values={UNIT_CATEGORY_TYPES} // Use category names as display values
+            label_name={UNIT_CATEGORY_TYPE_LABAL}
             form_id="unit_categories"
             onChange={(value) => setSelectedCategory(value)} // Handle category selection
           />

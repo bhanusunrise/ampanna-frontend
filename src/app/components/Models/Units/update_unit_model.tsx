@@ -1,27 +1,25 @@
-'use client';
-
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
 interface UpdateUnitModalProps {
   show: boolean;
   handleClose: () => void;
-  handleUpdateUnit: (unitData: { unit_name: string; abbreviation: string }) => Promise<void>; // For updating the unit
-  unitName: string; // Current unit name
-  abbreviation: string; // Current abbreviation
+  handleUpdateUnit: (unitData: { unit_name: string; abbreviation: string; }) => Promise<void>;
+  unitName: string;
+  abbreviation: string;
 }
 
-const UpdateUnitModal: React.FC<UpdateUnitModalProps> = ({ 
-  show, 
-  handleClose, 
-  handleUpdateUnit, 
-  unitName: initialUnitName, // Use initial value from props
-  abbreviation: initialAbbreviation // Use initial value from props
+const UpdateUnitModal: React.FC<UpdateUnitModalProps> = ({
+  show,
+  handleClose,
+  handleUpdateUnit,
+  unitName: initialUnitName,
+  abbreviation: initialAbbreviation,
 }) => {
-  const [unitName, setUnitName] = useState(initialUnitName); // State for unit name
-  const [abbreviation, setAbbreviation] = useState(initialAbbreviation); // State for abbreviation
+  const [unitName, setUnitName] = useState(initialUnitName);
+  const [abbreviation, setAbbreviation] = useState(initialAbbreviation);
 
-  // Use effect to reset state when modal opens or when props change
+  // Reset values when modal opens or when props change
   useEffect(() => {
     if (show) {
       setUnitName(initialUnitName);
@@ -30,13 +28,16 @@ const UpdateUnitModal: React.FC<UpdateUnitModalProps> = ({
   }, [show, initialUnitName, initialAbbreviation]);
 
   const handleSubmit = async () => {
-    await handleUpdateUnit({ unit_name: unitName, abbreviation });
-    handleClose(); // Close modal after update
+    await handleUpdateUnit({
+      unit_name: unitName,
+      abbreviation,
+    });
+    handleClose();
   };
 
   return (
     <Modal show={show} onHide={handleClose}>
-      <Modal.Header closeButton className='bg-warning'>
+      <Modal.Header closeButton className="bg-warning">
         <Modal.Title>Update Unit</Modal.Title>
       </Modal.Header>
       <Modal.Body>

@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import UpdateButton from '@/app/components/Buttons/update_button';
 import DeleteButton from '@/app/components/Buttons/delete_button';
 import RestoreButton from '@/app/components/Buttons/restore_button'; // Import RestoreButton
+import { ACTONS_FIELD } from '@/app/constants/constants';
 
 interface BasicTableProps {
   table_fields: string[];
@@ -79,7 +80,7 @@ const BasicTable: React.FC<BasicTableProps> = ({
   // Function to check if 'status' is present in the fields and the status of the row
   const isDeleted = (record: string[]) => {
     const statusIndex = table_fields.indexOf('Status'); // Find the index of 'status'
-    return statusIndex !== -1 && record[statusIndex] == 'deleted'; // Check if 'status' field is 'deleted'
+    return statusIndex !== -1 && record[statusIndex] === 'deleted'; // Check if 'status' field is 'deleted'
   };
 
   return (
@@ -92,45 +93,49 @@ const BasicTable: React.FC<BasicTableProps> = ({
               {field}
             </th>
           ))}
-          <th className='bg-primary text-white'>Actions</th>
+          <th className='bg-primary text-white'>{ACTONS_FIELD}</th>
         </tr>
       </thead>
       <tbody>
         {table_records && table_records.length > 0 ? (
-          table_records.map((record, rowIndex) => (
-            <tr key={rowIndex} className={`${selectedRow === rowIndex ? 'table-warning' : ''}`}>
-              <td>{startingIndex + rowIndex + 1}</td>
-              {Array.isArray(record) && record.map((cell, cellIndex) => (
-                <td key={cellIndex}>{cell}</td>
-              ))}
-              <td>
-                {isDeleted(record) ? (
-                  // If status is "deleted", show the Restore button
-                  <RestoreButton
-                    label="Restore"
-                    onClickButton={() => onRestore(startingIndex + rowIndex)}
-                    btn_id={`restore_button_${startingIndex + rowIndex}`}
-                    rowIndex={startingIndex + rowIndex}
-                  />
-                ) : (
-                  <>
-                    <UpdateButton
-                      label="Update"
-                      onClickButton={() => onUpdate(startingIndex + rowIndex)} // Pass the global index based on the current page
-                      btn_id={`update_button_${startingIndex + rowIndex}`}
-                      rowIndex={startingIndex + rowIndex} // Pass the global index here as well
+          table_records.map((record, rowIndex) => {
+            // Skip the first value in each record
+            const displayedRecord = record.slice(1);
+            return (
+              <tr key={rowIndex} className={`${selectedRow === rowIndex ? 'table-warning' : ''}`}>
+                <td>{startingIndex + rowIndex + 1}</td>
+                {Array.isArray(displayedRecord) && displayedRecord.map((cell, cellIndex) => (
+                  <td key={cellIndex}>{cell}</td>
+                ))}
+                <td>
+                  {isDeleted(record) ? (
+                    // If status is "deleted", show the Restore button
+                    <RestoreButton
+                      label="Restore"
+                      onClickButton={() => onRestore(startingIndex + rowIndex)}
+                      btn_id={`restore_button_${startingIndex + rowIndex}`}
+                      rowIndex={startingIndex + rowIndex}
                     />
-                    <DeleteButton
-                      label="Delete"
-                      onClickButton={() => onDelete(startingIndex + rowIndex)} // Pass the global index
-                      btn_id={`delete_button_${startingIndex + rowIndex}`}
-                      rowIndex={startingIndex + rowIndex} // Pass the global index
-                    />
-                  </>
-                )}
-              </td>
-            </tr>
-          ))
+                  ) : (
+                    <>
+                      <UpdateButton
+                        label="Update"
+                        onClickButton={() => onUpdate(startingIndex + rowIndex)} // Pass the global index based on the current page
+                        btn_id={`update_button_${startingIndex + rowIndex}`}
+                        rowIndex={startingIndex + rowIndex} // Pass the global index here as well
+                      />
+                      <DeleteButton
+                        label="Delete"
+                        onClickButton={() => onDelete(startingIndex + rowIndex)} // Pass the global index
+                        btn_id={`delete_button_${startingIndex + rowIndex}`}
+                        rowIndex={startingIndex + rowIndex} // Pass the global index
+                      />
+                    </>
+                  )}
+                </td>
+              </tr>
+            );
+          })
         ) : (
           <tr>
             <td colSpan={table_fields.length + 1} className="text-center">
