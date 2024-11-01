@@ -99,8 +99,8 @@ export default function Page() {
     console.log("Add Unit Category Result:", result); // Log the result of the addition
 
     if (result.success) {
-        const updatedUnitCategories = await fetchAllUnits();
-        const formattedUnitCategories = updatedUnitCategories.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.unit_category_name ,unit.status, formatDate(unit.createdAt), formatDate(unit.updatedAt)]);
+        const updatedUnitCategories = await fetchAllUnitCategories();
+        const formattedUnitCategories = updatedUnitCategories.map((unit_category: any) => [unit_category.unit_category_id, unit_category.unit_category_name, unit_category.status, unit_category.default_status, formatDate(unit_category.createdAt), formatDate(unit_category.updatedAt)]);
 
         setFilteredUnitCategories(formattedUnitCategories);
 
