@@ -16,7 +16,7 @@ const PasswordInput: React.FC<PasswordInputProps> = ({ label, onChangeText, form
   return (
           <>
             <Form.Label htmlFor={form_id}>{label}</Form.Label><Form.Control
-                type="password" id={form_id} aria-describedby="passwordHelpBlock" onChange={onChangeText} placeholder={placeholder_text}/><Form.Text id="passwordHelpBlock" muted>
+                type="password" id={form_id} aria-describedby="passwordHelpBlock" onChange={onChangeText} placeholder={placeholder_text} size='sm'/><Form.Text id="passwordHelpBlock" muted>
                 {form_message}
             </Form.Text>
           </>

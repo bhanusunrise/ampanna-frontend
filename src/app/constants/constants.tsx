@@ -32,12 +32,12 @@ export const ITEMS_TABLE_FIELDS = [
 
 export const UNIT_TABLE_FIELDS = [
     //"Unit ID",
-    "Unit Name",
-    "Abbrevation",
-    "Category",
-    "Status",
-    "Created",
-    "Modified"
+    "ඒකකය",
+    "සංකේතය",
+    "ඒකක වර්ගය",
+    "තත්වය",
+    "එකතු කිරීම",
+    "වෙනස් කිරීම"
 ]
 
 
@@ -122,6 +122,7 @@ export const UNIT_CATEGORY_PRIMARY_KEY_FIRST_VALUE = UNIT_CATEGORY_PRIMARY_KEY_L
 
 
 
+
 /** Page names and forms */
 
 /** Base */
@@ -141,5 +142,25 @@ export const UNIT_PAGE_NAME = "ඒකක"
 export const ADD_UNIT_PAGE_NAME = NEW + " ඒකක වර්ගය"
 
 export const UNIT_NAME_LABAL = "ඒකකයේ නම :"
-export const UNIT_TYPE_LABAL = "වර්ගය :"
+export const UNIT_ABBRAVIATION_LABAL = "වර්ගය :"
 export const UNIT_NAME_PLACEHOLDER = "ඒකකයක් ඇතුලත් කරන්න"
+
+
+
+
+
+/*** Buttons */
+export const ADD_BUTTON_LABAL = "එකතු කරන්න"
+export const CLEAR_BUTTON_LABAL  = "මකා දමන්න"
+export const UPDATE_BUTTON_LABAL = "✏️"
+export const DELETE_BUTTON_LABAL = "🗑️"
+
+
+/** Select Box */
+export const SELECT_BOX_PLACEHOLDER = "තෝරාගන්න"
+
+
+
+
+/** Logos */
+export const LOGO_WHITE_PATH = "/logo_white.png"

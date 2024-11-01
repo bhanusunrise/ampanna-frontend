@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import UpdateButton from '@/app/components/Buttons/update_button';
 import DeleteButton from '@/app/components/Buttons/delete_button';
 import RestoreButton from '@/app/components/Buttons/restore_button'; // Import RestoreButton
-import { ACTONS_FIELD } from '@/app/constants/constants';
+import { ACTONS_FIELD, DELETE_BUTTON_LABAL, UPDATE_BUTTON_LABAL } from '@/app/constants/constants';
 
 interface BasicTableProps {
   table_fields: string[];
@@ -84,7 +84,7 @@ const BasicTable: React.FC<BasicTableProps> = ({
   };
 
   return (
-    <Table responsive bordered striped hover id={table_id} size={tableSize}> {/* Use dynamic table size */}
+    <Table responsive bordered striped hover id={table_id} size={tableSize} style={{fontSize: 15}}> {/* Use dynamic table size */}
       <thead>
         <tr>
           <th className='bg-primary text-white'>#</th>
@@ -105,7 +105,7 @@ const BasicTable: React.FC<BasicTableProps> = ({
               <tr key={rowIndex} className={`${selectedRow === rowIndex ? 'table-warning' : ''}`}>
                 <td>{startingIndex + rowIndex + 1}</td>
                 {Array.isArray(displayedRecord) && displayedRecord.map((cell, cellIndex) => (
-                  <td key={cellIndex}>{cell}</td>
+                  <td key={cellIndex} style={{maxWidth: 10}}>{cell}</td>
                 ))}
                 <td>
                   {isDeleted(record) ? (
@@ -119,13 +119,13 @@ const BasicTable: React.FC<BasicTableProps> = ({
                   ) : (
                     <>
                       <UpdateButton
-                        label="Update"
+                        label={UPDATE_BUTTON_LABAL}
                         onClickButton={() => onUpdate(startingIndex + rowIndex)} // Pass the global index based on the current page
                         btn_id={`update_button_${startingIndex + rowIndex}`}
                         rowIndex={startingIndex + rowIndex} // Pass the global index here as well
                       />
                       <DeleteButton
-                        label="Delete"
+                        label={DELETE_BUTTON_LABAL}
                         onClickButton={() => onDelete(startingIndex + rowIndex)} // Pass the global index
                         btn_id={`delete_button_${startingIndex + rowIndex}`}
                         rowIndex={startingIndex + rowIndex} // Pass the global index

@@ -2,9 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import BasicTable from '@/app/components/Tables/basic_table';
-import { ADD_UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_TABLE_FIELDS, UNIT_CATEGORY_TYPE_LABAL, UNIT_CATEGORY_TYPES } from '@/app/constants/constants';
+import { ADD_BUTTON_LABAL, ADD_UNIT_CATEGORY_PAGE_NAME, CLEAR_BUTTON_LABAL, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_TABLE_FIELDS, UNIT_CATEGORY_TYPE_LABAL, UNIT_CATEGORY_TYPES } from '@/app/constants/constants';
 //import { fetchAllUnits, addUnit, updateUnit, blankFunction, deleteUnit, RestoreUnit, fetchAllUnitCategories } from './functions';
-import { fetchAllUnitCategories } from './functions';
+import { addUnitCategory, fetchAllUnitCategories } from './functions';
 import NavigateButtons from '@/app/components/Buttons/navigate_button';
 import { Col, Row } from 'react-bootstrap';
 import AddButton from '@/app/components/Buttons/add_button';
@@ -24,7 +24,7 @@ export default function Page() {
   const [unitCategories, setUnitCategories] = useState<{ id: string; name: string }[]>([]); // State for unit categories
   const [currentPage, setCurrentPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
-  const [unitName, setUnitName] = useState('');
+  const [unitCategoryName, setUnitCategoryName] = useState('');
   const [unitAbbreviation, setUnitAbbreviation] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>(''); // State for selected category
   const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -85,26 +85,26 @@ export default function Page() {
     setCurrentPage(0);
   };
 
-    const handleAddUnit = async () => {
+    const handleAddUnitCategory = async () => {
       console.log(selectedCategory)
-    if (!unitName || !unitAbbreviation || !selectedCategory) {
+    if (!unitCategoryName || !selectedCategory) {
         console.log("Please fill in all fields");
         return;
     }
 
-    const unitData = { unit_name: unitName, abbreviation: unitAbbreviation, unit_category_id: selectedCategory };
-    console.log("Adding unit:", unitData); // Log the unit data
+    const unitCategoryData = { unit_category_name: unitCategoryName, unit_category_type_name: selectedCategory };
+    console.log("Adding unit category:", unitCategoryData); // Log the unit data
 
-    const result = await addUnit(unitData.unit_name, unitData.abbreviation, unitData.unit_category_id);
-    console.log("Add Unit Result:", result); // Log the result of the addition
+    const result = await addUnitCategory(unitCategoryData.unit_category_name, unitCategoryData.unit_category_type_name);
+    console.log("Add Unit Category Result:", result); // Log the result of the addition
 
     if (result.success) {
-        const updatedUnits = await fetchAllUnits();
-        const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.unit_category_name ,unit.status, formatDate(unit.createdAt), formatDate(unit.updatedAt)]);
-        setUnits(formattedUnits);
-        setFilteredUnits(formattedUnits);
+        const updatedUnitCategories = await fetchAllUnits();
+        const formattedUnitCategories = updatedUnitCategories.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.unit_category_name ,unit.status, formatDate(unit.createdAt), formatDate(unit.updatedAt)]);
 
-        setUnitName('');
+        setFilteredUnitCategories(formattedUnitCategories);
+
+        setUnitCategoryName('');
         setUnitAbbreviation('');
         setSelectedCategory(''); // Clear selected category
     }
@@ -128,8 +128,8 @@ export default function Page() {
     const result = await updateUnit(selectedUnit.unit_id, unitData.unit_name, unitData.abbreviation, unitData.status);
 
     handleCloseModal();
-    const updatedUnits = await fetchAllUnits();
-    const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.unit_category_name ,unit.status, formatDate(unit.createdAt), formatDate(unit.updatedAt)]);
+    const updatedUnitCategories = await fetchAllUnits();
+    const formattedUnits = updatedUnitCategories.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.unit_category_name ,unit.status, formatDate(unit.createdAt), formatDate(unit.updatedAt)]);
     setUnits(formattedUnits);
     setFilteredUnits(formattedUnits);
   };
@@ -147,14 +147,14 @@ export default function Page() {
     if (itemToDelete) {
       const result = await deleteUnit(itemToDelete.unit_id);/*
       if (result.success) {
-        const updatedUnits = await fetchAllUnits();
-        const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.status]);
+        const updatedUnitCategories = await fetchAllUnits();
+        const formattedUnits = updatedUnitCategories.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.status]);
         setUnits(formattedUnits);
         setFilteredUnits(formattedUnits);
       }*/
 
-      const updatedUnits = await fetchAllUnits();
-        const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.unit_category_name ,unit.status, formatDate(unit.createdAt), formatDate(unit.updatedAt)]);
+      const updatedUnitCategories = await fetchAllUnits();
+        const formattedUnits = updatedUnitCategories.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.unit_category_name ,unit.status, formatDate(unit.createdAt), formatDate(unit.updatedAt)]);
         setUnits(formattedUnits);
         setFilteredUnits(formattedUnits);
 
@@ -177,8 +177,8 @@ const confirmRestore = async () => {
     const result = await RestoreUnit(itemToDelete.unit_id);
     
     if (result.success) {
-      const updatedUnits = await fetchAllUnits();
-      const formattedUnits = updatedUnits.map((unit: any) => [
+      const updatedUnitCategories = await fetchAllUnits();
+      const formattedUnits = updatedUnitCategories.map((unit: any) => [
         unit.unit_id,
         unit.unit_name,
         unit.abbreviation,
@@ -252,11 +252,11 @@ const confirmRestore = async () => {
           <h3 className='text-primary'>{ADD_UNIT_CATEGORY_PAGE_NAME}</h3>
           <TextInput 
             form_id="unit_category_name"
-            onChangeText={(event) => setUnitName(event.target.value)}
+            onChangeText={(event) => setUnitCategoryName(event.target.value)}
             form_message=""
             placeholder_text={UNIT_CATEGORY_NAME_PLACEHOLDER}
             label={UNIT_CATEGORY_NAME_LABAL}
-            value={unitName}
+            value={unitCategoryName}
           />
           <SelectBox 
             values={UNIT_CATEGORY_TYPES} // Use category IDs as values
@@ -267,14 +267,14 @@ const confirmRestore = async () => {
           />
           <br/>
           <ClearButton 
-            label="Clear" 
+            label={CLEAR_BUTTON_LABAL}
             onClickButton={() => { 
-              setUnitName(''); 
+              setUnitCategoryName(''); 
               setUnitAbbreviation(''); 
             }} 
             btn_id="clear_unit" 
           />
-          <AddButton label="Add New" onClickButton={handleAddUnit} btn_id="add_unit" />
+          <AddButton label={ADD_BUTTON_LABAL} onClickButton={handleAddUnitCategory} btn_id="add_unit" />
           <br/><br/>
           <Summary 
             fields={["Active Units", "Updated Units", "Deleted Units"]}
