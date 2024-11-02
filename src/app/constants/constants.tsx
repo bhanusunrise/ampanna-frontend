@@ -128,6 +128,9 @@ export const UNIT_CATEGORY_PRIMARY_KEY_FIRST_VALUE = UNIT_CATEGORY_PRIMARY_KEY_L
 /** Base */
 const NEW = "නව"
 const UPDATE = " වෙනස් කරන්න"
+export const DELETE_CONFIRM = " ඉවත් කිරීම තහවුරු කරන්න"
+export const BACK = "ආපසු"
+export const DELTETION = "ඉවත් කිරීම"
 
 /** Unit Category */
 export const UNIT_CATEGORY_PAGE_NAME = "ඒකක වර්ග"
@@ -162,6 +165,8 @@ export const ADD_BUTTON_LABAL = "එකතු කරන්න"
 export const CLEAR_BUTTON_LABAL  = "මකන්න"
 export const UPDATE_BUTTON_LABAL = "✏️"
 export const DELETE_BUTTON_LABAL = "🗑️"
+export const DELETE_BUTTON_DELETE_MODAL = "ඉවත් කරන්න"
+export const UPDATE_BUTTON_DELETE_MODAL = "වෙනස් කරන්න"
 
 
 /** Select Box */

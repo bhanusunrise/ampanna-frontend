@@ -1,5 +1,6 @@
 'use client';
 
+import { BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_CONFIRM, DELTETION } from '@/app/constants/constants';
 import React, { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
@@ -14,17 +15,17 @@ export default function DeleteModal({ show, handleClose, handleDelete, itemName 
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton className={"bg-danger"}>
-        <Modal.Title className={"text-white"}>Are you sure?</Modal.Title>
+        <Modal.Title className={"text-white"}>{DELTETION}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        Are you sure you want to delete {itemName}?
+        {itemName + DELETE_CONFIRM} 
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
-          Cancel
+          {BACK}
         </Button>
         <Button variant="danger" onClick={handleDelete}>
-          Delete
+          {DELETE_BUTTON_DELETE_MODAL}
         </Button>
       </Modal.Footer>
     </Modal>

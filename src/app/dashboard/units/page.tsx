@@ -278,11 +278,6 @@ const confirmRestore = async () => {
             btn_id="clear_unit" 
           />
           <AddButton label={ADD_BUTTON_LABAL} onClickButton={handleAddUnit} btn_id="add_unit" />
-          <br/><br/>
-          <Summary 
-            fields={["Active Units", "Updated Units", "Deleted Units"]}
-            values={[units.filter((unit) => unit[3] === 'active').length, units.filter((unit) => unit[3] === 'updated').length, units.filter((unit) => unit[3] === 'deleted').length]}
-          />
         </Col>
       </Row>
 
