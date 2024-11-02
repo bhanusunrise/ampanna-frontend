@@ -4,10 +4,11 @@ import TextInput from "@/app/components/Forms/text_input";
 import SelectBox from "@/app/components/Forms/select_box";
 import { Col, Row } from "react-bootstrap";
 import { useState, useEffect } from "react";
-import { fetchAllUnitCategories, fetchAllUnits } from './functions'; // Assuming it's in the same directory
+import { addUnitConversion, fetchAllUnitCategories, fetchAllUnits } from './functions'; // Assuming it's in the same directory
 import NumberInput from "@/app/components/Forms/number_input";
-import { ADD_UNIT_CONVERSION, CLEAR_BUTTON_LABAL, FIRST_UNIT_NAME_LABAL, MULTIPLIER_LABAL, MULTIPLIER_PLACEHOLDER, SECOND_UNIT_NAME_LABAL, UNIT_CATEGORY_NAME_LABAL, UNIT_CONVERSION_PAGE_NAME } from "@/app/constants/constants";
+import { ADD_BUTTON_LABAL, ADD_UNIT_CONVERSION, CLEAR_BUTTON_LABAL, FIRST_UNIT_NAME_LABAL, MULTIPLIER_LABAL, MULTIPLIER_PLACEHOLDER, SECOND_UNIT_NAME_LABAL, UNIT_CATEGORY_NAME_LABAL, UNIT_CONVERSION_PAGE_NAME } from "@/app/constants/constants";
 import ClearButton from "@/app/components/Buttons/clear_button";
+import AddButton from "@/app/components/Buttons/add_button";
 
 export default function Page() {
   const [firstUnitIds, setFirstUnitIds] = useState<string[]>([]); // Store unit IDs
@@ -64,6 +65,22 @@ export default function Page() {
 
     loadUnits();
   }, [selectedUnitCategory]); // Trigger whenever selectedUnitCategory changes
+
+
+  const handleAddUnitConversion = async () => {
+    if (!selectedFirstUnitID || !selectedSecondUnitID || !multiplier) {
+      console.log('Please fill in all fields');
+      return;
+    }
+
+    const result = await addUnitConversion(selectedFirstUnitID, selectedSecondUnitID, multiplier);
+    if (result.success) {
+      //await reloadData();
+      setSelectedFirstUnitID('');
+      setSelectedSecondUnitID('');
+      setMultiplier(0);
+    }
+  };
 
   return (
     <>
@@ -135,6 +152,13 @@ export default function Page() {
             }} 
             btn_id="clear_unit" 
           />
+          <AddButton
+          label={ADD_BUTTON_LABAL}
+          onClickButton={() => {
+            handleAddUnitConversion();
+            }}
+            btn_id="add_unit"
+            />
             </>
           )}
         </Col>
