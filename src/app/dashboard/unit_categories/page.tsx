@@ -105,7 +105,6 @@ export default function Page() {
         setFilteredUnitCategories(formattedUnitCategories);
 
         setUnitCategoryName('');
-        setUnitAbbreviation('');
         setSelectedCategory(''); // Clear selected category
     }
 };

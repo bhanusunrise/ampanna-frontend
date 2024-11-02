@@ -1,37 +1,36 @@
-import { UNIT_ABBRAVIATION_LABAL, UNIT_ABBRAVIATION_PLACEHOLDER, UNIT_NAME_LABAL, UNIT_NAME_PLACEHOLDER, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
-interface UpdateUnitModalProps {
+interface UpdateUnitCategoryModalProps {
   show: boolean;
   handleClose: () => void;
-  handleUpdateUnit: (unitData: { unit_name: string; abbreviation: string; }) => Promise<void>;
-  unitName: string;
-  abbreviation: string;
+  handleUpdateUnit: (unitCategoryData: { unit_category_name: string; default_status: string; }) => Promise<void>;
+  unit_category_name: string;
+  default_status: string;
 }
 
-const UpdateUnitModal: React.FC<UpdateUnitModalProps> = ({
+const UpdateUnitCategoryModal: React.FC<UpdateUnitCategoryModalProps> = ({
   show,
   handleClose,
   handleUpdateUnit,
-  unitName: initialUnitName,
-  abbreviation: initialAbbreviation,
+  unit_category_name: initialUnitCategoryName,
+  default_status: initialUnitCategoryDefaultStatus,
 }) => {
-  const [unitName, setUnitName] = useState(initialUnitName);
-  const [abbreviation, setAbbreviation] = useState(initialAbbreviation);
+  const [unitCategoryName, setUnitCategoryName] = useState(initialUnitCategoryName);
+  const [defaultStatus, setDefaultStatus] = useState(initialUnitCategoryDefaultStatus);
 
   // Reset values when modal opens or when props change
   useEffect(() => {
     if (show) {
-      setUnitName(initialUnitName);
-      setAbbreviation(initialAbbreviation);
+      setUnitCategoryName(initialUnitCategoryName);
+      setDefaultStatus(initialUnitCategoryDefaultStatus);
     }
-  }, [show, initialUnitName, initialAbbreviation]);
+  }, [show, initialUnitCategoryName, initialUnitCategoryDefaultStatus]);
 
   const handleSubmit = async () => {
     await handleUpdateUnit({
-      unit_name: unitName,
-      abbreviation,
+      unit_category_name: unitCategoryName,
+      default_status: defaultStatus,
     });
     handleClose();
   };
@@ -39,25 +38,25 @@ const UpdateUnitModal: React.FC<UpdateUnitModalProps> = ({
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton className="bg-warning">
-        <Modal.Title>{UPDATE_UNIT_CATEGORY_MODEL_TITLE}</Modal.Title>
+        <Modal.Title>Update Unit</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form>
           <Form.Group controlId="formUnitName">
-            <Form.Label>{UNIT_NAME_LABAL}</Form.Label>
+            <Form.Label>Unit Name</Form.Label>
             <Form.Control
               type="text"
-              placeholder={UNIT_NAME_PLACEHOLDER}
+              placeholder="Enter unit name"
               value={unitName}
               onChange={(e) => setUnitName(e.target.value)}
             />
           </Form.Group>
 
           <Form.Group controlId="formAbbreviation">
-            <Form.Label>{UNIT_ABBRAVIATION_LABAL}</Form.Label>
+            <Form.Label>Abbreviation</Form.Label>
             <Form.Control
               type="text"
-              placeholder={UNIT_ABBRAVIATION_PLACEHOLDER}
+              placeholder="Enter abbreviation"
               value={abbreviation}
               onChange={(e) => setAbbreviation(e.target.value)}
             />
@@ -76,4 +75,4 @@ const UpdateUnitModal: React.FC<UpdateUnitModalProps> = ({
   );
 };
 
-export default UpdateUnitModal;
+export default UpdateUnitCategoryModal;

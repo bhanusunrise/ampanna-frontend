@@ -127,6 +127,7 @@ export const UNIT_CATEGORY_PRIMARY_KEY_FIRST_VALUE = UNIT_CATEGORY_PRIMARY_KEY_L
 
 /** Base */
 const NEW = "නව"
+const UPDATE = " වෙනස් කරන්න"
 
 /** Unit Category */
 export const UNIT_CATEGORY_PAGE_NAME = "ඒකක වර්ග"
@@ -136,14 +137,21 @@ export const UNIT_CATEGORY_NAME_LABAL = "ඒකක වර්ගයේ නම :"
 export const UNIT_CATEGORY_TYPE_LABAL = "වර්ගය :"
 export const UNIT_CATEGORY_NAME_PLACEHOLDER = "ඒකක වර්ගයක් ඇතුලත් කරන්න"
 
+export const UPDATE_UNIT_CATEGORY_MODEL_TITLE = UNIT_CATEGORY_PAGE_NAME + UPDATE
+
+
+
 
 /** Unit */
 export const UNIT_PAGE_NAME = "ඒකක"
 export const ADD_UNIT_PAGE_NAME = NEW + " ඒකක වර්ගය"
 
 export const UNIT_NAME_LABAL = "ඒකකයේ නම :"
-export const UNIT_ABBRAVIATION_LABAL = "වර්ගය :"
+export const UNIT_ABBRAVIATION_LABAL = "සංකේතය :"
 export const UNIT_NAME_PLACEHOLDER = "ඒකකයක් ඇතුලත් කරන්න"
+export const UNIT_ABBRAVIATION_PLACEHOLDER = "සංකේතයක් ඇතුලත් කරන්න"
+
+export const UPDATE_UNIT_MODEL_TITLE = UNIT_PAGE_NAME + UPDATE
 
 
 
@@ -151,7 +159,7 @@ export const UNIT_NAME_PLACEHOLDER = "ඒකකයක් ඇතුලත් ක�
 
 /*** Buttons */
 export const ADD_BUTTON_LABAL = "එකතු කරන්න"
-export const CLEAR_BUTTON_LABAL  = "මකා දමන්න"
+export const CLEAR_BUTTON_LABAL  = "මකන්න"
 export const UPDATE_BUTTON_LABAL = "✏️"
 export const DELETE_BUTTON_LABAL = "🗑️"
 

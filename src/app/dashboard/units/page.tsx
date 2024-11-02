@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import BasicTable from '@/app/components/Tables/basic_table';
-import { UNIT_PAGE_NAME, UNIT_TABLE_FIELDS } from '@/app/constants/constants';
+import { ADD_BUTTON_LABAL, ADD_UNIT_PAGE_NAME, CLEAR_BUTTON_LABAL, UNIT_ABBRAVIATION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_NAME_LABAL, UNIT_NAME_PLACEHOLDER, UNIT_PAGE_NAME, UNIT_TABLE_FIELDS } from '@/app/constants/constants';
 import { fetchAllUnits, addUnit, updateUnit, blankFunction, deleteUnit, RestoreUnit, fetchAllUnitCategories } from './functions';
 import NavigateButtons from '@/app/components/Buttons/navigate_button';
 import { Col, Row } from 'react-bootstrap';
@@ -244,40 +244,40 @@ const confirmRestore = async () => {
           />
         </Col>
         <Col md={3}>
-          <h3 className='text-primary'>New Unit</h3>
+          <h3 className='text-primary'>{ADD_UNIT_PAGE_NAME}</h3>
           <TextInput 
             form_id="unit_name"
             onChangeText={(event) => setUnitName(event.target.value)}
             form_message=""
-            placeholder_text="Enter Unit Name"
-            label="Unit Name :"
+            placeholder_text={UNIT_NAME_PLACEHOLDER}
+            label={UNIT_NAME_LABAL}
             value={unitName}
           />
           <TextInput 
             form_id="unit_abbreviation"
             onChangeText={(event) => setUnitAbbreviation(event.target.value)}
             form_message=""
-            placeholder_text="Enter Unit Abbreviation"
-            label="Unit Abbreviation :"
+            placeholder_text={UNIT_ABBRAVIATION_PLACEHOLDER}
+            label={UNIT_NAME_LABAL}
             value={unitAbbreviation}
           />
           <SelectBox 
             values={unitCategories.map(category => category.id)} // Use category IDs as values
             display_values={unitCategories.map(category => category.name)} // Use category names as display values
-            label_name="Status :"
+            label_name={UNIT_CATEGORY_NAME_LABAL}
             form_id="unit_categories"
             onChange={(value) => setSelectedCategory(value)} // Handle category selection
           />
           <br/>
           <ClearButton 
-            label="Clear" 
+            label={CLEAR_BUTTON_LABAL}
             onClickButton={() => { 
               setUnitName(''); 
               setUnitAbbreviation(''); 
             }} 
             btn_id="clear_unit" 
           />
-          <AddButton label="Add New" onClickButton={handleAddUnit} btn_id="add_unit" />
+          <AddButton label={ADD_BUTTON_LABAL} onClickButton={handleAddUnit} btn_id="add_unit" />
           <br/><br/>
           <Summary 
             fields={["Active Units", "Updated Units", "Deleted Units"]}
