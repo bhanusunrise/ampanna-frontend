@@ -6,7 +6,7 @@ import { CgCalculator, CgProfile, CgToolbarTop } from 'react-icons/cg';
 import { Md10K, MdNumbers, MdRecycling } from 'react-icons/md';
 import { GrGroup } from 'react-icons/gr';
 import { IoMdPaper } from 'react-icons/io';
-import { LOGO_WHITE_PATH, UNIT_CATEGORY_PAGE_NAME, UNIT_PAGE_NAME } from '@/app/constants/constants';
+import { LOGO_WHITE_PATH, UNIT_CATEGORY_PAGE_NAME, UNIT_CONVERSION_PAGE_NAME, UNIT_PAGE_NAME } from '@/app/constants/constants';
 
 const SideNav = () => {
   return (
@@ -48,7 +48,7 @@ const SideNav = () => {
       </Nav.Item>
       <Nav.Item>
         <Nav.Link href="/dashboard/unit_conversions" className="text-white">
-          <MdRecycling size={20} className="m-2" />Units Conversions
+          <MdRecycling size={20} className="m-2" />{UNIT_CONVERSION_PAGE_NAME}
         </Nav.Link>
       </Nav.Item>
       <Nav.Item>

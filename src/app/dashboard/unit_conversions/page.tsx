@@ -6,6 +6,7 @@ import { Col, Row } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { fetchAllUnits } from './functions'; // Assuming it's in the same directory
 import NumberInput from "@/app/components/Forms/number_input";
+import { ADD_UNIT_CONVERSION, UNIT_CONVERSION_PAGE_NAME } from "@/app/constants/constants";
 
 export default function Page() {
   const [fromUnit, setFromUnit] = useState('');
@@ -38,14 +39,14 @@ export default function Page() {
   return (
     <>
       <Row>
-        <Col md={6}><h3 className={'text-primary'}>Unit Conversions</h3></Col>
+        <Col md={6}><h3 className={'text-primary'}>{UNIT_CONVERSION_PAGE_NAME}</h3></Col>
         <Col md={6}>Add searchbar</Col>
         <br/>
       </Row>
       <Row>
         <Col md={8}></Col>
         <Col md={4}>
-          <h3 className={'text-primary'}>New Unit Conversion</h3>
+          <h3 className={'text-primary'}>{ADD_UNIT_CONVERSION}</h3>
           
           {/* Show loading indicator until data is fetched */}
           {loading ? (

@@ -256,12 +256,14 @@ const confirmRestore = async () => {
             value={unitAbbreviation}
           />
           <SelectBox 
-            values={unitCategories.map(category => category.id)} // Use category IDs as values
-            display_values={unitCategories.map(category => category.name)} // Use category names as display values
-            label_name={UNIT_CATEGORY_NAME_LABAL}
-            form_id="unit_categories"
-            onChange={(value) => setSelectedCategory(value)} // Handle category selection
-          />
+  values={unitCategories.map(category => category.id)} 
+  display_values={unitCategories.map(category => category.name)} 
+  label_name={UNIT_CATEGORY_NAME_LABAL}
+  form_id="unit_categories"
+  onChange={(value) => setSelectedCategory(value)}
+  selected_value={selectedCategory} // Pass selectedCategory here
+/>
+
           <br/>
           <ClearButton 
             label={CLEAR_BUTTON_LABAL}

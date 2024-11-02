@@ -1,4 +1,4 @@
-'use client';
+'user client'
 
 import React from 'react';
 import { Form } from 'react-bootstrap';
@@ -11,7 +11,7 @@ interface SelectBoxProps {
   label_name: string;
   form_id: string;
   onChange: (value: string) => void;
-  selected_value?: string; // Add selected_value prop as optional
+  selected_value?: string;
 }
 
 const SelectBox: React.FC<SelectBoxProps> = ({
@@ -29,12 +29,12 @@ const SelectBox: React.FC<SelectBoxProps> = ({
         aria-label="Default select example"
         style={{ maxWidth: '300px' }}
         onChange={(e) => onChange(e.target.value)}
-        value={selected_value || ""} // Set the selected value if provided, otherwise keep default
+        value={selected_value || ""} // Keep selected value updated
         size='sm'
       >
         <option value="" disabled>{SELECT_BOX_PLACEHOLDER}</option>
         {values.map((value, index) => (
-          <option key={index} value={value}>
+          <option key={value} value={value}>
             {display_values[index]}
           </option>
         ))}

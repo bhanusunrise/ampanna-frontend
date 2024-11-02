@@ -162,6 +162,20 @@ export const UNIT_ABBRAVIATION_PLACEHOLDER = "සංකේතයක් ඇතු
 export const UPDATE_UNIT_MODEL_TITLE = UNIT_PAGE_NAME + UPDATE
 
 
+/** Unit Conversion */
+export const UNIT_CONVERSION_PAGE_NAME = "ඒකක පරිවර්ථන"
+export const ADD_UNIT_CONVERSION = NEW + " ඒකක පරිවර්ථනය"
+
+/*
+
+export const UNIT_NAME_LABAL = "ඒකකයේ නම :"
+export const UNIT_ABBRAVIATION_LABAL = "සංකේතය :"
+export const UNIT_NAME_PLACEHOLDER = "ඒකකයක් ඇතුලත් කරන්න"
+export const UNIT_ABBRAVIATION_PLACEHOLDER = "සංකේතයක් ඇතුලත් කරන්න"*/
+
+export const UPDATE_UNIT_CONVERSION_MODEL_TITLE = UNIT_PAGE_NAME + UPDATE
+
+
 
 
 
