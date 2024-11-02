@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { dbConnect } from '../../../lib/db'; // Adjust the path if necessary
 import {    CANNOT_FIND_UNIT_CATEGORY, 
+            DELETED_ITEM, 
             DELETED_UNIT_CATEGORY, 
             DIDNT_CHANGED_UNIT_CATEGORY, 
             FAILED_TO_DELETE_UNIT_CATEGORY, 
@@ -23,8 +24,8 @@ export async function PUT(req: Request) {
         }
 
         // Update the unit in the database
-        const query = 'UPDATE unit_categories SET status = "deleted" WHERE unit_category_id = ?';
-        const [result] = await connection.execute(query, [unit_category_id]);
+        const query = 'UPDATE unit_categories SET status = ? WHERE unit_category_id = ?';
+        const [result] = await connection.execute(query, [DELETED_ITEM ,unit_category_id]);
 
         // Check if any rows were affected (i.e., if the update was successful)
         if (result.affectedRows === 0) {

@@ -43,8 +43,8 @@ export const UNIT_TABLE_FIELDS = [
 
 export const UNIT_CATEGORY_TABLE_FIELDS = [
     "ඒකක වර්ගය",
-    "තත්වය",
     "වර්ගය",
+    "තත්වය",
     "එකතු කිරීම",
     "වෙනස් කිරීම"
 ]

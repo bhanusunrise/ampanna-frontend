@@ -65,3 +65,50 @@ export const updateUnitCategory = async (unit_category_id: string, unit_category
     return { success: false, message: 'Failed to update unit category' };
   }
 };
+
+export const deleteUnitCategory = async (unit_category_id: string) => {
+  const uri = UNIT_CATEGORY_API + 'delete_unit_category'
+  try {
+    const response = await fetch(uri, {
+      method: 'PUT', // Use PUT to update the unit
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ unit_category_id}),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to delete unit category');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error delete unit category:', error);
+    return { success: false, message: 'Failed to delete unit category' };
+  }
+};
+
+export const restoreUnitCategory = async (unit_category_id: string) => {
+
+  const uri = UNIT_CATEGORY_API + 'restore_unit_category'
+  try {
+    const response = await fetch(uri, {
+      method: 'PUT', // Using PUT to restore the unit
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ unit_category_id }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to restore unit category');
+    }
+
+    const data = await response.json();
+    return { success: true, message: 'Unit category restored successfully!' };
+  } catch (error) {
+    console.error('Error restoring unit category:', error);
+    return { success: false, message: 'Failed to restore unit category' };
+  }
+};

@@ -43,9 +43,9 @@ export async function POST(req: Request) {
             unit_category_name,
         });
     } catch (error) {
-        //console.error('Error adding unit:', error);
-        //return NextResponse.json({ message: 'Failed to add unit' }, { status: 500 });
-        return NextResponse.json({ message: FAILED_TO_ADD_UNIT_CATEGORY }, { status: 500 });
+        console.error('Error adding unit:', error);
+        return NextResponse.json({ message: 'Failed to add unit' }, { status: 500 });
+        //return NextResponse.json({ message: FAILED_TO_ADD_UNIT_CATEGORY }, { status: 500 });
     } finally {
         await connection.end(); // Close the connection after use
     }
