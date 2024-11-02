@@ -2,64 +2,72 @@
 
 import React, { useEffect, useState } from 'react';
 import BasicTable from '@/app/components/Tables/basic_table';
-import { ADD_BUTTON_LABAL, ADD_UNIT_CATEGORY_PAGE_NAME, CLEAR_BUTTON_LABAL, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_TABLE_FIELDS, UNIT_CATEGORY_TYPE_LABAL, UNIT_CATEGORY_TYPES } from '@/app/constants/constants';
-//import { fetchAllUnits, addUnit, updateUnit, blankFunction, deleteUnit, RestoreUnit, fetchAllUnitCategories } from './functions';
-import { addUnitCategory, fetchAllUnitCategories } from './functions';
+import {
+  ADD_BUTTON_LABAL,
+  ADD_UNIT_CATEGORY_PAGE_NAME,
+  CLEAR_BUTTON_LABAL,
+  UNIT_CATEGORY_NAME_PLACEHOLDER,
+  UNIT_CATEGORY_PAGE_NAME,
+  UNIT_CATEGORY_TABLE_FIELDS,
+  UNIT_CATEGORY_TYPES,
+  UNIT_CATEGORY_TYPE_LABAL, // Import the label constant for the select box
+} from '@/app/constants/constants';
+import {
+  fetchAllUnitCategories,
+  addUnitCategory,
+  updateUnitCategory,
+  deleteUnitCategory,
+  restoreUnitCategory,
+} from './functions';
 import NavigateButtons from '@/app/components/Buttons/navigate_button';
 import { Col, Row } from 'react-bootstrap';
 import AddButton from '@/app/components/Buttons/add_button';
 import TextInput from '@/app/components/Forms/text_input';
+import SelectBox from '@/app/components/Forms/select_box'; // Import SelectBox component
 import ClearButton from '@/app/components/Buttons/clear_button';
-import UpdateUnitModal from '@/app/components/Models/Units/update_unit_model';
-import DeleteModal from '@/app/components/Models/delete_model'; // Import DeleteModal
-import Summary from '@/app/components/Summeris/summery';
+import UpdateUnitCategoryModal from '@/app/components/Models/Unit_Categories/update_unit_cetegory_model';
+import DeleteModal from '@/app/components/Models/delete_model';
 import RestoreModal from '@/app/components/Models/restore_model';
-import SelectBox from '@/app/components/Forms/select_box';
-import { fetchAllUnits } from '../unit_conversions/functions';
-import { addUnit, updateUnit, deleteUnit, RestoreUnit } from '../units/functions';
 
 export default function Page() {
-  const [units, setUnits] = useState<string[][]>([]);
-  const [filteredUnitCategories, setFilteredUnitCategories] = useState<string[][]>([]);
-  const [unitCategories, setUnitCategories] = useState<{ id: string; name: string }[]>([]); // State for unit categories
+  const [unitCategories, setUnitCategories] = useState<string[][]>([]);
+  const [filteredCategories, setFilteredCategories] = useState<string[][]>([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [unitCategoryName, setUnitCategoryName] = useState('');
-  const [unitAbbreviation, setUnitAbbreviation] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>(''); // State for selected category
+  const [unitCategoryType, setUnitCategoryType] = useState('');
   const [showUpdateModal, setShowUpdateModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false); // State for delete modal
-  const [selectedUnit, setSelectedUnit] = useState<any>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showRestoreModal, setShowRestoreModal] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<any>(null);
+  const [itemToDelete, setItemToDelete] = useState<any>(null);
   const recordsPerPage = 10;
-  const [itemToDelete, setItemToDelete] = useState<any>(null); // Track item to be deleted
-  const [showRestoreModal, setShowRestoreModal] = useState(false); // State for restore modal
 
-    // Utility function to format date
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toISOString().split('T')[0]; // Get YYYY-MM-DD format
+    return date.toISOString().split('T')[0];
   };
 
+  const reloadData = async () => {
+    const fetchedCategories = await fetchAllUnitCategories();
+    const formattedCategories = fetchedCategories.map((category: any) => [
+      category.unit_category_id,
+      category.unit_category_name,
+      category.default_status,
+      category.status,
+      formatDate(category.createdAt),
+      formatDate(category.updatedAt),
+    ]);
+    setUnitCategories(formattedCategories);
+    setFilteredCategories(formattedCategories);
+  };
 
   useEffect(() => {
-    async function fetchData() {
-      const fetchedUnitCategories = await fetchAllUnitCategories();
-      setUnitCategories(fetchedUnitCategories.map((unit_category: any) => [unit_category.unit_category_id, unit_category.unit_category_name ,unit_category.status,unit_category.default_status, formatDate(unit_category.createdAt), formatDate(unit_category.updatedAt)]));
-      setFilteredUnitCategories(fetchedUnitCategories.map((unit_category: any) => [unit_category.unit_category_id, unit_category.unit_category_name ,unit_category.status,unit_category.default_status,  formatDate(unit_category.createdAt), formatDate(unit_category.updatedAt)]));
-      
-      /*
-      // Fetch unit categories
-      const fetchedCategories = await fetchAllUnitCategories();
-      setUnitCategories(fetchedCategories.map((category: any) => ({ id: category.unit_category_id, name: category.unit_category_name })));*/
-    
-    }
-
-    fetchData();
+    reloadData();
   }, []);
 
-  
   const handleNext = () => {
-    if (currentPage < Math.ceil(filteredUnitCategories.length / recordsPerPage) - 1) {
+    if (currentPage < Math.ceil(filteredCategories.length / recordsPerPage) - 1) {
       setCurrentPage(currentPage + 1);
     }
   };
@@ -70,132 +78,101 @@ export default function Page() {
     }
   };
 
-  const currentRecords = filteredUnitCategories.slice(currentPage * recordsPerPage, (currentPage + 1) * recordsPerPage);
-  const totalPages = Math.ceil(filteredUnitCategories.length / recordsPerPage);
+  const currentRecords = filteredCategories.slice(
+    currentPage * recordsPerPage,
+    (currentPage + 1) * recordsPerPage
+  );
+  const totalPages = Math.ceil(filteredCategories.length / recordsPerPage);
   const startingIndex = currentPage * recordsPerPage;
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     const query = event.target.value.toLowerCase();
     setSearchQuery(query);
-    const filtered = units.filter(
-      (unit) =>
-        unit[1].toLowerCase().includes(query) || unit[2].toLowerCase().includes(query)
+    const filtered = unitCategories.filter((category) =>
+      category[1].toLowerCase().includes(query)
     );
-    setFilteredUnits(filtered);
+    setFilteredCategories(filtered);
     setCurrentPage(0);
   };
 
-    const handleAddUnitCategory = async () => {
-      console.log(selectedCategory)
-    if (!unitCategoryName || !selectedCategory) {
-        console.log("Please fill in all fields");
-        return;
+  const handleAddCategory = async () => {
+    if (!unitCategoryName || !unitCategoryType) {
+      console.log('Please fill in all fields');
+      return;
     }
 
-    const unitCategoryData = { unit_category_name: unitCategoryName, unit_category_type_name: selectedCategory };
-    console.log("Adding unit category:", unitCategoryData); // Log the unit data
-
-    const result = await addUnitCategory(unitCategoryData.unit_category_name, unitCategoryData.unit_category_type_name);
-    console.log("Add Unit Category Result:", result); // Log the result of the addition
-
+    const result = await addUnitCategory(unitCategoryName, unitCategoryType);
     if (result.success) {
-        const updatedUnitCategories = await fetchAllUnitCategories();
-        const formattedUnitCategories = updatedUnitCategories.map((unit_category: any) => [unit_category.unit_category_id, unit_category.unit_category_name, unit_category.status, unit_category.default_status, formatDate(unit_category.createdAt), formatDate(unit_category.updatedAt)]);
-
-        setFilteredUnitCategories(formattedUnitCategories);
-
-        setUnitCategoryName('');
-        setSelectedCategory(''); // Clear selected category
+      await reloadData();
+      setUnitCategoryName('');
+      setUnitCategoryType('');
     }
-};
+  };
 
   const handleUpdate = (rowIndex: number) => {
-    const selectedUnitData = filteredUnits[rowIndex];
-
-    setSelectedUnit({
-      unit_id: selectedUnitData[0],
-      unit_name: selectedUnitData[1],
-      abbreviation: selectedUnitData[2],
-      unit_category_id: selectedUnitData[3]
+    const selectedCategoryData = filteredCategories[rowIndex];
+    setSelectedCategory({
+      unit_category_id: selectedCategoryData[0],
+      unit_category_name: selectedCategoryData[1],
     });
-
-    console.log(selectedUnit)
     setShowUpdateModal(true);
   };
 
-  const handleUpdateUnit = async (unitData: { status: any; unit_name: string; abbreviation: string }) => {
-    const result = await updateUnit(selectedUnit.unit_id, unitData.unit_name, unitData.abbreviation, unitData.status);
-
-    handleCloseModal();
-    const updatedUnitCategories = await fetchAllUnits();
-    const formattedUnits = updatedUnitCategories.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.unit_category_name ,unit.status, formatDate(unit.createdAt), formatDate(unit.updatedAt)]);
-    setUnits(formattedUnits);
-    setFilteredUnits(formattedUnits);
+  const handleUpdateCategory = async (updatedCategory: {
+    unit_category_name: string;
+    default_status: string;
+  }) => {
+    const result = await updateUnitCategory(
+      selectedCategory.unit_category_id,
+      updatedCategory.unit_category_name,    );
+    if (result.success) {
+      handleCloseUpdateModal();
+      await reloadData();
+     
+    }
   };
 
   const handleDelete = (rowIndex: number) => {
-    const unitToDelete = filteredUnits[rowIndex];
+    const categoryToDelete = filteredCategories[rowIndex];
     setItemToDelete({
-      unit_id: unitToDelete[0],
-      unit_name: unitToDelete[1],
+      unit_category_id: categoryToDelete[0],
+      unit_category_name: categoryToDelete[1],
     });
-    setShowDeleteModal(true); // Open the delete modal
+    setShowDeleteModal(true);
   };
 
   const confirmDelete = async () => {
     if (itemToDelete) {
-      const result = await deleteUnit(itemToDelete.unit_id);/*
+      const result = await deleteUnitCategory(itemToDelete.unit_category_id);
       if (result.success) {
-        const updatedUnitCategories = await fetchAllUnits();
-        const formattedUnits = updatedUnitCategories.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.status]);
-        setUnits(formattedUnits);
-        setFilteredUnits(formattedUnits);
-      }*/
-
-      const updatedUnitCategories = await fetchAllUnits();
-        const formattedUnits = updatedUnitCategories.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.unit_category_name ,unit.status, formatDate(unit.createdAt), formatDate(unit.updatedAt)]);
-        setUnits(formattedUnits);
-        setFilteredUnits(formattedUnits);
-
-      setShowDeleteModal(false); // Close modal after deletion
-      setItemToDelete(null); // Clear the selected item
+        await reloadData();
+        handleCloseDeleteModal();
+      }
     }
   };
 
   const handleRestore = (rowIndex: number) => {
-  const unitToRestore = filteredUnits[rowIndex];
-  setItemToDelete({
-    unit_id: unitToRestore[0],
-    unit_name: unitToRestore[1],
-  });
-  setShowRestoreModal(true); // Open the restore modal
-};
+    const categoryToRestore = filteredCategories[rowIndex];
+    setItemToDelete({
+      unit_category_id: categoryToRestore[0],
+      unit_category_name: categoryToRestore[1],
+    });
+    setShowRestoreModal(true);
+  };
 
-const confirmRestore = async () => {
-  if (itemToDelete) {
-    const result = await RestoreUnit(itemToDelete.unit_id);
-    
-    if (result.success) {
-      const updatedUnitCategories = await fetchAllUnits();
-      const formattedUnits = updatedUnitCategories.map((unit: any) => [
-        unit.unit_id,
-        unit.unit_name,
-        unit.abbreviation,
-        unit.status,
-      ]);
-      setUnits(formattedUnits);
-      setFilteredUnits(formattedUnits);
+  const confirmRestore = async () => {
+    if (itemToDelete) {
+      const result = await restoreUnitCategory(itemToDelete.unit_category_id);
+      if (result.success) {
+        await reloadData();
+        handleCloseRestoreModal();
+      }
     }
-    
-    setShowRestoreModal(false); // Close modal after restoration
-    setItemToDelete(null); // Clear the selected item
-  }
-};
+  };
 
-
-  const handleCloseModal = () => {
+  const handleCloseUpdateModal = () => {
     setShowUpdateModal(false);
-    setSelectedUnit(null);
+    setSelectedCategory(null);
   };
 
   const handleCloseDeleteModal = () => {
@@ -204,42 +181,38 @@ const confirmRestore = async () => {
   };
 
   const handleCloseRestoreModal = () => {
-  setShowRestoreModal(false);
-  setItemToDelete(null);
-};
-
+    setShowRestoreModal(false);
+    setItemToDelete(null);
+  };
 
   return (
     <>
       <Row>
-        <Col md={3}><h3 className={'text-primary'}>{UNIT_CATEGORY_PAGE_NAME}</h3></Col>
-        <Col md={5}>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', flexWrap: 'nowrap' }}>
-            <TextInput
-              form_id="search_unit"
-              onChangeText={handleSearch}
-              form_message=""
-              placeholder_text="Search"
-              label=""
-              value={searchQuery}
-            />
-          </div>
-          <br />
+        <Col md={3}>
+          <h3 className="text-primary">{UNIT_CATEGORY_PAGE_NAME}</h3>
         </Col>
-        <Col md={4}></Col>
+        <Col md={6} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', flexWrap: 'nowrap' }}>
+          <TextInput
+            form_id="search_category"
+            onChangeText={handleSearch}
+            form_message=""
+            placeholder_text="Search"
+            label=""
+            value={searchQuery}
+          />
+        </Col>
       </Row>
       <Row>
-        <Col md={8}>
+        <Col md={9}>
           <BasicTable
-          table_fields={UNIT_CATEGORY_TABLE_FIELDS}
-          table_records={currentRecords}
-          table_id="units_table"
-          startingIndex={startingIndex}
-          onUpdate={handleUpdate}
-          onDelete={handleDelete}
-          onRestore={handleRestore}  // <-- Add this line
+            table_fields={UNIT_CATEGORY_TABLE_FIELDS}
+            table_records={currentRecords}
+            table_id="unit_categories_table"
+            startingIndex={startingIndex}
+            onUpdate={handleUpdate}
+            onDelete={handleDelete}
+            onRestore={handleRestore}
           />
-
           <NavigateButtons
             currentPage={currentPage}
             totalPages={totalPages}
@@ -247,74 +220,64 @@ const confirmRestore = async () => {
             onPrevious={handlePrevious}
           />
         </Col>
-        <Col md={4}>
-          <h3 className='text-primary'>{ADD_UNIT_CATEGORY_PAGE_NAME}</h3>
-          <TextInput 
+        <Col md={3}>
+          <h3 className="text-primary">{ADD_UNIT_CATEGORY_PAGE_NAME}</h3>
+          <TextInput
             form_id="unit_category_name"
-            onChangeText={(event) => setUnitCategoryName(event.target.value)}
+            onChangeText={(e) => setUnitCategoryName(e.target.value)}
             form_message=""
             placeholder_text={UNIT_CATEGORY_NAME_PLACEHOLDER}
-            label={UNIT_CATEGORY_NAME_LABAL}
+            label="Category Name"
             value={unitCategoryName}
           />
-          <SelectBox 
-            values={UNIT_CATEGORY_TYPES} // Use category IDs as values
-            display_values={UNIT_CATEGORY_TYPES} // Use category names as display values
+          <SelectBox
+            values={UNIT_CATEGORY_TYPES}
+            display_values={UNIT_CATEGORY_TYPES}
             label_name={UNIT_CATEGORY_TYPE_LABAL}
-            form_id="unit_categories"
-            onChange={(value) => setSelectedCategory(value)} // Handle category selection
+            form_id="unit_category_type"
+            onChange={setUnitCategoryType}
+            selected_value={unitCategoryType}
           />
           <br/>
-          <ClearButton 
+          <ClearButton
             label={CLEAR_BUTTON_LABAL}
-            onClickButton={() => { 
-              setUnitCategoryName(''); 
-              setUnitAbbreviation(''); 
-            }} 
-            btn_id="clear_unit" 
+            onClickButton={() => {
+              setUnitCategoryName('');
+              setUnitCategoryType('');
+            }}
+            btn_id="clear_category"
           />
-          <AddButton label={ADD_BUTTON_LABAL} onClickButton={handleAddUnitCategory} btn_id="add_unit" />
-          <br/><br/>
-          <Summary 
-            fields={["Active Units", "Updated Units", "Deleted Units"]}
-            values={[units.filter((unit) => unit[3] === 'active').length, units.filter((unit) => unit[3] === 'updated').length, units.filter((unit) => unit[3] === 'deleted').length]}
-          />
+          <AddButton label={ADD_BUTTON_LABAL} onClickButton={handleAddCategory} btn_id="add_category" />
         </Col>
       </Row>
 
-      {/* Update Unit Modal */}
-      {selectedUnit && (
-        <UpdateUnitModal
+      {selectedCategory && (
+        <UpdateUnitCategoryModal
           show={showUpdateModal}
-          handleClose={handleCloseModal}
-          handleUpdateUnit={handleUpdateUnit}
-          unitName={selectedUnit.unit_name}
-          abbreviation={selectedUnit.abbreviation}
-          selectedCategory={selectedUnit.unit_category_id}
-          
+          handleClose={handleCloseUpdateModal}
+          handleUpdateUnitCategory={handleUpdateCategory}
+          unit_category_name={selectedCategory.unit_category_name}
+          default_status={selectedCategory.default_status}
         />
       )}
 
-      {/* Delete Unit Modal */}
       {itemToDelete && (
         <DeleteModal
           show={showDeleteModal}
           handleClose={handleCloseDeleteModal}
           handleDelete={confirmDelete}
-          itemName={itemToDelete.unit_name}
+          itemName={itemToDelete.unit_category_name}
         />
       )}
 
-      {/* Restore Unit Modal */}
-{itemToDelete && (
-  <RestoreModal
-    show={showRestoreModal}
-    handleClose={handleCloseRestoreModal}
-    handleRestore={confirmRestore}
-    itemName={itemToDelete.unit_name}
-  />
-)}
-
+      {itemToDelete && (
+        <RestoreModal
+          show={showRestoreModal}
+          handleClose={handleCloseRestoreModal}
+          handleRestore={confirmRestore}
+          itemName={itemToDelete.unit_category_name}
+        />
+      )}
     </>
   );
 }

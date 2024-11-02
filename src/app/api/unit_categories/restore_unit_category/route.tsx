@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { dbConnect } from '../../../lib/db'; // Adjust the path if necessary
-import { CANNOT_FIND_UNIT_CATEGORY, DIDNT_CHANGED_UNIT_CATEGORY, FAILED_TO_RESTORE_UNIT_CATEGORY, RESTORE_UNIT_CATEGORY } from '@/app/constants/constants';
+import { ACTIVE_ITEM, CANNOT_FIND_UNIT_CATEGORY, DIDNT_CHANGED_UNIT_CATEGORY, FAILED_TO_RESTORE_UNIT_CATEGORY, RESTORE_UNIT_CATEGORY } from '@/app/constants/constants';
 
 export async function PUT(req: Request) {
     const connection = await dbConnect();
@@ -19,8 +19,8 @@ export async function PUT(req: Request) {
         }
 
         // Update the unit in the database
-        const query = 'UPDATE unit_categories SET status = "updated" WHERE unit_category_id = ?';
-        const [result] = await connection.execute(query, [unit_category_id]);
+        const query = 'UPDATE unit_categories SET status = ? WHERE unit_category_id = ?';
+        const [result] = await connection.execute(query, [ACTIVE_ITEM ,unit_category_id]);
 
         // Check if any rows were affected (i.e., if the update was successful)
         if (result.affectedRows === 0) {
@@ -31,7 +31,7 @@ export async function PUT(req: Request) {
         return NextResponse.json({
             message: RESTORE_UNIT_CATEGORY,
             unit_category_id,
-            status: "restored"
+            status: ACTIVE_ITEM
         });
     } catch (error) {
         //console.error('Error restoring unit:', error);

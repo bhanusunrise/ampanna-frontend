@@ -11,7 +11,6 @@ import TextInput from '@/app/components/Forms/text_input';
 import ClearButton from '@/app/components/Buttons/clear_button';
 import UpdateUnitModal from '@/app/components/Models/Units/update_unit_model';
 import DeleteModal from '@/app/components/Models/delete_model'; // Import DeleteModal
-import Summary from '@/app/components/Summeris/summery';
 import RestoreModal from '@/app/components/Models/restore_model';
 import SelectBox from '@/app/components/Forms/select_box';
 
