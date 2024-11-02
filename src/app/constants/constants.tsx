@@ -143,7 +143,7 @@ export const DELTETION = "ඉවත් කිරීම"
 export const UNIT_CATEGORY_PAGE_NAME = "ඒකක වර්ග"
 export const ADD_UNIT_CATEGORY_PAGE_NAME = NEW + " ඒකක වර්ගය"
 
-export const UNIT_CATEGORY_NAME_LABAL = "ඒකක වර්ගයේ නම :"
+export const UNIT_CATEGORY_NAME_LABAL = "ඒකක වර්ගයේ නම"
 export const UNIT_CATEGORY_TYPE_LABAL = "වර්ගය :"
 export const UNIT_CATEGORY_NAME_PLACEHOLDER = "ඒකක වර්ගයක් ඇතුලත් කරන්න"
 

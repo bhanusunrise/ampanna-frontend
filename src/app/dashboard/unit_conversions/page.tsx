@@ -6,12 +6,10 @@ import { Col, Row } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { fetchAllUnitCategories, fetchAllUnits } from './functions'; // Assuming it's in the same directory
 import NumberInput from "@/app/components/Forms/number_input";
-import { ADD_UNIT_CONVERSION, FIRST_UNIT_NAME_LABAL, MULTIPLIER_LABAL, MULTIPLIER_PLACEHOLDER, SECOND_UNIT_NAME_LABAL, UNIT_CATEGORY_NAME_LABAL, UNIT_CONVERSION_PAGE_NAME } from "@/app/constants/constants";
+import { ADD_UNIT_CONVERSION, CLEAR_BUTTON_LABAL, FIRST_UNIT_NAME_LABAL, MULTIPLIER_LABAL, MULTIPLIER_PLACEHOLDER, SECOND_UNIT_NAME_LABAL, UNIT_CATEGORY_NAME_LABAL, UNIT_CONVERSION_PAGE_NAME } from "@/app/constants/constants";
+import ClearButton from "@/app/components/Buttons/clear_button";
 
 export default function Page() {
-  const [fromUnit, setFromUnit] = useState('');
-  const [toUnit, setToUnit] = useState('');
-  const [value, setValue] = useState('');
   const [firstUnitIds, setFirstUnitIds] = useState<string[]>([]); // Store unit IDs
   const [firstUnitNames, setFirstUnitNames] = useState<string[]>([]); // Store unit names
   const [selectedFirstUnitID, setSelectedFirstUnitID] = useState(''); // [selected first unit id
@@ -21,6 +19,7 @@ export default function Page() {
   const [unitCategoryIds, setUnitCategoryIds] = useState<string[]>([]); // Store unit category IDs
   const [unitCategoryNames, setUnitCategoryNames] = useState<string[]>([]); // Store unit category names
   const [selectedUnitCategory, setSelectedUnitCategory] = useState('');
+  const [multiplier, setMultiplier] = useState(1);
   const [loading, setLoading] = useState(true);
 
   // Fetch unit categories on component mount
@@ -105,13 +104,14 @@ export default function Page() {
 
               {/* Multiplier Input */}
               <NumberInput
-                label={MULTIPLIER_LABAL}
-                onChangeText={(e) => setValue(e.target.value)}
+                 label={MULTIPLIER_LABAL}
+                onChangeText={(e) => setMultiplier(Number(e.target.value))}
                 form_id="multiplier"
                 form_message=""
                 placeholder_text={MULTIPLIER_PLACEHOLDER}
                 min_value={0}
-                max_value={1000}
+                max_value={9999999}
+                value={multiplier}
               />
 
               {/* To Unit SelectBox */}
@@ -123,6 +123,18 @@ export default function Page() {
                 onChange={(value) => setSelectedSecondUnitID(value)}
                 selected_value={selectedSecondUnitID}
               />
+              <br/>
+              <ClearButton 
+            label={CLEAR_BUTTON_LABAL}
+            onClickButton={() => { 
+              setSelectedUnitCategory(''); 
+              setSelectedFirstUnitID(''); 
+              setSelectedSecondUnitID('');
+              setMultiplier(0);
+              
+            }} 
+            btn_id="clear_unit" 
+          />
             </>
           )}
         </Col>
