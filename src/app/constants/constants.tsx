@@ -166,7 +166,7 @@ export const CLEAR_BUTTON_LABAL  = "මකන්න"
 export const UPDATE_BUTTON_LABAL = "✏️"
 export const DELETE_BUTTON_LABAL = "🗑️"
 export const DELETE_BUTTON_DELETE_MODAL = "ඉවත් කරන්න"
-export const UPDATE_BUTTON_DELETE_MODAL = "වෙනස් කරන්න"
+export const UPDATE_BUTTON_UPDATE_MODAL = "වෙනස් කරන්න"
 
 
 /** Select Box */

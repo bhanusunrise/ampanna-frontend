@@ -1,4 +1,4 @@
-import { UNIT_ABBRAVIATION_LABAL, UNIT_ABBRAVIATION_PLACEHOLDER, UNIT_NAME_LABAL, UNIT_NAME_PLACEHOLDER, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
+import { BACK, UNIT_ABBRAVIATION_LABAL, UNIT_ABBRAVIATION_PLACEHOLDER, UNIT_NAME_LABAL, UNIT_NAME_PLACEHOLDER, UPDATE_BUTTON_UPDATE_MODAL, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
@@ -66,10 +66,10 @@ const UpdateUnitModal: React.FC<UpdateUnitModalProps> = ({
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
-          Close
+          {BACK}
         </Button>
         <Button variant="warning" onClick={handleSubmit}>
-          Update Unit
+          {UPDATE_BUTTON_UPDATE_MODAL}
         </Button>
       </Modal.Footer>
     </Modal>
