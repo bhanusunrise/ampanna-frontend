@@ -1,8 +1,8 @@
 import { UNIT_CONVERSION_API } from "@/app/constants/constants";
 
-export const fetchAllUnits = async () => {
-
-  const uri = UNIT_CONVERSION_API + 'load_unit_names'
+export const fetchAllUnits = async (unitCategoryId: string) => {
+  const uri = `${UNIT_CONVERSION_API}load_unit_names?unit_category_id=${unitCategoryId}`;
+  
   try {
     const response = await fetch(uri);
     if (!response.ok) {
@@ -15,6 +15,7 @@ export const fetchAllUnits = async () => {
     return [];
   }
 };
+
 
 export const fetchAllUnitConversions  = async () => {
 

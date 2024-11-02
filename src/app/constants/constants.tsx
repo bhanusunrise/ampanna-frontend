@@ -130,6 +130,8 @@ export const UNIT_CATEGORY_PRIMARY_KEY_FIRST_VALUE = UNIT_CATEGORY_PRIMARY_KEY_L
 
 /** Base */
 const NEW = "නව"
+const FIRST = "පළමු"
+const SECOND = "දෙවන"
 const UPDATE = " වෙනස් කරන්න"
 export const RESTORE = "ප්‍රතිස්ථාපනය කිරීම"
 export const RESTORE_CONFIRM = " ප්‍රතිස්ථාපනය කිරීම තහවුරු කරන්න"
@@ -154,8 +156,8 @@ export const UPDATE_UNIT_CATEGORY_MODEL_TITLE = UNIT_CATEGORY_PAGE_NAME + UPDATE
 export const UNIT_PAGE_NAME = "ඒකක"
 export const ADD_UNIT_PAGE_NAME = NEW + " ඒකකය"
 
-export const UNIT_NAME_LABAL = "ඒකකයේ නම :"
-export const UNIT_ABBRAVIATION_LABAL = "සංකේතය :"
+export const UNIT_NAME_LABAL = "ඒකකයේ නම"
+export const UNIT_ABBRAVIATION_LABAL = "සංකේතය"
 export const UNIT_NAME_PLACEHOLDER = "ඒකකයක් ඇතුලත් කරන්න"
 export const UNIT_ABBRAVIATION_PLACEHOLDER = "සංකේතයක් ඇතුලත් කරන්න"
 
@@ -165,6 +167,13 @@ export const UPDATE_UNIT_MODEL_TITLE = UNIT_PAGE_NAME + UPDATE
 /** Unit Conversion */
 export const UNIT_CONVERSION_PAGE_NAME = "ඒකක පරිවර්ථන"
 export const ADD_UNIT_CONVERSION = NEW + " ඒකක පරිවර්ථනය"
+
+export const FIRST_UNIT_NAME_LABAL = FIRST + " " + UNIT_NAME_LABAL
+export const SECOND_UNIT_NAME_LABAL = SECOND + " " + UNIT_NAME_LABAL
+export const MULTIPLIER_LABAL = "ගුණාකාරය"
+export const FIRST_UNIT_ABBRAVIATION_LABAL = FIRST + " " + UNIT_ABBRAVIATION_LABAL
+export const SECOND_UNIT_ABBRAVIATION_LABAL = SECOND + " " + UNIT_ABBRAVIATION_LABAL
+export const MULTIPLIER_PLACEHOLDER = "ගුණාකාරයක් ඇතුලත් කරන්න"
 
 /*
 
