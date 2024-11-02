@@ -32,12 +32,12 @@ export const ITEMS_TABLE_FIELDS = [
 
 export const UNIT_TABLE_FIELDS = [
     //"Unit ID",
-    "Unit Name",
-    "Abbrevation",
-    "Category",
-    "Status",
-    "Created",
-    "Modified"
+    "ඒකකය",
+    "සංකේතය",
+    "ඒකක වර්ගය",
+    "තත්වය",
+    "එකතු කිරීම",
+    "වෙනස් කිරීම"
 ]
 
 
@@ -59,6 +59,9 @@ export const COMPULSARY = "අත්‍යාවශ්‍ය"
 export const OPTIONAL = "අවශ්‍ය"
 export const UNIT_CATEGORY_TYPES = [COMPULSARY, OPTIONAL]
 
+/** Default status values */
+export const ACTIVE_ITEM = "සක්‍රීය"
+export const DELETED_ITEM = "අක්‍රීය"
 
 
 /** Log messages */
@@ -122,10 +125,17 @@ export const UNIT_CATEGORY_PRIMARY_KEY_FIRST_VALUE = UNIT_CATEGORY_PRIMARY_KEY_L
 
 
 
+
 /** Page names and forms */
 
 /** Base */
 const NEW = "නව"
+const UPDATE = " වෙනස් කරන්න"
+export const RESTORE = "ප්‍රතිස්ථාපනය කිරීම"
+export const RESTORE_CONFIRM = " ප්‍රතිස්ථාපනය කිරීම තහවුරු කරන්න"
+export const DELETE_CONFIRM = " ඉවත් කිරීම තහවුරු කරන්න"
+export const BACK = "ආපසු"
+export const DELTETION = "ඉවත් කිරීම"
 
 /** Unit Category */
 export const UNIT_CATEGORY_PAGE_NAME = "ඒකක වර්ග"
@@ -135,11 +145,41 @@ export const UNIT_CATEGORY_NAME_LABAL = "ඒකක වර්ගයේ නම :"
 export const UNIT_CATEGORY_TYPE_LABAL = "වර්ගය :"
 export const UNIT_CATEGORY_NAME_PLACEHOLDER = "ඒකක වර්ගයක් ඇතුලත් කරන්න"
 
+export const UPDATE_UNIT_CATEGORY_MODEL_TITLE = UNIT_CATEGORY_PAGE_NAME + UPDATE
+
+
+
 
 /** Unit */
 export const UNIT_PAGE_NAME = "ඒකක"
 export const ADD_UNIT_PAGE_NAME = NEW + " ඒකක වර්ගය"
 
 export const UNIT_NAME_LABAL = "ඒකකයේ නම :"
-export const UNIT_TYPE_LABAL = "වර්ගය :"
+export const UNIT_ABBRAVIATION_LABAL = "සංකේතය :"
 export const UNIT_NAME_PLACEHOLDER = "ඒකකයක් ඇතුලත් කරන්න"
+export const UNIT_ABBRAVIATION_PLACEHOLDER = "සංකේතයක් ඇතුලත් කරන්න"
+
+export const UPDATE_UNIT_MODEL_TITLE = UNIT_PAGE_NAME + UPDATE
+
+
+
+
+
+/*** Buttons */
+export const ADD_BUTTON_LABAL = "එකතු කරන්න"
+export const CLEAR_BUTTON_LABAL  = "මකන්න"
+export const UPDATE_BUTTON_LABAL = "✏️"
+export const DELETE_BUTTON_LABAL = "🗑️"
+export const RESTORE_BUTTON_LABAL = "🔁"
+export const DELETE_BUTTON_DELETE_MODAL = "ඉවත් කරන්න"
+export const UPDATE_BUTTON_UPDATE_MODAL = "වෙනස් කරන්න"
+
+
+/** Select Box */
+export const SELECT_BOX_PLACEHOLDER = "තෝරාගන්න"
+
+
+
+
+/** Logos */
+export const LOGO_WHITE_PATH = "/logo_white.png"

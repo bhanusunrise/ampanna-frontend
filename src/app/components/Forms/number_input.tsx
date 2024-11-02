@@ -18,7 +18,7 @@ const NumberInput: React.FC<NumberInputProps> = ({ label, onChangeText, form_id,
   return (
           <>
             <Form.Label htmlFor={form_id}>{label}</Form.Label><Form.Control
-                type="number" id={form_id} aria-describedby="passwordHelpBlock" onChange={onChangeText} placeholder={placeholder_text} min={min_value} max={max_value} style={{ maxWidth: '300px' }}/><Form.Text id="passwordHelpBlock" muted>
+                type="number" id={form_id} aria-describedby="passwordHelpBlock" onChange={onChangeText} placeholder={placeholder_text} min={min_value} max={max_value} style={{ maxWidth: '300px' }} size='sm'/><Form.Text id="passwordHelpBlock" muted>
                 {form_message}
             </Form.Text>
           </>

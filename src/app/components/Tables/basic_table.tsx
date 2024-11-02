@@ -5,17 +5,17 @@ import { Table } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import UpdateButton from '@/app/components/Buttons/update_button';
 import DeleteButton from '@/app/components/Buttons/delete_button';
-import RestoreButton from '@/app/components/Buttons/restore_button'; // Import RestoreButton
-import { ACTONS_FIELD } from '@/app/constants/constants';
+import RestoreButton from '@/app/components/Buttons/restore_button';
+import { ACTONS_FIELD, DELETE_BUTTON_LABAL, RESTORE_BUTTON_LABAL, UPDATE_BUTTON_LABAL } from '@/app/constants/constants';
 
 interface BasicTableProps {
   table_fields: string[];
   table_records: string[][];
   table_id: string;
-  startingIndex: number; // New prop for starting index
-  onUpdate: (rowIndex: number) => void; // New prop for handling update
-  onDelete: (rowIndex: number) => void; // New prop for handling delete
-  onRestore: (rowIndex: number) => void; // New prop for handling restore
+  startingIndex: number;
+  onUpdate: (rowIndex: number) => void;
+  onDelete: (rowIndex: number) => void;
+  onRestore: (rowIndex: number) => void;
 }
 
 const BasicTable: React.FC<BasicTableProps> = ({
@@ -28,26 +28,20 @@ const BasicTable: React.FC<BasicTableProps> = ({
   onRestore,
 }) => {
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
-  const [tableSize, setTableSize] = useState<'sm' | 'md'>('sm'); // State for table size
+  const [tableSize, setTableSize] = useState<'sm' | 'md'>('sm');
 
-  // Function to detect screen size and update table size accordingly
   useEffect(() => {
     const updateTableSize = () => {
-      console.log(window.innerWidth)
       if (window.innerWidth > 1366) {
-        setTableSize('md'); // Set to 'md' for larger screens (above 992px width)
+        setTableSize('md');
       } else {
-        setTableSize('sm'); // Default to 'sm' for smaller screens
+        setTableSize('sm');
       }
     };
 
-    // Initial check
     updateTableSize();
-
-    // Add event listener to handle window resize
     window.addEventListener('resize', updateTableSize);
 
-    // Cleanup event listener on unmount
     return () => {
       window.removeEventListener('resize', updateTableSize);
     };
@@ -55,17 +49,15 @@ const BasicTable: React.FC<BasicTableProps> = ({
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      const key = event.key; // Get the pressed key
+      const key = event.key;
       let rowIndex: number | null = null;
 
-      // Check for number keys 1-9 and 0
       if (key >= '1' && key <= '9') {
-        rowIndex = parseInt(key) - 1; // Convert to zero-based index
+        rowIndex = parseInt(key) - 1;
       } else if (key === '0') {
-        rowIndex = 9; // Zero-based index for the 10th row
+        rowIndex = 9;
       }
 
-      // If a valid rowIndex is found
       if (rowIndex !== null && rowIndex < table_records.length) {
         setSelectedRow(rowIndex);
       }
@@ -73,45 +65,49 @@ const BasicTable: React.FC<BasicTableProps> = ({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => {
-      window.removeEventListener('keydown', handleKeyDown); // Cleanup event listener
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, [table_records.length]);
 
-  // Function to check if 'status' is present in the fields and the status of the row
-  const isDeleted = (record: string[]) => {
-    const statusIndex = table_fields.indexOf('Status'); // Find the index of 'status'
-    return statusIndex !== -1 && record[statusIndex] === 'deleted'; // Check if 'status' field is 'deleted'
+  const isInactive = (record: string[]) => {
+    const statusIndex = table_fields.indexOf('තත්වය') + 1;
+    console.log("Status column index:", statusIndex);
+    console.log("Status field value in row:", record[statusIndex]);
+    return statusIndex !== -1 && record[statusIndex] === 'අක්‍රීය';
   };
 
   return (
-    <Table responsive bordered striped hover id={table_id} size={tableSize}> {/* Use dynamic table size */}
+    <Table responsive bordered striped hover id={table_id} size={tableSize} style={{ fontSize: 15 }}>
       <thead>
         <tr>
-          <th className='bg-primary text-white'>#</th>
+          <th className="bg-primary text-white">#</th>
           {table_fields.map((field, index) => (
             <th key={index} className="bg-primary text-white">
               {field}
             </th>
           ))}
-          <th className='bg-primary text-white'>{ACTONS_FIELD}</th>
+          <th className="bg-primary text-white">{ACTONS_FIELD}</th>
         </tr>
       </thead>
       <tbody>
         {table_records && table_records.length > 0 ? (
           table_records.map((record, rowIndex) => {
-            // Skip the first value in each record
             const displayedRecord = record.slice(1);
+            const rowClasses = `${selectedRow === rowIndex ? 'table-warning' : ''} ${
+              isInactive(record) ? 'bg-danger text-white' : ''
+            }`;
+
             return (
-              <tr key={rowIndex} className={`${selectedRow === rowIndex ? 'table-warning' : ''}`}>
+              <tr key={rowIndex} className={rowClasses}>
                 <td>{startingIndex + rowIndex + 1}</td>
-                {Array.isArray(displayedRecord) && displayedRecord.map((cell, cellIndex) => (
-                  <td key={cellIndex}>{cell}</td>
-                ))}
+                {Array.isArray(displayedRecord) &&
+                  displayedRecord.map((cell, cellIndex) => (
+                    <td key={cellIndex} style={{ maxWidth: 10 }}>{cell}</td>
+                  ))}
                 <td>
-                  {isDeleted(record) ? (
-                    // If status is "deleted", show the Restore button
+                  {isInactive(record) ? (
                     <RestoreButton
-                      label="Restore"
+                      label={RESTORE_BUTTON_LABAL}
                       onClickButton={() => onRestore(startingIndex + rowIndex)}
                       btn_id={`restore_button_${startingIndex + rowIndex}`}
                       rowIndex={startingIndex + rowIndex}
@@ -119,16 +115,16 @@ const BasicTable: React.FC<BasicTableProps> = ({
                   ) : (
                     <>
                       <UpdateButton
-                        label="Update"
-                        onClickButton={() => onUpdate(startingIndex + rowIndex)} // Pass the global index based on the current page
+                        label={UPDATE_BUTTON_LABAL}
+                        onClickButton={() => onUpdate(startingIndex + rowIndex)}
                         btn_id={`update_button_${startingIndex + rowIndex}`}
-                        rowIndex={startingIndex + rowIndex} // Pass the global index here as well
+                        rowIndex={startingIndex + rowIndex}
                       />
                       <DeleteButton
-                        label="Delete"
-                        onClickButton={() => onDelete(startingIndex + rowIndex)} // Pass the global index
+                        label={DELETE_BUTTON_LABAL}
+                        onClickButton={() => onDelete(startingIndex + rowIndex)}
                         btn_id={`delete_button_${startingIndex + rowIndex}`}
-                        rowIndex={startingIndex + rowIndex} // Pass the global index
+                        rowIndex={startingIndex + rowIndex}
                       />
                     </>
                   )}

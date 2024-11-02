@@ -2,7 +2,7 @@
 CREATE TABLE `Unit_Categories` (
     `unit_category_id` VARCHAR(6) NOT NULL,
     `unit_category_name` VARCHAR(10) NOT NULL,
-    `status` VARCHAR(191) NOT NULL DEFAULT 'active',
+    `status` VARCHAR(191) NOT NULL DEFAULT 'සක්‍රීය',
     `default_status` VARCHAR(12) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -15,7 +15,7 @@ CREATE TABLE `Units` (
     `unit_id` VARCHAR(7) NOT NULL,
     `unit_name` VARCHAR(50) NOT NULL,
     `abbreviation` VARCHAR(10) NOT NULL,
-    `status` VARCHAR(191) NOT NULL DEFAULT 'active',
+    `status` VARCHAR(191) NOT NULL DEFAULT 'සක්‍රීය',
     `unit_category_id` VARCHAR(6) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),

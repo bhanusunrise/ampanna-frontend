@@ -1,5 +1,6 @@
 'use client';
 
+import { BACK, RESTORE, RESTORE_CONFIRM } from '@/app/constants/constants';
 import React, { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
@@ -14,17 +15,17 @@ export default function RestoreModal({ show, handleClose, handleRestore, itemNam
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton className={"bg-success"}>
-        <Modal.Title className='text-white'>Are you sure?</Modal.Title>
+        <Modal.Title className='text-white'>{RESTORE}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        Are you sure you want to restore {itemName}?
+        {itemName + RESTORE_CONFIRM}
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
-          Cancel
+          {BACK}
         </Button>
         <Button variant="success" onClick={handleRestore}>
-          Restore
+          {RESTORE}
         </Button>
       </Modal.Footer>
     </Modal>

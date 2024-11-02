@@ -28,7 +28,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ label, onClickButton, btn_i
   }, [onClickButton, rowIndex]);
 
   return (
-    <Button variant="danger" onClick={onClickButton} id={btn_id} className={'btn-sm ms-2'}>
+    <Button variant="outline-danger" onClick={onClickButton} id={btn_id} className={'btn-sm ms-2'}>
       {label}
     </Button>
   );

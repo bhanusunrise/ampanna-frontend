@@ -28,7 +28,7 @@ const UpdateButton: React.FC<UpdateButtonProps> = ({ label, onClickButton, btn_i
   }, [onClickButton, rowIndex]);
 
   return (
-    <Button variant="warning" onClick={onClickButton} id={btn_id} className={'btn-sm'}>
+    <Button variant="outline-warning" onClick={onClickButton} id={btn_id} className={'btn-sm '}>
       {label}
     </Button>
   );

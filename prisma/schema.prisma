@@ -14,7 +14,7 @@ datasource db {
 model Unit_Categories {
   unit_category_id   String   @id @db.VarChar(6)
   unit_category_name String   @db.VarChar(10)
-  status             String   @default("active")
+  status             String   @default("සක්‍රීය")
   default_status     String   @db.VarChar(12)
   createdAt          DateTime @default(now())
   updatedAt          DateTime @default(now())
@@ -27,7 +27,7 @@ model Units {
   unit_id          String   @id @db.VarChar(7)
   unit_name        String   @db.VarChar(50)
   abbreviation     String   @db.VarChar(10)
-  status           String   @default("active")
+  status           String   @default("සක්‍රීය")
   unit_category_id String   @db.VarChar(6)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @default(now())

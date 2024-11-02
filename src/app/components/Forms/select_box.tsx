@@ -3,6 +3,7 @@
 import React from 'react';
 import { Form } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { SELECT_BOX_PLACEHOLDER } from '@/app/constants/constants';
 
 interface SelectBoxProps {
   values: string[];
@@ -29,8 +30,9 @@ const SelectBox: React.FC<SelectBoxProps> = ({
         style={{ maxWidth: '300px' }}
         onChange={(e) => onChange(e.target.value)}
         value={selected_value || ""} // Set the selected value if provided, otherwise keep default
+        size='sm'
       >
-        <option value="">Select an option</option>
+        <option value="" disabled>{SELECT_BOX_PLACEHOLDER}</option>
         {values.map((value, index) => (
           <option key={index} value={value}>
             {display_values[index]}

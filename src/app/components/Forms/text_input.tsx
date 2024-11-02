@@ -22,6 +22,7 @@ const TextInput: React.FC<TextInputProps> = ({ label, onChangeText, form_id, for
         placeholder={placeholder_text}
         style={{ maxWidth: '300px' }}
         value={value}
+        size='sm'
       />
       <Form.Text id="passwordHelpBlock" muted>
         {form_message}
