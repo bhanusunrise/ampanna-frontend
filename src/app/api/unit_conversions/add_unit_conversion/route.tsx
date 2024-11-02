@@ -14,38 +14,44 @@ export async function POST(req: Request) {
             return NextResponse.json({ message: 'Missing required fields' }, { status: 400 });
         }
 
-        // Generate a new conversion ID (e.g., CONV1, CONV2, ...)
+        // Generate new conversion IDs
         const [conversionRows] = await connection.execute(
             'SELECT conversion_id FROM unit_conversions ORDER BY conversion_id DESC LIMIT 1'
         );
 
         let newConversionId = 'CONV1'; // Default starting ID
+        let newReciprocalConversionId = 'CONV1'; // Default reciprocal ID
 
         if (conversionRows.length > 0) {
             const latestConversionId = conversionRows[0].conversion_id;
-            // Extract the numeric part from the latest conversion_id (e.g., "CONV1" -> 1)
             const numericPart = parseInt(latestConversionId.replace('CONV', ''), 10);
-            // Increment the numeric part
             const newNumericPart = numericPart + 1;
             newConversionId = `CONV${newNumericPart}`;
+            newReciprocalConversionId = `CONV${newNumericPart + 1}`; // Next ID for the reciprocal
         }
 
-        // Prepare the insertion query
+        // Prepare the insertion queries
         const query = `
             INSERT INTO unit_conversions (conversion_id, from_unit, value, to_unit)
             VALUES (?, ?, ?, ?)
         `;
         
-        // Insert the new unit conversion into the database
-        const [result] = await connection.execute(query, [newConversionId, unitFrom, value, unitTo]);
+        // First conversion: unitFrom -> unitTo
+        await connection.execute(query, [newConversionId, unitFrom, value, unitTo]);
+
+        // Calculate the reciprocal value
+        const reciprocalValue = 1 / value;
+
+        // Second conversion: unitTo -> unitFrom
+        await connection.execute(query, [newReciprocalConversionId, unitTo, reciprocalValue, unitFrom]);
 
         // Return a success response
         return NextResponse.json({
-            message: 'Unit conversion added successfully',
-            conversion_id: newConversionId,
-            from_unit: unitFrom,
-            value,
-            to_unit: unitTo
+            message: 'Unit conversions added successfully',
+            conversions: [
+                { conversion_id: newConversionId, from_unit: unitFrom, value, to_unit: unitTo },
+                { conversion_id: newReciprocalConversionId, from_unit: unitTo, value: reciprocalValue, to_unit: unitFrom }
+            ]
         });
     } catch (error) {
         console.error('Error adding unit conversion:', error);
