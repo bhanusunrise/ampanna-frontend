@@ -50,25 +50,26 @@ export const fetchAllUnitCategories  = async () => {
 };
 
 export const addUnitConversion = async (unit_01: string, unit_02: string, multiplier: number) => {
+    const uri = UNIT_CONVERSION_API + 'add_unit_conversion';
+    try {
+        const response = await fetch(uri, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ unitFrom: unit_01, unitTo: unit_02, value: multiplier }), // Make sure the keys are correct
+        });
 
-  const uri = UNIT_CONVERSION_API + 'add_unit_conversion'
-  try {
-    const response = await fetch(uri, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ unit_01, unit_02, multiplier }),
-    });
+        if (!response.ok) {
+            const errorData = await response.json(); // Capture the error message from response
+            throw new Error(errorData.message || 'Failed to add unit conversion');
+        }
 
-    if (!response.ok) {
-      throw new Error('Failed to add unit conversion');
+        const data = await response.json();
+        return { success: true, message: 'Unit conversion added successfully!' }; // Adjust return data
+    } catch (error) {
+        console.error('Error adding unit conversion:', error);
+        return { success: false, message: error.message }; // Return the error message
     }
-
-    const data = await response.json();
-    return { success: true, message: 'Unit conversion added successfully!' }; // Adjust return data
-  } catch (error) {
-    console.error('Error adding unit conversion:', error);
-    return { success: false, message: 'Failed to add unit conversion' };
-  }
 };
+

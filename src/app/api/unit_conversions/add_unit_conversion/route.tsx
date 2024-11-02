@@ -14,13 +14,16 @@ export async function POST(req: Request) {
             return NextResponse.json({ message: 'Missing required fields' }, { status: 400 });
         }
 
+        // Use transaction to ensure atomicity
+        await connection.beginTransaction();
+
         // Generate new conversion IDs
         const [conversionRows] = await connection.execute(
             'SELECT conversion_id FROM unit_conversions ORDER BY conversion_id DESC LIMIT 1'
         );
 
         let newConversionId = 'CONV1'; // Default starting ID
-        let newReciprocalConversionId = 'CONV1'; // Default reciprocal ID
+        let newReciprocalConversionId = 'CONV2'; // Default starting ID for the reciprocal
 
         if (conversionRows.length > 0) {
             const latestConversionId = conversionRows[0].conversion_id;
@@ -45,6 +48,9 @@ export async function POST(req: Request) {
         // Second conversion: unitTo -> unitFrom
         await connection.execute(query, [newReciprocalConversionId, unitTo, reciprocalValue, unitFrom]);
 
+        // Commit the transaction
+        await connection.commit();
+
         // Return a success response
         return NextResponse.json({
             message: 'Unit conversions added successfully',
@@ -55,7 +61,11 @@ export async function POST(req: Request) {
         });
     } catch (error) {
         console.error('Error adding unit conversion:', error);
-        return NextResponse.json({ message: 'Failed to add unit conversion' }, { status: 500 });
+
+        // Rollback the transaction on error
+        await connection.rollback();
+
+        return NextResponse.json({ message: 'Failed to add unit conversion', error: error.message }, { status: 500 });
     } finally {
         await connection.end(); // Close the connection after use
     }

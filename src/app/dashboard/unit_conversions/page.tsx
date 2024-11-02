@@ -1,6 +1,5 @@
 'use client';
 
-import TextInput from "@/app/components/Forms/text_input";
 import SelectBox from "@/app/components/Forms/select_box";
 import { Col, Row } from "react-bootstrap";
 import { useState, useEffect } from "react";
@@ -67,20 +66,31 @@ export default function Page() {
   }, [selectedUnitCategory]); // Trigger whenever selectedUnitCategory changes
 
 
-  const handleAddUnitConversion = async () => {
+ const handleAddUnitConversion = async () => {
     if (!selectedFirstUnitID || !selectedSecondUnitID || !multiplier) {
-      console.log('Please fill in all fields');
-      return;
+        console.log('Please fill in all fields');
+        return;
     }
+
+    const payload = {
+        unitFrom: selectedFirstUnitID,
+        unitTo: selectedSecondUnitID,
+        value: multiplier
+    };
+    
+   // console.log('Payload to send:', payload); // Add this line
 
     const result = await addUnitConversion(selectedFirstUnitID, selectedSecondUnitID, multiplier);
     if (result.success) {
-      //await reloadData();
-      setSelectedFirstUnitID('');
-      setSelectedSecondUnitID('');
-      setMultiplier(0);
+        // Reload or reset the state as necessary
+        setSelectedFirstUnitID('');
+        setSelectedSecondUnitID('');
+        setMultiplier(0);
+    } else {
+        console.error(result.message); // Log error message
     }
-  };
+};
+
 
   return (
     <>
