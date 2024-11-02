@@ -131,6 +131,8 @@ export const UNIT_CATEGORY_PRIMARY_KEY_FIRST_VALUE = UNIT_CATEGORY_PRIMARY_KEY_L
 /** Base */
 const NEW = "නව"
 const UPDATE = " වෙනස් කරන්න"
+export const RESTORE = "ප්‍රතිස්ථාපනය කිරීම"
+export const RESTORE_CONFIRM = " ප්‍රතිස්ථාපනය කිරීම තහවුරු කරන්න"
 export const DELETE_CONFIRM = " ඉවත් කිරීම තහවුරු කරන්න"
 export const BACK = "ආපසු"
 export const DELTETION = "ඉවත් කිරීම"
