@@ -40,3 +40,28 @@ export const addUnitCategory = async (unit_category_name: string, unit_category_
     return { success: false, message: 'Failed to add unit category' };
   }
 };
+
+//Function to update a unit category
+export const updateUnitCategory = async (unit_category_id: string, unit_category_name: string, default_status: any) => {
+
+  const uri = UNIT_CATEGORY_API + 'update_unit_category'
+  try {
+    const response = await fetch(uri, {
+      method: 'PUT', // Use PUT to update the unit
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ unit_category_id, unit_category_name, default_status }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to update unit catrgory');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error updating unit category:', error);
+    return { success: false, message: 'Failed to update unit category' };
+  }
+};
