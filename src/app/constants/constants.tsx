@@ -59,6 +59,9 @@ export const COMPULSARY = "අත්‍යාවශ්‍ය"
 export const OPTIONAL = "අවශ්‍ය"
 export const UNIT_CATEGORY_TYPES = [COMPULSARY, OPTIONAL]
 
+/** Default status values */
+export const ACTIVE_ITEM = "සක්‍රීය"
+export const DELETED_ITEM = "අක්‍රීය"
 
 
 /** Log messages */
@@ -165,6 +168,7 @@ export const ADD_BUTTON_LABAL = "එකතු කරන්න"
 export const CLEAR_BUTTON_LABAL  = "මකන්න"
 export const UPDATE_BUTTON_LABAL = "✏️"
 export const DELETE_BUTTON_LABAL = "🗑️"
+export const RESTORE_BUTTON_LABAL = "🔁"
 export const DELETE_BUTTON_DELETE_MODAL = "ඉවත් කරන්න"
 export const UPDATE_BUTTON_UPDATE_MODAL = "වෙනස් කරන්න"
 

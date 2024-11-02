@@ -173,12 +173,7 @@ const confirmRestore = async () => {
     
     if (result.success) {
       const updatedUnits = await fetchAllUnits();
-      const formattedUnits = updatedUnits.map((unit: any) => [
-        unit.unit_id,
-        unit.unit_name,
-        unit.abbreviation,
-        unit.status,
-      ]);
+      const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.unit_category_name ,unit.status, formatDate(unit.createdAt), formatDate(unit.updatedAt)]);
       setUnits(formattedUnits);
       setFilteredUnits(formattedUnits);
     }

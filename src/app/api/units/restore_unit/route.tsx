@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { dbConnect } from '../../../lib/db'; // Adjust the path if necessary
+import { ACTIVE_ITEM } from '@/app/constants/constants';
 
 export async function PUT(req: Request) {
     const connection = await dbConnect();
@@ -18,8 +19,8 @@ export async function PUT(req: Request) {
         }
 
         // Update the unit in the database
-        const query = 'UPDATE units SET status = "updated" WHERE unit_id = ?';
-        const [result] = await connection.execute(query, [unit_id]);
+        const query = 'UPDATE units SET status = ? WHERE unit_id = ?';
+        const [result] = await connection.execute(query, [ACTIVE_ITEM ,unit_id]);
 
         // Check if any rows were affected (i.e., if the update was successful)
         if (result.affectedRows === 0) {
