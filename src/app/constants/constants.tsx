@@ -152,7 +152,7 @@ export const UPDATE_UNIT_CATEGORY_MODEL_TITLE = UNIT_CATEGORY_PAGE_NAME + UPDATE
 
 /** Unit */
 export const UNIT_PAGE_NAME = "ඒකක"
-export const ADD_UNIT_PAGE_NAME = NEW + " ඒකක වර්ගය"
+export const ADD_UNIT_PAGE_NAME = NEW + " ඒකකය"
 
 export const UNIT_NAME_LABAL = "ඒකකයේ නම :"
 export const UNIT_ABBRAVIATION_LABAL = "සංකේතය :"

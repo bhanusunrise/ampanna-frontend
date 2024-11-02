@@ -1,9 +1,9 @@
 module.exports.UNIT_CATEGORY_LIST = [
-    { unit_category_id: 'UNCT1', unit_category_name: 'බර', default_status: 'Default' }, // Weight
-    { unit_category_id: 'UNCT2', unit_category_name: 'උස', default_status: 'Default' }, // Height
-    { unit_category_id: 'UNCT3', unit_category_name: 'පරිමාව', default_status: 'Default' }, // Volume
-    { unit_category_id: 'UNCT4', unit_category_name: 'වර්ගඵලය', default_status: 'Default' }, // Area
-    { unit_category_id: 'UNCT5', unit_category_name: 'තනි ඒකකය', default_status: 'Default' } // Single Unit
+    { unit_category_id: 'UNCT1', unit_category_name: 'බර', default_status: 'අත්‍යාවශ්‍ය' }, // Weight
+    { unit_category_id: 'UNCT2', unit_category_name: 'උස', default_status: 'අත්‍යාවශ්‍ය' }, // Height
+    { unit_category_id: 'UNCT3', unit_category_name: 'පරිමාව', default_status: 'අත්‍යාවශ්‍ය' }, // Volume
+    { unit_category_id: 'UNCT4', unit_category_name: 'වර්ගඵලය', default_status: 'අත්‍යාවශ්‍ය' }, // Area
+    { unit_category_id: 'UNCT5', unit_category_name: 'තනි ඒකකය', default_status: 'අත්‍යාවශ්‍ය' } // Single Unit
 ];
 
 module.exports.UNIT_LIST = [
