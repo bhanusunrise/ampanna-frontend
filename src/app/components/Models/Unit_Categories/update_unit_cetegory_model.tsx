@@ -5,9 +5,8 @@ import { Modal, Button, Form } from 'react-bootstrap';
 interface UpdateUnitCategoryModalProps {
   show: boolean;
   handleClose: () => void;
-  handleUpdateUnitCategory: (unitCategoryData: { unit_category_name: string; default_status: string; }) => Promise<void>;
+  handleUpdateUnitCategory: (unitCategoryData: { unit_category_name: string; }) => Promise<void>;
   unit_category_name: string;
-  default_status: string;
 }
 
 const UpdateUnitCategoryModal: React.FC<UpdateUnitCategoryModalProps> = ({
@@ -15,23 +14,19 @@ const UpdateUnitCategoryModal: React.FC<UpdateUnitCategoryModalProps> = ({
   handleClose,
   handleUpdateUnitCategory,
   unit_category_name: initialUnitCategoryName,
-  default_status: initialUnitCategoryDefaultStatus,
 }) => {
   const [unitCategoryName, setUnitCategoryName] = useState(initialUnitCategoryName);
-  const [defaultStatus, setDefaultStatus] = useState(initialUnitCategoryDefaultStatus);
 
   // Reset values when modal opens or when props change
   useEffect(() => {
     if (show) {
-      setUnitCategoryName(initialUnitCategoryName);
-      setDefaultStatus(initialUnitCategoryDefaultStatus);
+      setUnitCategoryName(initialUnitCategoryName);;
     }
-  }, [show, initialUnitCategoryName, initialUnitCategoryDefaultStatus]);
+  }, [show, initialUnitCategoryName]);
 
   const handleSubmit = async () => {
     await handleUpdateUnitCategory({
       unit_category_name: unitCategoryName,
-      default_status: defaultStatus,
     });
     handleClose();
   };
@@ -52,16 +47,7 @@ const UpdateUnitCategoryModal: React.FC<UpdateUnitCategoryModalProps> = ({
               onChange={(e) => setUnitCategoryName(e.target.value)}
             />
           </Form.Group>
-
-          <Form.Group controlId="formUnitCategoryType">
-            <Form.Label>Abbreviation</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder={UNIT_CATEGORY_TYPE_LABAL}
-              value={defaultStatus}
-              onChange={(e) => setDefaultStatus(e.target.value)}
-            />
-          </Form.Group>
+       
         </Form>
       </Modal.Body>
       <Modal.Footer>

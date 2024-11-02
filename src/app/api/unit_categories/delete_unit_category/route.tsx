@@ -36,7 +36,7 @@ export async function PUT(req: Request) {
         return NextResponse.json({
             message: DELETED_UNIT_CATEGORY,
             unit_category_id,
-            status: "deleted"
+            status: DELETED_ITEM
         });
     } catch (error) {
         //console.error('Error deleting unit:', error);

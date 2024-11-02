@@ -42,7 +42,7 @@ export const addUnitCategory = async (unit_category_name: string, unit_category_
 };
 
 //Function to update a unit category
-export const updateUnitCategory = async (unit_category_id: string, unit_category_name: string, default_status: any) => {
+export const updateUnitCategory = async (unit_category_id: string, unit_category_name: string) => {
 
   const uri = UNIT_CATEGORY_API + 'update_unit_category'
   try {
@@ -51,7 +51,7 @@ export const updateUnitCategory = async (unit_category_id: string, unit_category
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ unit_category_id, unit_category_name, default_status }),
+      body: JSON.stringify({ unit_category_id, unit_category_name}),
     });
 
     if (!response.ok) {
@@ -59,7 +59,7 @@ export const updateUnitCategory = async (unit_category_id: string, unit_category
     }
 
     const data = await response.json();
-    return data;
+   return { success: true, message: 'Unit category updated successfully!' };
   } catch (error) {
     console.error('Error updating unit category:', error);
     return { success: false, message: 'Failed to update unit category' };
@@ -82,7 +82,7 @@ export const deleteUnitCategory = async (unit_category_id: string) => {
     }
 
     const data = await response.json();
-    return data;
+    return { success: true, message: 'Unit category deleted successfully!' };
   } catch (error) {
     console.error('Error delete unit category:', error);
     return { success: false, message: 'Failed to delete unit category' };

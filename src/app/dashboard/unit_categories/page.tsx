@@ -114,7 +114,6 @@ export default function Page() {
     setSelectedCategory({
       unit_category_id: selectedCategoryData[0],
       unit_category_name: selectedCategoryData[1],
-      default_status: selectedCategoryData[2],
     });
     setShowUpdateModal(true);
   };
@@ -125,12 +124,11 @@ export default function Page() {
   }) => {
     const result = await updateUnitCategory(
       selectedCategory.unit_category_id,
-      updatedCategory.unit_category_name,
-      updatedCategory.default_status
-    );
+      updatedCategory.unit_category_name,    );
     if (result.success) {
-      await reloadData();
       handleCloseUpdateModal();
+      await reloadData();
+     
     }
   };
 
@@ -193,7 +191,7 @@ export default function Page() {
         <Col md={3}>
           <h3 className="text-primary">{UNIT_CATEGORY_PAGE_NAME}</h3>
         </Col>
-        <Col md={6}>
+        <Col md={6} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', flexWrap: 'nowrap' }}>
           <TextInput
             form_id="search_category"
             onChangeText={handleSearch}
@@ -240,6 +238,7 @@ export default function Page() {
             onChange={setUnitCategoryType}
             selected_value={unitCategoryType}
           />
+          <br/>
           <ClearButton
             label={CLEAR_BUTTON_LABAL}
             onClickButton={() => {

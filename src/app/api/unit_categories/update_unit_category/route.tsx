@@ -23,8 +23,8 @@ export async function PUT(req: Request) {
         }
 
         // Update the unit in the database
-        const query = 'UPDATE unit_categories SET unit_category_name = ?';
-        const [result] = await connection.execute(query, [unit_category_name]);
+        const query = 'UPDATE unit_categories SET unit_category_name = ? WHERE unit_category_id = ?';   
+        const [result] = await connection.execute(query, [unit_category_name, unit_category_id]);
 
         // Check if any rows were affected (i.e., if the update was successful)
         if (result.affectedRows === 0) {
