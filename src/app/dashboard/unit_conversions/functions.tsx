@@ -31,3 +31,19 @@ export const fetchAllUnitConversions  = async () => {
     return [];
   }
 };
+
+export const fetchAllUnitCategories  = async () => {
+
+  const uri = UNIT_CONVERSION_API + 'load_unit_categories'
+  try {
+    const response = await fetch(uri);
+    if (!response.ok) {
+      throw new Error('Failed to fetch unit categories');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching all unit categories:', error);
+    return [];
+  }
+};

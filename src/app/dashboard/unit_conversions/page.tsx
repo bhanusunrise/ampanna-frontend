@@ -4,9 +4,9 @@ import TextInput from "@/app/components/Forms/text_input";
 import SelectBox from "@/app/components/Forms/select_box";
 import { Col, Row } from "react-bootstrap";
 import { useState, useEffect } from "react";
-import { fetchAllUnits } from './functions'; // Assuming it's in the same directory
+import { fetchAllUnitCategories, fetchAllUnits } from './functions'; // Assuming it's in the same directory
 import NumberInput from "@/app/components/Forms/number_input";
-import { ADD_UNIT_CONVERSION, UNIT_CONVERSION_PAGE_NAME } from "@/app/constants/constants";
+import { ADD_UNIT_CONVERSION, UNIT_CATEGORY_NAME_LABAL, UNIT_CONVERSION_PAGE_NAME } from "@/app/constants/constants";
 
 export default function Page() {
   const [fromUnit, setFromUnit] = useState('');
@@ -14,6 +14,9 @@ export default function Page() {
   const [value, setValue] = useState('');
   const [unitIds, setUnitIds] = useState<string[]>([]); // Store unit IDs
   const [unitNames, setUnitNames] = useState<string[]>([]); // Store unit names
+  const [unitCategoryIds, setUnitCategoryIds] = useState<string[]>([]); // Store unit category IDs
+  const [unitCategoryNames, setUnitCategoryNames] = useState<string[]>([]); // Store unit category names
+  const [selectedUnitCategory, setSelectedUnitCategory] = useState('');
   const [loading, setLoading] = useState(true);
 
   // Fetch the unit data on component mount
@@ -36,6 +39,26 @@ export default function Page() {
     loadUnits();
   }, []);
 
+  // Fetch the unit category data on component mount
+  useEffect(() => {
+    const loadUnitCategories = async () => {
+      setLoading(true);
+      const unitCategories = await fetchAllUnitCategories();
+      
+      if (unitCategories.length > 0) {
+        // Separate the unit IDs and names from the response
+        const ids = unitCategories.map((unitCategory: { unit_category_id: string }) => unitCategory.unit_category_id);
+        const names = unitCategories.map((unitCategory: { unit_category_name: string }) => unitCategory.unit_category_name);
+
+        setUnitCategoryIds(ids);
+        setUnitCategoryNames(names);
+      }
+      setLoading(false);
+    };
+
+    loadUnitCategories();
+  }, []);
+
   return (
     <>
       <Row>
@@ -50,10 +73,20 @@ export default function Page() {
           
           {/* Show loading indicator until data is fetched */}
           {loading ? (
-            <p>Loading units...</p>
+            <p>Loading units conversions</p>
           ) : (
             <>
               {/* Include SelectBox for 'From Unit' */}
+
+              <SelectBox
+                values={unitCategoryIds}
+                display_values={unitCategoryNames}
+                label_name={UNIT_CATEGORY_NAME_LABAL}
+                form_id="from_unit_select"
+                onChange={(value) => setSelectedUnitCategory(value)}
+                selected_value={selectedUnitCategory}
+              />
+
               <SelectBox
                 values={unitIds}
                 display_values={unitNames}
