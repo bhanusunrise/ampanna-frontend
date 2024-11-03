@@ -1,32 +1,36 @@
-import { BACK, CLEAR_BUTTON_LABAL, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_TYPE_LABAL, UPDATE_BUTTON_UPDATE_MODAL, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
+import { BACK,  FIRST_UNIT_LABEL, MULTIPLIER_LABAL, SECOND_UNIT_LABEL, UPDATE_BUTTON_UPDATE_MODAL, UPDATE_UNIT_CONVERSION_MODEL_TITLE } from '@/app/constants/constants';
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
-interface UpdateUnitCategoryModalProps {
+interface UpdateUnitConversionModalProps {
   show: boolean;
   handleClose: () => void;
-  handleUpdateUnitCategory: (unitCategoryData: { unit_category_name: string; }) => Promise<void>;
-  unit_category_name: string;
+  handleUpdateUnitConversion: (unitConversionData: { multiplier: number }) => Promise<void>;
+  firstUnit: string;
+  initialMultiplier: number;
+  secondUnit: string;
 }
 
-const UpdateUnitCategoryModal: React.FC<UpdateUnitCategoryModalProps> = ({
+const UpdateUnitConversionModal: React.FC<UpdateUnitConversionModalProps> = ({
   show,
   handleClose,
-  handleUpdateUnitCategory,
-  unit_category_name: initialUnitCategoryName,
+  handleUpdateUnitConversion,
+  firstUnit,
+  initialMultiplier,
+  secondUnit,
 }) => {
-  const [unitCategoryName, setUnitCategoryName] = useState(initialUnitCategoryName);
+  const [multiplier, setMultiplier] = useState(initialMultiplier);
 
   // Reset values when modal opens or when props change
   useEffect(() => {
     if (show) {
-      setUnitCategoryName(initialUnitCategoryName);;
+      setMultiplier(initialMultiplier);
     }
-  }, [show, initialUnitCategoryName]);
+  }, [show, initialMultiplier]);
 
   const handleSubmit = async () => {
-    await handleUpdateUnitCategory({
-      unit_category_name: unitCategoryName,
+    await handleUpdateUnitConversion({
+      multiplier,
     });
     handleClose();
   };
@@ -34,20 +38,41 @@ const UpdateUnitCategoryModal: React.FC<UpdateUnitCategoryModalProps> = ({
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton className="bg-warning">
-        <Modal.Title>{UPDATE_UNIT_CATEGORY_MODEL_TITLE}</Modal.Title>
+        <Modal.Title>{UPDATE_UNIT_CONVERSION_MODEL_TITLE}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form>
-          <Form.Group controlId="formUnitCategoryName">
-            <Form.Label>{UNIT_CATEGORY_NAME_LABAL}</Form.Label>
+          {/* First Unit (Disabled) */}
+          <Form.Group controlId="formFirstUnit">
+            <Form.Label>{FIRST_UNIT_LABEL}</Form.Label>
             <Form.Control
               type="text"
-              placeholder={UNIT_CATEGORY_NAME_PLACEHOLDER}
-              value={unitCategoryName}
-              onChange={(e) => setUnitCategoryName(e.target.value)}
+              value={firstUnit}
+              disabled
             />
           </Form.Group>
-       
+
+          {/* Multiplier (Number Input with min and max) */}
+          <Form.Group controlId="formMultiplier">
+            <Form.Label>{MULTIPLIER_LABAL}</Form.Label>
+            <Form.Control
+              type="number"
+              min={0}
+              max={9999999}
+              value={multiplier}
+              onChange={(e) => setMultiplier(Number(e.target.value))}
+            />
+          </Form.Group>
+
+          {/* Second Unit (Disabled) */}
+          <Form.Group controlId="formSecondUnit">
+            <Form.Label>{SECOND_UNIT_LABEL}</Form.Label>
+            <Form.Control
+              type="text"
+              value={secondUnit}
+              disabled
+            />
+          </Form.Group>
         </Form>
       </Modal.Body>
       <Modal.Footer>
@@ -62,4 +87,4 @@ const UpdateUnitCategoryModal: React.FC<UpdateUnitCategoryModalProps> = ({
   );
 };
 
-export default UpdateUnitCategoryModal;
+export default UpdateUnitConversionModal;
