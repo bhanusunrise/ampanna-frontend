@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { dbConnect } from '../../../lib/db'; // Adjust the path if necessary
+import { dbConnect } from '../../../lib/db';
 
 export async function POST(req: Request) {
     const connection = await dbConnect();
@@ -12,6 +12,40 @@ export async function POST(req: Request) {
         // Validate input
         if (!unitFrom || !unitTo || value === undefined) {
             return NextResponse.json({ message: 'Missing required fields' }, { status: 400 });
+        }
+
+        // Ensure value is positive
+        if (value <= 0) {
+            return NextResponse.json({ message: 'Value must be a positive number' }, { status: 400 });
+        }
+
+        // Ensure unitFrom and unitTo are not the same
+        if (unitFrom === unitTo) {
+            return NextResponse.json({ message: 'fromUnit and toUnit cannot be the same' }, { status: 400 });
+        }
+
+        // Check if the units belong to the same category
+        const [unitCategories] = await connection.execute(
+            `SELECT u1.unit_category_id AS categoryFrom, u2.unit_category_id AS categoryTo
+             FROM units AS u1
+             JOIN units AS u2 ON u1.unit_id = ? AND u2.unit_id = ?`,
+            [unitFrom, unitTo]
+        );
+
+        if (unitCategories.length === 0 || unitCategories[0].categoryFrom !== unitCategories[0].categoryTo) {
+            return NextResponse.json({ message: 'Units must belong to the same category' }, { status: 400 });
+        }
+
+        // Check if the conversion already exists in either direction
+        const [existingConversions] = await connection.execute(
+            `SELECT * FROM unit_conversions 
+             WHERE (from_unit = ? AND to_unit = ?)
+                OR (from_unit = ? AND to_unit = ?)`,
+            [unitFrom, unitTo, unitTo, unitFrom]
+        );
+
+        if (existingConversions.length > 0) {
+            return NextResponse.json({ message: 'This unit conversion already exists' }, { status: 409 });
         }
 
         // Use transaction to ensure atomicity
