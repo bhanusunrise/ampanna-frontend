@@ -5,9 +5,10 @@ import { Col, Row } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { addUnitConversion, fetchAllUnitCategories, fetchAllUnits } from './functions'; // Assuming it's in the same directory
 import NumberInput from "@/app/components/Forms/number_input";
-import { ADD_BUTTON_LABAL, ADD_UNIT_CONVERSION, CLEAR_BUTTON_LABAL, FIRST_UNIT_NAME_LABAL, MULTIPLIER_LABAL, MULTIPLIER_PLACEHOLDER, SECOND_UNIT_NAME_LABAL, UNIT_CATEGORY_NAME_LABAL, UNIT_CONVERSION_PAGE_NAME } from "@/app/constants/constants";
+import { ADD_BUTTON_LABAL, ADD_UNIT_CONVERSION, CLEAR_BUTTON_LABAL, FIRST_UNIT_NAME_LABAL, MULTIPLIER_LABAL, MULTIPLIER_PLACEHOLDER, SECOND_UNIT_NAME_LABAL, UNIT_CATEGORY_NAME_LABAL, UNIT_CONVERSION_PAGE_NAME, UNIT_CONVERSION_TABLE_FIELDS } from "@/app/constants/constants";
 import ClearButton from "@/app/components/Buttons/clear_button";
 import AddButton from "@/app/components/Buttons/add_button";
+import BasicTable from "@/app/components/Tables/basic_table";
 
 export default function Page() {
   const [firstUnitIds, setFirstUnitIds] = useState<string[]>([]); // Store unit IDs
@@ -100,7 +101,10 @@ export default function Page() {
         <br/>
       </Row>
       <Row>
-        <Col md={8}></Col>
+        <Col md={8}>
+        
+        
+        </Col>
         <Col md={4}>
           <h3 className={'text-primary'}>{ADD_UNIT_CONVERSION}</h3>
           
