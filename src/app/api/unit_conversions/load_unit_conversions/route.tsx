@@ -12,7 +12,10 @@ export async function GET() {
                 uc.value,
                 uc.to_unit,
                 uf.unit_name AS from_unit_name,
-                ut.unit_name AS to_unit_name
+                ut.unit_name AS to_unit_name,
+                uc.createdAt,
+                uc.updatedAt,
+                uc.status
             FROM 
                 unit_conversions AS uc
             JOIN 
