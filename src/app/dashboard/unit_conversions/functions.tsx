@@ -73,3 +73,30 @@ export const addUnitConversion = async (unit_01: string, unit_02: string, multip
     }
 };
 
+// New function to update an existing unit conversion
+export const updateUnitConversion = async (conversionId: string, newMultiplier: number) => {
+  const uri = UNIT_CONVERSION_API + 'update_unit';
+
+  try {
+    const response = await fetch(uri, {
+      method: 'PUT', // Use PUT to update the unit conversion
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ conversionId, newMultiplier }), // Pass conversionId and newMultiplier
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to update unit conversion');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error updating unit conversion:', error);
+    return { success: false, message: error.message || 'Failed to update unit conversion' };
+  }
+};
+
+
