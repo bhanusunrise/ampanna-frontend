@@ -9,6 +9,7 @@ export const fetchAllUnits = async (unitCategoryId: string) => {
       throw new Error('Failed to fetch units');
     }
     const data = await response.json();
+    //console.log(data.length);
     return data;
   } catch (error) {
     console.error('Error fetching all units:', error);
@@ -75,7 +76,7 @@ export const addUnitConversion = async (unit_01: string, unit_02: string, multip
 
 // New function to update an existing unit conversion
 export const updateUnitConversion = async (conversionId: string, newMultiplier: number) => {
-  const uri = UNIT_CONVERSION_API + 'update_unit';
+  const uri = UNIT_CONVERSION_API + 'update_unit_conversion';
 
   try {
     const response = await fetch(uri, {
@@ -92,10 +93,58 @@ export const updateUnitConversion = async (conversionId: string, newMultiplier: 
     }
 
     const data = await response.json();
-    return data;
+    return { success: true, message: 'Unit conversion updated successfully!' };
   } catch (error) {
     console.error('Error updating unit conversion:', error);
     return { success: false, message: error.message || 'Failed to update unit conversion' };
+  }
+};
+
+
+export const deleteUnitConversion = async (unit_conversion_id: string) => {
+  const uri = UNIT_CONVERSION_API + 'delete_unit_conversion'
+  try {
+    const response = await fetch(uri, {
+      method: 'PUT', // Use PUT to update the unit
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ unit_conversion_id}),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to delete unit conversion');
+    }
+
+    const data = await response.json();
+    return { success: true, message: 'Unit conversion deleted successfully!' };
+  } catch (error) {
+    console.error('Error delete unit conversion:', error);
+    return { success: false, message: 'Failed to delete unit conversion' };
+  }
+};
+
+export const restoreUnitConversion = async (unit_conversion_id: string) => {
+
+  const uri = UNIT_CONVERSION_API + 'restore_unit_conversion'
+  try {
+    const response = await fetch(uri, {
+      method: 'PUT', // Using PUT to restore the unit
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ unit_conversion_id }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to restore unit conversion');
+    }
+
+    const data = await response.json();
+    return { success: true, message: 'Unit conversion restored successfully!' };
+  } catch (error) {
+    console.error('Error restoring unit conversion:', error);
+    return { success: false, message: 'Failed to restore unit conversion' };
   }
 };
 

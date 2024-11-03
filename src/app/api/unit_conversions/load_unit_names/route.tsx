@@ -19,6 +19,10 @@ export async function GET(request: Request) {
             'SELECT unit_id, unit_name FROM units WHERE unit_category_id = ? ORDER BY unit_id DESC',
             [unitCategoryId]
         );
+
+        if (rows.length === 0) {
+            return NextResponse.json({ error: 'No units found' }, { status: 404 });
+        }
         
         return NextResponse.json(rows);
     } catch (error) {

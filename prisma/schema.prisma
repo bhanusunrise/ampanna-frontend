@@ -45,6 +45,7 @@ model Unit_Conversions {
   conversion_id String   @id @db.VarChar(8)
   from_unit     String   @db.VarChar(10)
   value         Float
+  status        String   @default("සක්‍රීය")
   to_unit       String   @db.VarChar(10)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @default(now())

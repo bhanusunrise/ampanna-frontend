@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { dbConnect } from '../../../lib/db'; // Adjust the path if necessary
-import { ACTIVE_ITEM, DELETED_ITEM } from '@/app/constants/constants';
+import { DELETED_ITEM } from '@/app/constants/constants';
 
 export async function PUT(req: Request) {
     const connection = await dbConnect();

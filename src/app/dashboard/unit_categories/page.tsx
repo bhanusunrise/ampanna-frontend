@@ -23,7 +23,6 @@ import NavigateButtons from '@/app/components/Buttons/navigate_button';
 import { Col, Row } from 'react-bootstrap';
 import AddButton from '@/app/components/Buttons/add_button';
 import TextInput from '@/app/components/Forms/text_input';
-import SelectBox from '@/app/components/Forms/select_box'; // Import SelectBox component
 import ClearButton from '@/app/components/Buttons/clear_button';
 import UpdateUnitCategoryModal from '@/app/components/Models/Unit_Categories/update_unit_cetegory_model';
 import DeleteModal from '@/app/components/Models/delete_model';

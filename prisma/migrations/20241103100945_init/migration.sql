@@ -28,6 +28,7 @@ CREATE TABLE `Unit_Conversions` (
     `conversion_id` VARCHAR(8) NOT NULL,
     `from_unit` VARCHAR(10) NOT NULL,
     `value` DOUBLE NOT NULL,
+    `status` VARCHAR(191) NOT NULL DEFAULT 'සක්‍රීය',
     `to_unit` VARCHAR(10) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
