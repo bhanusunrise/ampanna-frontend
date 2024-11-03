@@ -59,7 +59,13 @@ export default function Page() {
         setFirstUnitNames(unit_names);
         setSecondUnitIds(unit_ids);
         setSecondUnitNames(unit_names);
+      }else{
+        setFirstUnitIds(['']);
+        setFirstUnitNames(['']);
+        setSecondUnitIds(['']);
+        setSecondUnitNames(['']);
       }
+
       setLoading(false);
     };
 

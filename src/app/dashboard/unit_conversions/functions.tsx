@@ -9,6 +9,7 @@ export const fetchAllUnits = async (unitCategoryId: string) => {
       throw new Error('Failed to fetch units');
     }
     const data = await response.json();
+    //console.log(data.length);
     return data;
   } catch (error) {
     console.error('Error fetching all units:', error);
