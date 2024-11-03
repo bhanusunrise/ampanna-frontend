@@ -230,14 +230,6 @@ export default function Page() {
             label="Category Name"
             value={unitCategoryName}
           />
-          <SelectBox
-            values={UNIT_CATEGORY_TYPES}
-            display_values={UNIT_CATEGORY_TYPES}
-            label_name={UNIT_CATEGORY_TYPE_LABAL}
-            form_id="unit_category_type"
-            onChange={setUnitCategoryType}
-            selected_value={unitCategoryType}
-          />
           <br/>
           <ClearButton
             label={CLEAR_BUTTON_LABAL}

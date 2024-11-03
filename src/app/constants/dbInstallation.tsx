@@ -47,33 +47,33 @@ module.exports.UNIT_LIST = [
 
 module.exports.UNIT_CONVERSIONS = [
     // බර පරිවර්තන (Weight Conversions)
-    { conversion_id: 'conv01', from_unit: 'unit01', to_unit: 'unit02', value: 1000 },     // කිලෝ ග්‍රෑම් to ග්‍රෑම්
-    { conversion_id: 'conv02', from_unit: 'unit02', to_unit: 'unit01', value: 0.001 },    // ග්‍රෑම් to කිලෝ ග්‍රෑම්
-    { conversion_id: 'conv07', from_unit: 'unit18', to_unit: 'unit01', value: 1000 },     // ටොන් to කිලෝ ග්‍රෑම්
-    { conversion_id: 'conv08', from_unit: 'unit01', to_unit: 'unit18', value: 0.001 },    // කිලෝ ග්‍රෑම් to ටොන්
+    { conversion_id: 'CONV01', from_unit: 'unit01', to_unit: 'unit02', value: 1000 },     // කිලෝ ග්‍රෑම් to ග්‍රෑම්
+    { conversion_id: 'CONV02', from_unit: 'unit02', to_unit: 'unit01', value: 0.001 },    // ග්‍රෑම් to කිලෝ ග්‍රෑම්
+    { conversion_id: 'CONV07', from_unit: 'unit18', to_unit: 'unit01', value: 1000 },     // ටොන් to කිලෝ ග්‍රෑම්
+    { conversion_id: 'CONV08', from_unit: 'unit01', to_unit: 'unit18', value: 0.001 },    // කිලෝ ග්‍රෑම් to ටොන්
 
     // උස පරිවර්තන (Height Conversions)
-    { conversion_id: 'conv09', from_unit: 'unit03', to_unit: 'unit04', value: 100 },      // මීටර් to සෙන්ටිමීටර්
-    { conversion_id: 'conv10', from_unit: 'unit04', to_unit: 'unit03', value: 0.01 },     // සෙන්ටිමීටර් to මීටර්
-    { conversion_id: 'conv11', from_unit: 'unit03', to_unit: 'unit05', value: 1000 },     // මීටර් to මිලිමීටර්
-    { conversion_id: 'conv12', from_unit: 'unit05', to_unit: 'unit03', value: 0.001 },    // මිලිමීටර් to මීටර්
-    { conversion_id: 'conv13', from_unit: 'unit10', to_unit: 'unit03', value: 0.0254 },   // අඟල් to මීටර්
-    { conversion_id: 'conv14', from_unit: 'unit03', to_unit: 'unit10', value: 39.3701 },  // මීටර් to අඟල්
-    { conversion_id: 'conv15', from_unit: 'unit11', to_unit: 'unit10', value: 12 },       // අඩි to අඟල්
-    { conversion_id: 'conv16', from_unit: 'unit10', to_unit: 'unit11', value: 0.0833333 }, // අඟල් to අඩි
+    { conversion_id: 'CONV09', from_unit: 'unit03', to_unit: 'unit04', value: 100 },      // මීටර් to සෙන්ටිමීටර්
+    { conversion_id: 'CONV10', from_unit: 'unit04', to_unit: 'unit03', value: 0.01 },     // සෙන්ටිමීටර් to මීටර්
+    { conversion_id: 'CONV11', from_unit: 'unit03', to_unit: 'unit05', value: 1000 },     // මීටර් to මිලිමීටර්
+    { conversion_id: 'CONV12', from_unit: 'unit05', to_unit: 'unit03', value: 0.001 },    // මිලිමීටර් to මීටර්
+    { conversion_id: 'CONV13', from_unit: 'unit10', to_unit: 'unit03', value: 0.0254 },   // අඟල් to මීටර්
+    { conversion_id: 'CONV14', from_unit: 'unit03', to_unit: 'unit10', value: 39.3701 },  // මීටර් to අඟල්
+    { conversion_id: 'CONV15', from_unit: 'unit11', to_unit: 'unit10', value: 12 },       // අඩි to අඟල්
+    { conversion_id: 'CONV16', from_unit: 'unit10', to_unit: 'unit11', value: 0.0833333 }, // අඟල් to අඩි
 
     // පරිමාව පරිවර්තන (Volume Conversions)
-    { conversion_id: 'conv19', from_unit: 'unit06', to_unit: 'unit07', value: 1000 },     // ලීටර් to මිලිලීටර්
-    { conversion_id: 'conv20', from_unit: 'unit07', to_unit: 'unit06', value: 0.001 },    // මිලිලීටර් to ලීටර්
-    { conversion_id: 'conv21', from_unit: 'unit15', to_unit: 'unit06', value: 3.78541 },  // ගැලන් to ලීටර්
-    { conversion_id: 'conv22', from_unit: 'unit06', to_unit: 'unit15', value: 0.264172 }, // ලීටර් to ගැලන්
-    { conversion_id: 'conv23', from_unit: 'unit16', to_unit: 'unit06', value: 0.473176 }, // පින්ට් to ලීටර්
-    { conversion_id: 'conv24', from_unit: 'unit06', to_unit: 'unit16', value: 2.11338 },  // ලීටර් to පින්ට්
+    { conversion_id: 'CONV19', from_unit: 'unit06', to_unit: 'unit07', value: 1000 },     // ලීටර් to මිලිලීටර්
+    { conversion_id: 'CONV20', from_unit: 'unit07', to_unit: 'unit06', value: 0.001 },    // මිලිලීටර් to ලීටර්
+    { conversion_id: 'CONV21', from_unit: 'unit15', to_unit: 'unit06', value: 3.78541 },  // ගැලන් to ලීටර්
+    { conversion_id: 'CONV22', from_unit: 'unit06', to_unit: 'unit15', value: 0.264172 }, // ලීටර් to ගැලන්
+    { conversion_id: 'CONV23', from_unit: 'unit16', to_unit: 'unit06', value: 0.473176 }, // පින්ට් to ලීටර්
+    { conversion_id: 'CONV24', from_unit: 'unit06', to_unit: 'unit16', value: 2.11338 },  // ලීටර් to පින්ට්
 
     // පිහිටීම පරිවර්තන (Area Conversions)
-    { conversion_id: 'conv27', from_unit: 'unit08', to_unit: 'unit13', value: 10.7639 },   // වර්ග මීටර් to වර්ග අඩි
-    { conversion_id: 'conv28', from_unit: 'unit13', to_unit: 'unit08', value: 0.092903 },  // වර්ග අඩි to වර්ග මීටර්
-    { conversion_id: 'conv29', from_unit: 'unit14', to_unit: 'unit10', value: 0.00694444 }, // වර්ග අඟල් to වර්ග අඩි
-    { conversion_id: 'conv30', from_unit: 'unit10', to_unit: 'unit14', value: 144 },       // වර්ග අඩි to වර්ග අඟල්
+    { conversion_id: 'CONV27', from_unit: 'unit08', to_unit: 'unit13', value: 10.7639 },   // වර්ග මීටර් to වර්ග අඩි
+    { conversion_id: 'CONV28', from_unit: 'unit13', to_unit: 'unit08', value: 0.092903 },  // වර්ග අඩි to වර්ග මීටර්
+    { conversion_id: 'CONV29', from_unit: 'unit14', to_unit: 'unit10', value: 0.00694444 }, // වර්ග අඟල් to වර්ග අඩි
+    { conversion_id: 'CONV30', from_unit: 'unit10', to_unit: 'unit14', value: 144 },       // වර්ග අඩි to වර්ග අඟල්
 ];
 

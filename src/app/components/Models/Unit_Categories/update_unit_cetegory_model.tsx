@@ -1,4 +1,4 @@
-import { CLEAR_BUTTON_LABAL, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_TYPE_LABAL, UPDATE_BUTTON_UPDATE_MODAL, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
+import { BACK, CLEAR_BUTTON_LABAL, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_TYPE_LABAL, UPDATE_BUTTON_UPDATE_MODAL, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
@@ -52,7 +52,7 @@ const UpdateUnitCategoryModal: React.FC<UpdateUnitCategoryModalProps> = ({
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
-          {CLEAR_BUTTON_LABAL}
+          {BACK}
         </Button>
         <Button variant="warning" onClick={handleSubmit}>
           {UPDATE_BUTTON_UPDATE_MODAL}
