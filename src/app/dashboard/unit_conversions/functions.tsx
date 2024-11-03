@@ -101,3 +101,51 @@ export const updateUnitConversion = async (conversionId: string, newMultiplier: 
 };
 
 
+export const deleteUnitConversion = async (unit_conversion_id: string) => {
+  const uri = UNIT_CONVERSION_API + 'delete_unit_category'
+  try {
+    const response = await fetch(uri, {
+      method: 'PUT', // Use PUT to update the unit
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ unit_conversion_id}),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to delete unit conversion');
+    }
+
+    const data = await response.json();
+    return { success: true, message: 'Unit conversion deleted successfully!' };
+  } catch (error) {
+    console.error('Error delete unit conversion:', error);
+    return { success: false, message: 'Failed to delete unit conversion' };
+  }
+};
+
+export const restoreUnitConversion = async (unit_conversion_id: string) => {
+
+  const uri = UNIT_CONVERSION_API + 'restore_unit_conversion'
+  try {
+    const response = await fetch(uri, {
+      method: 'PUT', // Using PUT to restore the unit
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ unit_conversion_id }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to restore unit conversion');
+    }
+
+    const data = await response.json();
+    return { success: true, message: 'Unit conversion restored successfully!' };
+  } catch (error) {
+    console.error('Error restoring unit conversion:', error);
+    return { success: false, message: 'Failed to restore unit conversion' };
+  }
+};
+
+
