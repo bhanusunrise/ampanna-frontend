@@ -1,37 +1,36 @@
-import { BACK, UNIT_ABBRAVIATION_LABAL, UNIT_ABBRAVIATION_PLACEHOLDER, UNIT_NAME_LABAL, UNIT_NAME_PLACEHOLDER, UPDATE_BUTTON_UPDATE_MODAL, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
+import { BACK, CLEAR_BUTTON_LABAL, FIRST_UNIT_LABEL, MULTIPLIER_LABAL, SECOND_UNIT_LABEL, UPDATE_BUTTON_UPDATE_MODAL, UPDATE_UNIT_CONVERSION_MODEL_TITLE } from '@/app/constants/constants';
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
 interface UpdateUnitConversionModalProps {
   show: boolean;
   handleClose: () => void;
-  handleUpdateUnit: (unitConversionData: { unit_name: string; abbreviation: string; }) => Promise<void>;
-  unitName: string;
-  abbreviation: string;
+  handleUpdateUnitConversion: (unitConversionData: { multiplier: number }) => Promise<void>;
+  firstUnit: string;
+  initialMultiplier: number;
+  secondUnit: string;
 }
 
 const UpdateUnitConversionModal: React.FC<UpdateUnitConversionModalProps> = ({
   show,
   handleClose,
-  handleUpdateUnit,
-  unitName: initialUnitName,
-  abbreviation: initialAbbreviation,
+  handleUpdateUnitConversion,
+  firstUnit,
+  initialMultiplier,
+  secondUnit,
 }) => {
-  const [unitName, setUnitName] = useState(initialUnitName);
-  const [abbreviation, setAbbreviation] = useState(initialAbbreviation);
+  const [multiplier, setMultiplier] = useState(initialMultiplier);
 
   // Reset values when modal opens or when props change
   useEffect(() => {
     if (show) {
-      setUnitName(initialUnitName);
-      setAbbreviation(initialAbbreviation);
+      setMultiplier(initialMultiplier);
     }
-  }, [show, initialUnitName, initialAbbreviation]);
+  }, [show, initialMultiplier]);
 
   const handleSubmit = async () => {
-    await handleUpdateUnit({
-      unit_name: unitName,
-      abbreviation,
+    await handleUpdateUnitConversion({
+      multiplier,
     });
     handleClose();
   };
@@ -39,27 +38,39 @@ const UpdateUnitConversionModal: React.FC<UpdateUnitConversionModalProps> = ({
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton className="bg-warning">
-        <Modal.Title>{UPDATE_UNIT_CATEGORY_MODEL_TITLE}</Modal.Title>
+        <Modal.Title>{UPDATE_UNIT_CONVERSION_MODEL_TITLE}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form>
-          <Form.Group controlId="formUnitName">
-            <Form.Label>{UNIT_NAME_LABAL}</Form.Label>
+          {/* First Unit (Disabled) */}
+          <Form.Group controlId="formFirstUnit">
+            <Form.Label>{FIRST_UNIT_LABEL}</Form.Label>
             <Form.Control
               type="text"
-              placeholder={UNIT_NAME_PLACEHOLDER}
-              value={unitName}
-              onChange={(e) => setUnitName(e.target.value)}
+              value={firstUnit}
+              disabled
             />
           </Form.Group>
 
-          <Form.Group controlId="formAbbreviation">
-            <Form.Label>{UNIT_ABBRAVIATION_LABAL}</Form.Label>
+          {/* Multiplier (Number Input with min and max) */}
+          <Form.Group controlId="formMultiplier">
+            <Form.Label>{MULTIPLIER_LABAL}</Form.Label>
+            <Form.Control
+              type="number"
+              min={0}
+              max={9999999}
+              value={multiplier}
+              onChange={(e) => setMultiplier(Number(e.target.value))}
+            />
+          </Form.Group>
+
+          {/* Second Unit (Disabled) */}
+          <Form.Group controlId="formSecondUnit">
+            <Form.Label>{SECOND_UNIT_LABEL}</Form.Label>
             <Form.Control
               type="text"
-              placeholder={UNIT_ABBRAVIATION_PLACEHOLDER}
-              value={abbreviation}
-              onChange={(e) => setAbbreviation(e.target.value)}
+              value={secondUnit}
+              disabled
             />
           </Form.Group>
         </Form>
@@ -77,3 +88,4 @@ const UpdateUnitConversionModal: React.FC<UpdateUnitConversionModalProps> = ({
 };
 
 export default UpdateUnitConversionModal;
+
