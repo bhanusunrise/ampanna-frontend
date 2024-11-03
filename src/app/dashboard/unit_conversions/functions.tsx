@@ -93,7 +93,7 @@ export const updateUnitConversion = async (conversionId: string, newMultiplier: 
     }
 
     const data = await response.json();
-    return data;
+    return { success: true, message: 'Unit conversion updated successfully!' };
   } catch (error) {
     console.error('Error updating unit conversion:', error);
     return { success: false, message: error.message || 'Failed to update unit conversion' };

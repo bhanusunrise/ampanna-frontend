@@ -163,6 +163,7 @@ export default function Page() {
     const result = await addUnitConversion(selectedFirstUnitID, selectedSecondUnitID, multiplier);
     if (result.success) {
         // Reload or reset the state as necessary
+        await reloadData();
         setSelectedFirstUnitID('');
         setSelectedSecondUnitID('');
         setMultiplier(0);
@@ -182,19 +183,21 @@ export default function Page() {
     setShowUpdateModal(true);
   };
 
-  const handleUpdateConversion = async (updatedCategory: {
-    unit_category_name: string;
-    default_status: string;
-  }) => {
-    const result = await updateUnitConversion(
-      selectedConversion.unit_conversion_id,
-      multiplier,    );
-    if (result.success) {
-      handleCloseUpdateModal();
-      await reloadData();
-     
-    }
-  };
+  const handleUpdateConversion = async (updatedConversion: { multiplier: number }) => {
+  // Pass the correct ID key for the selected conversion
+  const result = await updateUnitConversion(
+    selectedConversion.unit_category_conversion_id,
+    updatedConversion.multiplier
+  );
+
+  if (result.success) {
+    await reloadData();
+    handleCloseUpdateModal();
+  } else {
+    console.error(result.message); // Log error message for debugging
+  }
+};
+
 
     const handleDelete = (rowIndex: number) => {
     const conversionToDelete = filteredConversions[rowIndex];
