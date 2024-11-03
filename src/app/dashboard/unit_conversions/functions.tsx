@@ -76,7 +76,7 @@ export const addUnitConversion = async (unit_01: string, unit_02: string, multip
 
 // New function to update an existing unit conversion
 export const updateUnitConversion = async (conversionId: string, newMultiplier: number) => {
-  const uri = UNIT_CONVERSION_API + 'update_unit';
+  const uri = UNIT_CONVERSION_API + 'update_unit_conversion';
 
   try {
     const response = await fetch(uri, {
@@ -102,7 +102,7 @@ export const updateUnitConversion = async (conversionId: string, newMultiplier: 
 
 
 export const deleteUnitConversion = async (unit_conversion_id: string) => {
-  const uri = UNIT_CONVERSION_API + 'delete_unit_category'
+  const uri = UNIT_CONVERSION_API + 'delete_unit_conversion'
   try {
     const response = await fetch(uri, {
       method: 'PUT', // Use PUT to update the unit
