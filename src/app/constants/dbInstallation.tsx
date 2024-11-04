@@ -77,3 +77,11 @@ module.exports.UNIT_CONVERSIONS = [
     { conversion_id: 'CONV30', from_unit: 'unit10', to_unit: 'unit14', value: 144 },       // වර්ග අඩි to වර්ග අඟල්
 ];
 
+module.exports.ITEM_CATEGORY_LIST = [
+    { item_category_id: 'ICAT01', item_category_name: 'සිමෙන්ති', created_at: new Date('2024-11-05 01:07:19.000'), updated_at: new Date('2024-11-05 01:07:19.000'), status: 'සක්‍රීය' },
+    { item_category_id: 'ICAT02', item_category_name: 'තීන්ත', created_at: new Date('2024-11-05 01:07:40.000'), updated_at: new Date('2024-11-05 01:07:40.000'), status: 'සක්‍රීය' },
+    { item_category_id: 'ICAT03', item_category_name: 'වයර්', created_at: new Date('2024-11-05 01:08:05.000'), updated_at: new Date('2024-11-05 02:17:58.000'), status: 'සක්‍රීය' },
+    { item_category_id: 'ICAT04', item_category_name: 'තීන්ත බුරුසු', created_at: new Date('2024-11-05 01:08:30.000'), updated_at: new Date('2024-11-05 01:42:38.000'), status: 'සක්‍රීය' },
+    { item_category_id: 'ICAT05', item_category_name: 'යතුරු', created_at: new Date('2024-11-05 01:37:04.000'), updated_at: new Date('2024-11-05 01:37:04.000'), status: 'සක්‍රීය' },
+    { item_category_id: 'ICAT06', item_category_name: 'මිටි', created_at: new Date('2024-11-05 02:55:59.000'), updated_at: new Date('2024-11-05 02:55:59.000'), status: 'සක්‍රීය' }
+];
