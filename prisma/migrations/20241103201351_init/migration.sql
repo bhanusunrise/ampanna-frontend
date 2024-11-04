@@ -65,6 +65,7 @@ CREATE TABLE `ItemUnits` (
     `unit_id` VARCHAR(7) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `default_status` VARCHAR(12) NOT NULL,
 
     UNIQUE INDEX `ItemUnits_item_id_unit_id_key`(`item_id`, `unit_id`),
     PRIMARY KEY (`id`)

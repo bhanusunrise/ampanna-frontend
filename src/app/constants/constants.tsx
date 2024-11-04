@@ -194,6 +194,18 @@ export const UNIT_ABBRAVIATION_PLACEHOLDER = "සංකේතයක් ඇතු
 export const UPDATE_UNIT_CONVERSION_MODEL_TITLE = UNIT_PAGE_NAME + UPDATE
 
 
+/** Items */
+export const ITEMS_PAGE_NAME = "භාණ්ඩ"
+export const ADD_ITEM_PAGE_NAME = NEW + " භාණ්ඩය"
+
+
+/** Item Categories */
+export const ITEM_CATEGORIES_PAGE_NAME = "භාණ්ඩ වර්ග"
+export const ADD_ITEM_CATEGORY = NEW + " භාණ්ඩ වර්ගය"
+
+export const ITEM_CATEGORY_NAME_LABAL = "භාණ්ඩ වර්ගයේ නම"
+export const ITEM_CATEGORY_NAME_PLACEHOLDER = "භාණ්ඩ වර්ගයක් ඇතුලත් කරන්න"
+
 
 
 

@@ -87,6 +87,7 @@ model ItemUnits {
   unit_id   String   @db.VarChar(7)
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
+  default_status   String   @db.VarChar(12)
 
   item Items @relation("ItemUnitRelation", fields: [item_id], references: [item_id])
   unit Units @relation("UnitItemRelation", fields: [unit_id], references: [unit_id])
