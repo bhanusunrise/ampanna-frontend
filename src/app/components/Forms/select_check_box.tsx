@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Dropdown, DropdownButton } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { SELECT_BOX_PLACEHOLDER } from '@/app/constants/constants';
@@ -24,6 +24,15 @@ const SelectCheckBox: React.FC<SelectCheckBoxProps> = ({
 }) => {
   const [selectedValues, setSelectedValues] = useState<string[]>(selected_values);
 
+  // Update selectedValues when selected_values prop changes
+  useEffect(() => {
+    if (selected_values == null || selected_values.length === 0) {
+      setSelectedValues([]); // Uncheck all checkboxes if selected_values is null or empty
+    } else {
+      setSelectedValues(selected_values); // Set selectedValues based on prop
+    }
+  }, [selected_values]);
+
   const handleCheckboxChange = (value: string) => {
     const updatedSelectedValues = selectedValues.includes(value)
       ? selectedValues.filter((v) => v !== value) // Remove if already selected
@@ -45,7 +54,12 @@ const SelectCheckBox: React.FC<SelectCheckBoxProps> = ({
       >
         <Dropdown.ItemText>Select options:</Dropdown.ItemText>
         {values.map((value, index) => (
-          <Dropdown.Item as="button" key={value} className="d-flex align-items-center">
+          <Dropdown.Item
+            as="button"
+            key={value}
+            className="d-flex align-items-center"
+            onClick={(e) => e.stopPropagation()} // Prevent dropdown from closing
+          >
             <Form.Check
               type="checkbox"
               label={display_values[index]}

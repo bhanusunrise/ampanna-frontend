@@ -9,13 +9,13 @@ import RestoreButton from '@/app/components/Buttons/restore_button';
 import { ACTONS_FIELD, DELETE_BUTTON_LABAL, RESTORE_BUTTON_LABAL, UPDATE_BUTTON_LABAL } from '@/app/constants/constants';
 
 interface BasicTableProps {
-  table_fields: string[];
-  table_records: string[][];
+  table_fields?: string[];
+  table_records?: string[][];
   table_id: string;
-  startingIndex: number;
-  onUpdate: (rowIndex: number) => void;
-  onDelete: (rowIndex: number) => void;
-  onRestore: (rowIndex: number) => void;
+  startingIndex?: number;
+  onUpdate?: (rowIndex: number) => void;
+  onDelete?: (rowIndex: number) => void;
+  onRestore?: (rowIndex: number) => void;
 }
 
 const BasicTable: React.FC<BasicTableProps> = ({

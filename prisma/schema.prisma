@@ -19,25 +19,40 @@ model Unit_Categories {
   createdAt          DateTime @default(now())
   updatedAt          DateTime @default(now())
 
-  units Units[] @relation("UnitCategoryRelation")
+  units              Units[]            @relation("UnitCategoryRelation")
 }
 
-// units
+
+model ItemCategoryUnit {
+  id               String           @id @default(uuid()) @db.VarChar(36)
+  item_category_id String           @db.VarChar(6)
+  unit_id          String           @db.VarChar(7)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @default(now())
+
+  itemCategory Item_Categories @relation(fields: [item_category_id], references: [category_id])
+  unit         Units           @relation(fields: [unit_id], references: [unit_id])
+
+  @@unique([item_category_id, unit_id]) // Unique constraint to prevent duplicate pairs
+  Units Units[] @relation("CategoryUnitRelation")
+  Item_Categories Item_Categories[] @relation("CategoryUnitRelation")
+}
+// Update the Units model to reference the new relationship
 model Units {
-  unit_id          String   @id @db.VarChar(7)
-  unit_name        String   @db.VarChar(50)
-  abbreviation     String   @db.VarChar(10)
-  status           String   @default("සක්‍රීය")
-  unit_category_id String   @db.VarChar(6)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @default(now())
+  unit_id          String           @id @db.VarChar(7)
+  unit_name        String           @db.VarChar(50)
+  abbreviation     String           @db.VarChar(10)
+  status           String           @default("සක්‍රීය")
+  unit_category_id String           @db.VarChar(6)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @default(now())
 
-  unitCategory Unit_Categories @relation("UnitCategoryRelation", fields: [unit_category_id], references: [unit_category_id])
+  unitCategory        Unit_Categories     @relation("UnitCategoryRelation", fields: [unit_category_id], references: [unit_category_id])
+  unitConversionsFrom Unit_Conversions[]  @relation("FromUnit")
+  unitConversionsTo   Unit_Conversions[]  @relation("ToUnit")
+  itemCategories      ItemCategoryUnit[]  @relation("CategoryUnitRelation") // Reference to join table
 
-  unitConversionsFrom Unit_Conversions[] @relation("FromUnit")
-  unitConversionsTo   Unit_Conversions[] @relation("ToUnit")
-
-  itemUnits ItemUnits[] @relation("UnitItemRelation")
+  ItemCategoryUnit ItemCategoryUnit[]
 }
 
 // unit_conversions
@@ -64,35 +79,22 @@ model Items {
 
   itemCategory Item_Categories? @relation("ItemCategory", fields: [item_category_id], references: [category_id])
 
-  itemUnits ItemUnits[] @relation("ItemUnitRelation")
-  stocks    Stocks[]    @relation("ItemStockRelation")
+  stocks             Stocks[]           @relation("ItemStockRelation")
 
   @@index([item_category_id])
 }
 
-// item_categories
+// Update the Item_Categories model to reference the new relationship
 model Item_Categories {
-  category_id   String   @id @db.VarChar(6)
-  category_name String   @db.VarChar(30)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @default(now())
+  category_id   String           @id @db.VarChar(6)
+  category_name String           @db.VarChar(30)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @default(now())
 
   itemCategoryItems Items[] @relation("ItemCategory")
-}
+  units             ItemCategoryUnit[] @relation("CategoryUnitRelation")
 
-// item_units
-model ItemUnits {
-  id        String   @id @db.VarChar(6)
-  item_id   String   @db.VarChar(10)
-  unit_id   String   @db.VarChar(7)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-  default_status   String   @db.VarChar(12)
-
-  item Items @relation("ItemUnitRelation", fields: [item_id], references: [item_id])
-  unit Units @relation("UnitItemRelation", fields: [unit_id], references: [unit_id])
-
-  @@unique([item_id, unit_id])
+  ItemCategoryUnit ItemCategoryUnit[]
 }
 
 // stocks
