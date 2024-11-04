@@ -12,20 +12,17 @@ import {
   ITEM_CATEGORY_NAME_LABAL,
   ITEM_CATEGORY_NAME_PLACEHOLDER,
 } from '@/app/constants/constants';
-import {/*
-  fetchAllUnitCategories,
-  addUnitCategory,
-  updateUnitCategory,
-  deleteUnitCategory,
-  restoreUnitCategory,*/
+import {
   insertItemCategory,
   loadAllItemCategories,
+  updateItemCategory,
 } from './functions';
 import NavigateButtons from '@/app/components/Buttons/navigate_button';
 import { Col, Row } from 'react-bootstrap';
 import AddButton from '@/app/components/Buttons/add_button';
 import TextInput from '@/app/components/Forms/text_input';
 import ClearButton from '@/app/components/Buttons/clear_button';
+import UpdateItemCategoryModal from '@/app/components/Models/Item_Categories/update_item_cetegory_model';
 
 export default function Page() {
   const [itemCategories, setItemCategories] = useState<string[][]>([]);
@@ -33,12 +30,8 @@ export default function Page() {
   const [currentPage, setCurrentPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [itemCategoryName, setItemCategoryName] = useState('');
-  const [unitCategoryType, setUnitCategoryType] = useState('');
   const [showUpdateModal, setShowUpdateModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showRestoreModal, setShowRestoreModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
-  const [itemToDelete, setItemToDelete] = useState<any>(null);
   const recordsPerPage = 10;
 
   const formatDate = (dateString: string) => {
@@ -108,87 +101,30 @@ export default function Page() {
   const handleUpdate = (rowIndex: number) => {
     const selectedCategoryData = filteredCategories[rowIndex];
     setSelectedCategory({
-      unit_category_id: selectedCategoryData[0],
-      unit_category_name: selectedCategoryData[1],
+      category_id: selectedCategoryData[0],
+      category_name: selectedCategoryData[1],
     });
     setShowUpdateModal(true);
   };
 
-  /*
   const handleUpdateCategory = async (updatedCategory: {
-    unit_category_name: string;
-    default_status: string;
+    category_name: string;
   }) => {
-    const result = await updateUnitCategory(
-      selectedCategory.unit_category_id,
-      updatedCategory.unit_category_name,    );
-    if (result.success) {
-      handleCloseUpdateModal();
-      await reloadData();
-     
-    }
-  };*/
-
-  /*
-  const handleDelete = (rowIndex: number) => {
-    const categoryToDelete = filteredCategories[rowIndex];
-    setItemToDelete({
-      unit_category_id: categoryToDelete[0],
-      unit_category_name: categoryToDelete[1],
-    });
-    setShowDeleteModal(true);
-  };
-*/
-
-/*
-  const confirmDelete = async () => {
-    if (itemToDelete) {
-      const result = await deleteUnitCategory(itemToDelete.unit_category_id);
+    if (selectedCategory) {
+      const result = await updateItemCategory(
+        selectedCategory.category_id,
+        updatedCategory.category_name,
+      );
       if (result.success) {
+        handleCloseUpdateModal();
         await reloadData();
-        handleCloseDeleteModal();
       }
     }
-  };*/
-
-  /*
-
-  const handleRestore = (rowIndex: number) => {
-    const categoryToRestore = filteredCategories[rowIndex];
-    setItemToDelete({
-      unit_category_id: categoryToRestore[0],
-      unit_category_name: categoryToRestore[1],
-    });
-    setShowRestoreModal(true);
   };
-*/
-
-/*
-  const confirmRestore = async () => {
-    if (itemToDelete) {
-      const result = await restoreUnitCategory(itemToDelete.unit_category_id);
-      if (result.success) {
-        await reloadData();
-        handleCloseRestoreModal();
-      }
-    }
-  };*/
-
-
 
   const handleCloseUpdateModal = () => {
     setShowUpdateModal(false);
     setSelectedCategory(null);
-  };
-
-  const handleCloseDeleteModal = () => {
-    setShowDeleteModal(false);
-    setItemToDelete(null);
-  };
-
-  const handleCloseRestoreModal = () => {
-    setShowRestoreModal(false);
-    setItemToDelete(null);
   };
 
   return (
@@ -214,10 +150,8 @@ export default function Page() {
             table_fields={ITEM_CATEGORIES_TABLE_FIELDS}
             table_records={currentRecords}
             table_id="unit_categories_table"
-           /* startingIndex={startingIndex}
+            startingIndex={startingIndex}
             onUpdate={handleUpdate}
-            onDelete={handleDelete}
-            onRestore={handleRestore}*/
           />
           <NavigateButtons
             currentPage={currentPage}
@@ -241,14 +175,21 @@ export default function Page() {
             label={CLEAR_BUTTON_LABAL}
             onClickButton={() => {
               setItemCategoryName('');
-              setUnitCategoryType('');
             }}
             btn_id="clear_category"
           />
           <AddButton label={ADD_BUTTON_LABAL} onClickButton={handleAddCategory} btn_id="add_category" />
         </Col>
       </Row>
-
+      {
+        selectedCategory && 
+        <UpdateItemCategoryModal
+         show={showUpdateModal}
+          handleClose={handleCloseUpdateModal}
+          handleUpdateItemCategory={handleUpdateCategory}
+          item_category_name={selectedCategory.category_name}
+          />
+      }    
     </>
   );
 }

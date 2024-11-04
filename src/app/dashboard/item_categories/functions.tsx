@@ -45,3 +45,26 @@ export const loadAllItemCategories = async () => {
         throw error;
     }
 };
+
+export const updateItemCategory = async (categoryId: string, categoryName: string) => {
+    try {
+        const uri = ITEM_CATEGORY_API + 'update_item_category';
+        const response = await fetch(uri, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ category_id: categoryId, category_name: categoryName }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update item category');
+        }
+
+        const data = await response.json();
+        return data; // returns success message if successful
+    } catch (error) {
+        console.error('Error updating item category:', error);
+        throw error;
+    }
+};

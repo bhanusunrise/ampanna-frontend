@@ -192,13 +192,6 @@ export const FIRST_UNIT_LABEL = FIRST + " " + UNIT_ABBRAVIATION_LABAL
 export const SECOND_UNIT_LABEL = SECOND + " " + UNIT_ABBRAVIATION_LABAL
 export const MULTIPLIER_PLACEHOLDER = "ගුණාකාරයක් ඇතුලත් කරන්න"
 
-/*
-
-export const UNIT_NAME_LABAL = "ඒකකයේ නම :"
-export const UNIT_ABBRAVIATION_LABAL = "සංකේතය :"
-export const UNIT_NAME_PLACEHOLDER = "ඒකකයක් ඇතුලත් කරන්න"
-export const UNIT_ABBRAVIATION_PLACEHOLDER = "සංකේතයක් ඇතුලත් කරන්න"*/
-
 export const UPDATE_UNIT_CONVERSION_MODEL_TITLE = UNIT_PAGE_NAME + UPDATE
 
 
@@ -215,6 +208,9 @@ export const ITEM_CATEGORY_NAME_LABAL = "භාණ්ඩ වර්ගයේ න�
 export const ITEM_CATEGORY_NAME_PLACEHOLDER = "භාණ්ඩ වර්ගයක් ඇතුලත් කරන්න"
 export const UNIT_NAMES_LABAL = "ගණනය කිරීමට යොදාගන්න ඒකක"
 export const DEFAULT_UNIT_NAME_LABAL = "බහුලවම භාවිතා වන ඒකකය"
+
+export const UPDATE_ITEM_CATEGORY_MODEL_TITLE = ITEM_CATEGORIES_PAGE_NAME + UPDATE
+
 
 
 
