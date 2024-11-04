@@ -22,7 +22,6 @@ model Unit_Categories {
   units Units[] @relation("UnitCategoryRelation")
 }
 
-
 // Update the Units model to reference the new relationship
 model Units {
   unit_id          String   @id @db.VarChar(7)
@@ -73,8 +72,9 @@ model Item_Categories {
   category_name String   @db.VarChar(30)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @default(now())
+  status        String   @default("සක්‍රීය")
 
-  itemCategoryItems Items[]            @relation("ItemCategory")
+  itemCategoryItems Items[] @relation("ItemCategory")
 }
 
 // stocks

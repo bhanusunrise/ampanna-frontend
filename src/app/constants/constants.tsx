@@ -59,9 +59,7 @@ export const UNIT_CONVERSION_TABLE_FIELDS = [
 ]
 
 export const ITEM_CATEGORIES_TABLE_FIELDS = [
-    "භාණ්ඩ වර්ගය",
-    "ඒකක වර්ග",
-    "බහුලතම ඒකකය",
+    "භාණ්ඩ වර්ගයේ නම",
     "තත්වය",
     "එකතු කිරීම",
     "වෙනස් කිරීම"
