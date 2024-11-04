@@ -57,6 +57,15 @@ export const UNIT_CONVERSION_TABLE_FIELDS = [
     "එකතු කිරීම",
     "වෙනස් කිරීම"
 ]
+
+export const ITEM_CATEGORIES_TABLE_FIELDS = [
+    "භාණ්ඩ වර්ගය",
+    "ඒකක වර්ග",
+    "බහුලව භාවිතා වන ඒකකය",
+    "තත්වය",
+    "එකතු කිරීම",
+    "වෙනස් කිරීම"
+]
 /** API base routes */
 export const UNIT_API = "/api/units/"
 export const UNIT_CONVERSION_API = "/api/unit_conversions/"

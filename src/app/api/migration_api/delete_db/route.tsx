@@ -14,6 +14,6 @@ export async function DELETE(req: Request) {
         return NextResponse.json({ error: "Error deleting database" }, { status: 500 });
     } finally {
         // Release the database connection
-        await connection.release();
+        await connection.end();
     }
 }

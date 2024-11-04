@@ -3,7 +3,7 @@
 import TextInput from "@/app/components/Forms/text_input";
 import SelectCheckBox from "@/app/components/Forms/select_check_box";
 import BasicTable from "@/app/components/Tables/basic_table";
-import { ADD_BUTTON_LABAL, ADD_ITEM_CATEGORY, CLEAR_BUTTON_LABAL, DEFAULT_UNIT_NAME_LABAL, ITEM_CATEGORIES_PAGE_NAME, ITEM_CATEGORY_NAME_LABAL, ITEM_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_NAME_LABAL, UNIT_NAMES_LABAL } from "@/app/constants/constants";
+import { ADD_BUTTON_LABAL, ADD_ITEM_CATEGORY, CLEAR_BUTTON_LABAL, DEFAULT_UNIT_NAME_LABAL, ITEM_CATEGORIES_PAGE_NAME, ITEM_CATEGORIES_TABLE_FIELDS, ITEM_CATEGORY_NAME_LABAL, ITEM_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_NAME_LABAL, UNIT_NAMES_LABAL } from "@/app/constants/constants";
 import React, { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import { fetchAllUnitCategories, fetchAllUnits } from "../unit_conversions/functions";
@@ -132,7 +132,9 @@ export default function Page() {
             </Row>
             <Row>
                 <Col md={9} />
-
+                    <BasicTable 
+                        table_fields={ITEM_CATEGORIES_TABLE_FIELDS}
+                        />
                 <Col md={3}>
                     <h3 className='text-primary'>{ADD_ITEM_CATEGORY}</h3>
                     <TextInput 
