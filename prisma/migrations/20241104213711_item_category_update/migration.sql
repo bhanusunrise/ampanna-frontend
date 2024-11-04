@@ -54,6 +54,7 @@ CREATE TABLE `Item_Categories` (
     `category_name` VARCHAR(30) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `status` VARCHAR(191) NOT NULL DEFAULT 'සක්‍රීය',
 
     PRIMARY KEY (`category_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
