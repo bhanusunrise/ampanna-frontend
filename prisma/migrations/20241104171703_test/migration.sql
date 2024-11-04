@@ -11,19 +11,6 @@ CREATE TABLE `Unit_Categories` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `ItemCategoryUnit` (
-    `id` VARCHAR(36) NOT NULL,
-    `item_category_id` VARCHAR(6) NOT NULL,
-    `unit_id` VARCHAR(7) NOT NULL,
-    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `default_status` VARCHAR(191) NOT NULL DEFAULT 'අවශ්‍ය',
-
-    UNIQUE INDEX `ItemCategoryUnit_item_category_id_unit_id_key`(`item_category_id`, `unit_id`),
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
 CREATE TABLE `Units` (
     `unit_id` VARCHAR(7) NOT NULL,
     `unit_name` VARCHAR(50) NOT NULL,
@@ -147,21 +134,6 @@ CREATE TABLE `Returned_Items` (
     PRIMARY KEY (`returned_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- CreateTable
-CREATE TABLE `_CategoryUnitRelation` (
-    `A` VARCHAR(36) NOT NULL,
-    `B` VARCHAR(6) NOT NULL,
-
-    UNIQUE INDEX `_CategoryUnitRelation_AB_unique`(`A`, `B`),
-    INDEX `_CategoryUnitRelation_B_index`(`B`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- AddForeignKey
-ALTER TABLE `ItemCategoryUnit` ADD CONSTRAINT `ItemCategoryUnit_item_category_id_fkey` FOREIGN KEY (`item_category_id`) REFERENCES `Item_Categories`(`category_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `ItemCategoryUnit` ADD CONSTRAINT `ItemCategoryUnit_unit_id_fkey` FOREIGN KEY (`unit_id`) REFERENCES `Units`(`unit_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
 -- AddForeignKey
 ALTER TABLE `Units` ADD CONSTRAINT `Units_unit_category_id_fkey` FOREIGN KEY (`unit_category_id`) REFERENCES `Unit_Categories`(`unit_category_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -191,9 +163,3 @@ ALTER TABLE `Returned_Items` ADD CONSTRAINT `Returned_Items_bill_id_fkey` FOREIG
 
 -- AddForeignKey
 ALTER TABLE `Returned_Items` ADD CONSTRAINT `Returned_Items_stock_id_fkey` FOREIGN KEY (`stock_id`) REFERENCES `Stocks`(`stock_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `_CategoryUnitRelation` ADD CONSTRAINT `_CategoryUnitRelation_A_fkey` FOREIGN KEY (`A`) REFERENCES `ItemCategoryUnit`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `_CategoryUnitRelation` ADD CONSTRAINT `_CategoryUnitRelation_B_fkey` FOREIGN KEY (`B`) REFERENCES `Item_Categories`(`category_id`) ON DELETE CASCADE ON UPDATE CASCADE;

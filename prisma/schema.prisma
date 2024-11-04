@@ -22,21 +22,6 @@ model Unit_Categories {
   units Units[] @relation("UnitCategoryRelation")
 }
 
-model ItemCategoryUnit {
-  id               String   @id @default(uuid()) @db.VarChar(36)
-  item_category_id String   @db.VarChar(6)
-  unit_id          String   @db.VarChar(7)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @default(now())
-  default_status   String   @default("අවශ්‍ය")
-
-  itemCategory    Item_Categories   @relation(fields: [item_category_id], references: [category_id])
-  unit            Units             @relation(fields: [unit_id], references: [unit_id])
-  Units           Units[]           @relation("CategoryUnitRelation")
-  Item_Categories Item_Categories[] @relation("CategoryUnitRelation")
-
-  @@unique([item_category_id, unit_id]) // Unique constraint to prevent duplicate pairs
-}
 
 // Update the Units model to reference the new relationship
 model Units {
@@ -51,9 +36,6 @@ model Units {
   unitCategory        Unit_Categories    @relation("UnitCategoryRelation", fields: [unit_category_id], references: [unit_category_id])
   unitConversionsFrom Unit_Conversions[] @relation("FromUnit")
   unitConversionsTo   Unit_Conversions[] @relation("ToUnit")
-  itemCategories      ItemCategoryUnit[] @relation("CategoryUnitRelation") // Reference to join table
-
-  ItemCategoryUnit ItemCategoryUnit[]
 }
 
 // unit_conversions
@@ -93,9 +75,6 @@ model Item_Categories {
   updatedAt     DateTime @default(now())
 
   itemCategoryItems Items[]            @relation("ItemCategory")
-  units             ItemCategoryUnit[] @relation("CategoryUnitRelation")
-
-  ItemCategoryUnit ItemCategoryUnit[]
 }
 
 // stocks
