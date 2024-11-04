@@ -68,3 +68,27 @@ export const updateItemCategory = async (categoryId: string, categoryName: strin
         throw error;
     }
 };
+
+
+export const deleteItemCategory = async (item_category_id: string) => {
+    try {
+        const response = await fetch(`${ITEM_CATEGORY_API}delete_item_category`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ item_category_id }),
+        });
+
+        if (!response.ok) {
+            const errorResponse = await response.json();
+            return { success: false, message: errorResponse.message };
+        }
+
+        const result = await response.json();
+        return { success: true, message: result.message };
+    } catch (error) {
+        console.error('Error deleting item category:', error);
+        return { success: false, message: 'Failed to delete item category' };
+    }
+};
