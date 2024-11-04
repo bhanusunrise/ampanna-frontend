@@ -25,7 +25,7 @@ export async function fetchMultipleUnits(unit_ids: string[]): Promise<any> {
     }
 }
 
-export async function addItemCategory(categoryName: string, units: string[]) {
+export async function addItemCategory(categoryName: string, units: string[], default_unit: string) {
     try {
         const response = await fetch(`${ITEM_CATEGORY_API}add_item_category`, {
             method: 'POST',

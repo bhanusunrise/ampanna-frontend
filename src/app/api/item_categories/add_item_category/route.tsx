@@ -5,9 +5,10 @@ export async function POST(req: Request) {
     const connection = await dbConnect();
     
     try {
-        const { category_name, units } = await req.json();
+        const { category_name, units, default_unit } = await req.json();
 
-        if (!category_name || !Array.isArray(units) || units.length === 0) {
+        if (!category_name || !Array.isArray(units) || units.length === 0 || !default_unit) {
+            console.log(category_name , units , default_unit)
             return NextResponse.json({ error: "Invalid input data" }, { status: 400 });
         }
 
@@ -15,11 +16,11 @@ export async function POST(req: Request) {
         await connection.beginTransaction();
 
         // Query to get the latest category ID and generate the new ID
-        const [categoryRows] = await connection.query(`SELECT category_id FROM Item_Categories ORDER BY category_id DESC LIMIT 1`);
+        const [rows] = await connection.query(`SELECT category_id FROM Item_Categories ORDER BY category_id DESC LIMIT 1`);
         let newCategoryId = 'ICAT01';  // Default starting ID if no records exist
 
-        if (categoryRows.length > 0) {
-            const latestId = categoryRows[0].category_id;
+        if (rows.length > 0) {
+            const latestId = rows[0].category_id;
             const numericPart = parseInt(latestId.slice(4), 10);
             newCategoryId = `ICAT${(numericPart + 1).toString().padStart(2, '0')}`;
         }
@@ -31,26 +32,21 @@ export async function POST(req: Request) {
             [newCategoryId, category_name]
         );
 
-        // Query to get the latest ID for ItemCategoryUnit and start numbering
-        const [unitRows] = await connection.query(`SELECT id FROM ItemCategoryUnit ORDER BY id DESC LIMIT 1`);
-        let unitCounter = 1;
-
-        if (unitRows.length > 0) {
-            const latestUnitId = unitRows[0].id;
-            const unitNumericPart = parseInt(latestUnitId.slice(6), 10);
-            unitCounter = unitNumericPart + 1;
-        }
-
         // Insert related records into ItemCategoryUnit for each unit
         for (const unit_id of units) {
-            const newUnitId = `R_ICU${unitCounter.toString().padStart(2, '0')}`;
             await connection.query(
-                `INSERT INTO ItemCategoryUnit (id, item_category_id, unit_id, createdAt, updatedAt)
-                 VALUES (?, ?, ?, NOW(), NOW())`,
-                [newUnitId, newCategoryId, unit_id]
+                `INSERT INTO ItemCategoryUnit (id, item_category_id, unit_id, createdAt, updatedAt, default_status)
+                 VALUES (UUID(), ?, ?, NOW(), NOW(), ?)`,
+                [newCategoryId, unit_id, "අවශ්‍ය"] // Set default status to "අවශ්‍ය"
             );
-            unitCounter++;
         }
+
+        // Insert the default unit with its specific default status
+        await connection.query(
+            `INSERT INTO ItemCategoryUnit (id, item_category_id, unit_id, createdAt, updatedAt, default_status)
+             VALUES (UUID(), ?, ?, NOW(), NOW(), ?)`,
+            [newCategoryId, default_unit, "අත්‍යාවශ්‍ය"] // Set default status for the default unit
+        );
 
         // Commit the transaction
         await connection.commit();

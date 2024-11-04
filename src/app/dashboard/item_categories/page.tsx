@@ -7,13 +7,12 @@ import { ADD_BUTTON_LABAL, ADD_ITEM_CATEGORY, CLEAR_BUTTON_LABAL, DEFAULT_UNIT_N
 import React, { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import { fetchAllUnitCategories, fetchAllUnits } from "../unit_conversions/functions";
-import { fetchMultipleUnits } from "./functions";
+import { fetchMultipleUnits, addItemCategory } from "./functions"; // Import the addItemCategory function
 import SelectBox from "@/app/components/Forms/select_box";
 import ClearButton from "@/app/components/Buttons/clear_button";
 import AddButton from "@/app/components/Buttons/add_button";
 
 export default function Page() {
-
     const [itemCategoryName, setItemCategoryName] = useState('');
     const [selectedUnitCategory, setSelectedUnitCategory] = useState('');
     const [unitCategoryIds, setUnitCategoryIds] = useState<string[]>([]);
@@ -102,19 +101,28 @@ export default function Page() {
     }, [selectedUnitIds]); // Trigger whenever selectedUnitIds changes
 
     // Clear the form fields
-    // Clear the form fields
-const handleClearForm = () => {
-    
-    setItemCategoryName('');
-    setSelectedUnitCategory('');
-    setUnitIds([]); // This can stay as is
-    setUnitNames([]); // This can stay as is
-    setFilteredUnitIds([]);
-    setFilteredUnitNames([]);
-    setSelectedUnitId(''); // Clear selected unit ID
-    setSelectedUnitIds([]); // Clear selected checkboxes
-};
+    const handleClearForm = () => {
+        setItemCategoryName('');
+        setSelectedUnitCategory('');
+        setUnitIds([]); // This can stay as is
+        setUnitNames([]); // This can stay as is
+        setFilteredUnitIds([]);
+        setFilteredUnitNames([]);
+        setSelectedUnitId(''); // Clear selected unit ID
+        setSelectedUnitIds([]); // Clear selected checkboxes
+    };
 
+    // Handle adding a new item category
+    const handleAddItemCategory = async () => {
+        try {
+            const result = await addItemCategory(itemCategoryName, selectedUnitIds, selectedUnitId);
+            console.log("Category added successfully:", result);
+            // Optionally, you can clear the form after adding the category
+            handleClearForm();
+        } catch (error) {
+            console.error("Failed to add item category:", error);
+        }
+    };
 
     return (
         <>
@@ -161,7 +169,7 @@ const handleClearForm = () => {
                         selected_value={selectedUnitId}
                         disabled={filteredUnitIds.length === 0} // Disable if no filtered units
                     />
-                    <br/>
+                    <br />
                     <ClearButton
                         label={CLEAR_BUTTON_LABAL}
                         onClickButton={handleClearForm} // Call handleClearForm on click
@@ -169,7 +177,7 @@ const handleClearForm = () => {
                     />
                     <AddButton
                         label={ADD_BUTTON_LABAL}
-                       // onClickButton={handleAddItemCategory} // Call handleAddItemCategory on click
+                        onClickButton={handleAddItemCategory} // Call handleAddItemCategory on click
                         btn_id="add_button"
                     />
                 </Col>
