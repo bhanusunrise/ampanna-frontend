@@ -257,7 +257,7 @@ export default function Page() {
     <>
       <Row>
         <Col md={4}><h3 className={'text-primary'}>{UNIT_CONVERSION_PAGE_NAME}</h3></Col>
-        <Col md={6} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', flexWrap: 'nowrap' }}>
+        <Col md={5} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', flexWrap: 'nowrap' }}>
           <TextInput
             form_id="search_category"
             onChangeText={handleSearch}

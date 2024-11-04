@@ -57,10 +57,20 @@ export const UNIT_CONVERSION_TABLE_FIELDS = [
     "එකතු කිරීම",
     "වෙනස් කිරීම"
 ]
+
+export const ITEM_CATEGORIES_TABLE_FIELDS = [
+    "භාණ්ඩ වර්ගය",
+    "ඒකක වර්ග",
+    "බහුලතම ඒකකය",
+    "තත්වය",
+    "එකතු කිරීම",
+    "වෙනස් කිරීම"
+]
 /** API base routes */
 export const UNIT_API = "/api/units/"
 export const UNIT_CONVERSION_API = "/api/unit_conversions/"
 export const UNIT_CATEGORY_API = "/api/unit_categories/"
+export const ITEM_CATEGORY_API = "/api/item_categories/"
 
 
 /** Default DB values */
@@ -193,6 +203,20 @@ export const UNIT_ABBRAVIATION_PLACEHOLDER = "සංකේතයක් ඇතු
 
 export const UPDATE_UNIT_CONVERSION_MODEL_TITLE = UNIT_PAGE_NAME + UPDATE
 
+
+/** Items */
+export const ITEMS_PAGE_NAME = "භාණ්ඩ"
+export const ADD_ITEM_PAGE_NAME = NEW + " භාණ්ඩය"
+
+
+/** Item Categories */
+export const ITEM_CATEGORIES_PAGE_NAME = "භාණ්ඩ වර්ග"
+export const ADD_ITEM_CATEGORY = NEW + " භාණ්ඩ වර්ගය"
+
+export const ITEM_CATEGORY_NAME_LABAL = "භාණ්ඩ වර්ගයේ නම"
+export const ITEM_CATEGORY_NAME_PLACEHOLDER = "භාණ්ඩ වර්ගයක් ඇතුලත් කරන්න"
+export const UNIT_NAMES_LABAL = "ගණනය කිරීමට යොදාගන්න ඒකක"
+export const DEFAULT_UNIT_NAME_LABAL = "බහුලවම භාවිතා වන ඒකකය"
 
 
 

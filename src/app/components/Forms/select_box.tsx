@@ -1,4 +1,4 @@
-'user client'
+'use client';
 
 import React from 'react';
 import { Form } from 'react-bootstrap';
@@ -12,6 +12,7 @@ interface SelectBoxProps {
   form_id: string;
   onChange: (value: string) => void;
   selected_value?: string;
+  disabled?: boolean; // New optional prop for disabling the select box
 }
 
 const SelectBox: React.FC<SelectBoxProps> = ({
@@ -21,6 +22,7 @@ const SelectBox: React.FC<SelectBoxProps> = ({
   form_id,
   onChange,
   selected_value,
+  disabled = false, // Default to false if not provided
 }) => {
   return (
     <>
@@ -30,9 +32,12 @@ const SelectBox: React.FC<SelectBoxProps> = ({
         style={{ maxWidth: '300px' }}
         onChange={(e) => onChange(e.target.value)}
         value={selected_value || ""} // Keep selected value updated
-        size='sm'
+        size="sm"
+        disabled={disabled} // Control disabled status
       >
-        <option value="" disabled>{SELECT_BOX_PLACEHOLDER}</option>
+        <option value="" disabled>
+          {SELECT_BOX_PLACEHOLDER}
+        </option>
         {values.map((value, index) => (
           <option key={value} value={value}>
             {display_values[index]}

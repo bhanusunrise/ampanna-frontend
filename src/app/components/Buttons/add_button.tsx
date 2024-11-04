@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface AddButtonProps {
   label: string;
-  onClickButton: () => void;
+  onClickButton?: () => void;
   btn_id: string;
 }
 

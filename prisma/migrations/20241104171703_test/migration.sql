@@ -59,18 +59,6 @@ CREATE TABLE `Item_Categories` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `ItemUnits` (
-    `id` VARCHAR(6) NOT NULL,
-    `item_id` VARCHAR(10) NOT NULL,
-    `unit_id` VARCHAR(7) NOT NULL,
-    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-
-    UNIQUE INDEX `ItemUnits_item_id_unit_id_key`(`item_id`, `unit_id`),
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
 CREATE TABLE `Stocks` (
     `stock_id` VARCHAR(10) NOT NULL,
     `total_quantity` INTEGER NOT NULL,
@@ -157,12 +145,6 @@ ALTER TABLE `Unit_Conversions` ADD CONSTRAINT `Unit_Conversions_to_unit_fkey` FO
 
 -- AddForeignKey
 ALTER TABLE `Items` ADD CONSTRAINT `Items_item_category_id_fkey` FOREIGN KEY (`item_category_id`) REFERENCES `Item_Categories`(`category_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `ItemUnits` ADD CONSTRAINT `ItemUnits_item_id_fkey` FOREIGN KEY (`item_id`) REFERENCES `Items`(`item_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `ItemUnits` ADD CONSTRAINT `ItemUnits_unit_id_fkey` FOREIGN KEY (`unit_id`) REFERENCES `Units`(`unit_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Stocks` ADD CONSTRAINT `Stocks_item_id_fkey` FOREIGN KEY (`item_id`) REFERENCES `Items`(`item_id`) ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -22,7 +22,8 @@ model Unit_Categories {
   units Units[] @relation("UnitCategoryRelation")
 }
 
-// units
+
+// Update the Units model to reference the new relationship
 model Units {
   unit_id          String   @id @db.VarChar(7)
   unit_name        String   @db.VarChar(50)
@@ -32,12 +33,9 @@ model Units {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @default(now())
 
-  unitCategory Unit_Categories @relation("UnitCategoryRelation", fields: [unit_category_id], references: [unit_category_id])
-
+  unitCategory        Unit_Categories    @relation("UnitCategoryRelation", fields: [unit_category_id], references: [unit_category_id])
   unitConversionsFrom Unit_Conversions[] @relation("FromUnit")
   unitConversionsTo   Unit_Conversions[] @relation("ToUnit")
-
-  itemUnits ItemUnits[] @relation("UnitItemRelation")
 }
 
 // unit_conversions
@@ -64,34 +62,19 @@ model Items {
 
   itemCategory Item_Categories? @relation("ItemCategory", fields: [item_category_id], references: [category_id])
 
-  itemUnits ItemUnits[] @relation("ItemUnitRelation")
-  stocks    Stocks[]    @relation("ItemStockRelation")
+  stocks Stocks[] @relation("ItemStockRelation")
 
   @@index([item_category_id])
 }
 
-// item_categories
+// Update the Item_Categories model to reference the new relationship
 model Item_Categories {
   category_id   String   @id @db.VarChar(6)
   category_name String   @db.VarChar(30)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @default(now())
 
-  itemCategoryItems Items[] @relation("ItemCategory")
-}
-
-// item_units
-model ItemUnits {
-  id        String   @id @db.VarChar(6)
-  item_id   String   @db.VarChar(10)
-  unit_id   String   @db.VarChar(7)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
-  item Items @relation("ItemUnitRelation", fields: [item_id], references: [item_id])
-  unit Units @relation("UnitItemRelation", fields: [unit_id], references: [unit_id])
-
-  @@unique([item_id, unit_id])
+  itemCategoryItems Items[]            @relation("ItemCategory")
 }
 
 // stocks
