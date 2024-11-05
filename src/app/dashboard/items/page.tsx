@@ -5,7 +5,7 @@ import SelectCheckBox from "@/app/components/Forms/select_check_box";
 import { ITEMS_PAGE_NAME, ITEMS_TABLE_FIELDS, COMPULSARY, NULL_VALUE, ADD_ITEM_PAGE_NAME, ITEM_CATEGORY_SELECTION_LABAL, ADD_UNIT_CATEGORY_LABAL, ADD_UNITS_LABAL, ADD_MOST_USED_UNIT_LABAL, ITEM_INPUT_LABAL, ITEM_INPUT_PLACEHOLDER, CLEAR_BUTTON_LABAL, ADD_BUTTON_LABAL } from "@/app/constants/constants";
 import React, { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
-import { fetchItemsWithUnits, fetchActiveItemCategories, fetchActiveUnitCategories, fetchUnitsByCategory, addItemWithUnits } from "./functions";
+import { fetchItemsWithUnits, fetchActiveItemCategories, fetchActiveUnitCategories, fetchUnitsByCategory, addItemWithUnits, restoreItem } from "./functions";
 import SelectBox from "@/app/components/Forms/select_box";
 import TextInput from "@/app/components/Forms/text_input";
 import ClearButton from "@/app/components/Buttons/clear_button";
@@ -13,6 +13,7 @@ import AddButton from "@/app/components/Buttons/add_button";
 import NavigateButtons from "@/app/components/Buttons/navigate_button";
 import DeleteModal from "@/app/components/Models/delete_model";
 import { deleteIteam } from "./functions";
+import RestoreModal from "@/app/components/Models/restore_model";
 
 export default function Page() {
   const [items, setItems] = useState<string[][]>([]);
@@ -33,6 +34,8 @@ export default function Page() {
   const [currentPage, setCurrentPage] = useState(0);
   const [itemToDelete, setItemToDelete] = useState<any>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showRestoreModal, setShowRestoreModal] = useState(false); 
+  const [itemToRestore, setItemToRestore] = useState<any>(null);
   const recordsPerPage = 10;
 
   const formatDate = (dateString: string) => {
@@ -130,7 +133,7 @@ export default function Page() {
 
     const result = await addItemWithUnits(selectedItemCategoryId, textInputValue, units);
     if (result) {
-      alert("Item added successfully!");
+      //alert("Item added successfully!");
       handleClear();
       await reloadData(); // Reload data after adding an item
     } else {
@@ -179,10 +182,36 @@ export default function Page() {
     }
   };
 
+    const handleRestoreItem = (rowIndex: number) => {
+    const selectedItemData = filteredItems[rowIndex];
+    setItemToRestore({
+      item_id: selectedItemData[0],
+      item_name: selectedItemData[1],
+    });
+    setShowRestoreModal(true);
+  };
+
+    const confirmRestore = async () => {
+    if (itemToRestore) {
+      const result = await restoreItem(itemToRestore.item_id);
+      if (result.success) {
+        await reloadData();
+        handleCloseRestoreModal();
+      }
+    }
+  };
+
+
   const handleCloseDeleteModal = () => {
     setShowDeleteModal(false);
     setItemToDelete(null);
   };
+
+    const handleCloseRestoreModal = () => {
+    setShowRestoreModal(false);
+    setItemToRestore(null);
+  };
+  
 
   return (
     <>
@@ -194,10 +223,11 @@ export default function Page() {
         <Col md={9}>
           <BasicTable 
             table_fields={ITEMS_TABLE_FIELDS} 
-            table_records={items} 
-            table_id='table_1'
+            table_records={currentRecords} 
+            table_id='items_table'
             startingIndex={startingIndex}
             onDelete={handleDeleteItem}
+            onRestore={handleRestoreItem}
           />
           <NavigateButtons
             currentPage={currentPage}
@@ -249,6 +279,7 @@ export default function Page() {
             selected_value={selectedUnitIdsForNewSelectBox}
             disabled={isSelectedUnitIdsEmpty}
           />
+          <br/>
           <ClearButton
             label={CLEAR_BUTTON_LABAL}
             onClickButton={handleClear}
@@ -268,6 +299,14 @@ export default function Page() {
           handleClose={handleCloseDeleteModal}
           handleDelete={confirmDelete}
           itemName={itemToDelete.item_name}
+        />
+      )}
+      {itemToRestore && (
+        <RestoreModal
+          show={showRestoreModal}
+          handleClose={handleCloseRestoreModal}
+          handleRestore={confirmRestore}
+          itemName={itemToRestore.item_name}
         />
       )}
     </>

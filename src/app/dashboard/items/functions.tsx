@@ -202,7 +202,7 @@ export async function restoreItem(item_id: string) {
     }
 
     const data = await response.json();
-    return data;
+    return {success: true, message: data.message};
   } catch (error) {
     console.error('Error restoring item:', error);
     return null;
