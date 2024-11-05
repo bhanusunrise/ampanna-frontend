@@ -60,6 +60,7 @@ model Items {
   item_category_id String   @db.VarChar(6)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @default(now())
+  status           String   @default("සක්‍රීය")
 
   itemCategory Item_Categories? @relation("ItemCategory", fields: [item_category_id], references: [category_id])
 
