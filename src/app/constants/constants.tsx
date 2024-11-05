@@ -24,10 +24,13 @@ export const CUSTOMER_TABLE_FIELDS = [
 ]
 
 export const ITEMS_TABLE_FIELDS = [
-    "Item_ID",
-    "Item_Name",
-    "Item_Category",
-    "Item_Units",
+    "භාණ්ඩය",
+    "බාර් කෝඩය",
+    "ඒකක වර්ග",
+    "බහුල ඒකකය",
+    "එකතු කිරීම",
+    "වෙනස් කිරීම",
+    "තත්වය"
 ]
 
 export const UNIT_TABLE_FIELDS = [
@@ -69,6 +72,7 @@ export const UNIT_API = "/api/units/"
 export const UNIT_CONVERSION_API = "/api/unit_conversions/"
 export const UNIT_CATEGORY_API = "/api/unit_categories/"
 export const ITEM_CATEGORY_API = "/api/item_categories/"
+export const ITEMS_API = "/api/items/"
 
 
 /** Default DB values */
@@ -79,6 +83,10 @@ export const UNIT_CATEGORY_TYPES = [COMPULSARY, OPTIONAL]
 /** Default status values */
 export const ACTIVE_ITEM = "සක්‍රීය"
 export const DELETED_ITEM = "අක්‍රීය"
+
+/** Default null/ not null values */
+export const NULL_VALUE = "නැත"
+export const NOT_NULL_VALUE = "ඇත"
 
 
 /** Log messages */
@@ -155,6 +163,7 @@ export const RESTORE_CONFIRM = " ප්‍රතිස්ථාපනය කි�
 export const DELETE_CONFIRM = " ඉවත් කිරීම තහවුරු කරන්න"
 export const BACK = "ආපසු"
 export const DELTETION = "ඉවත් කිරීම"
+export const SEARCH = "සෙවුම් කරන්න"
 
 /** Unit Category */
 export const UNIT_CATEGORY_PAGE_NAME = "ඒකක වර්ග"
@@ -198,6 +207,15 @@ export const UPDATE_UNIT_CONVERSION_MODEL_TITLE = UNIT_PAGE_NAME + UPDATE
 /** Items */
 export const ITEMS_PAGE_NAME = "භාණ්ඩ"
 export const ADD_ITEM_PAGE_NAME = NEW + " භාණ්ඩය"
+
+export const ITEM_CATEGORY_SELECTION_LABAL = "භාණ්ඩ වර්ගය"
+export const ITEM_INPUT_LABAL = "භාණ්ඩය"
+export const ITEM_INPUT_PLACEHOLDER = "භාණ්ඩයේ නම ඇතුළත් කරන්න"
+export const UNIT_TYPE_SELECTION_PLACEHOLDER = "භාණ්ඩ වර්ගය තෝරන්න"
+export const ADD_UNIT_CATEGORY_LABAL = "ඒකක වර්ගය"
+export const ADD_UNITS_LABAL = "ඒකක"
+export const ADD_MOST_USED_UNIT_LABAL = "බහුල ඒකකය"
+export const UPDATE_ITEM_MODEL_TITLE = ITEMS_PAGE_NAME + UPDATE
 
 
 /** Item Categories */

@@ -22,7 +22,7 @@ model Unit_Categories {
   units Units[] @relation("UnitCategoryRelation")
 }
 
-// Update the Units model to reference the new relationship
+// units
 model Units {
   unit_id          String   @id @db.VarChar(7)
   unit_name        String   @db.VarChar(50)
@@ -35,6 +35,8 @@ model Units {
   unitCategory        Unit_Categories    @relation("UnitCategoryRelation", fields: [unit_category_id], references: [unit_category_id])
   unitConversionsFrom Unit_Conversions[] @relation("FromUnit")
   unitConversionsTo   Unit_Conversions[] @relation("ToUnit")
+
+  items ItemUnits[] @relation("UnitItems")
 }
 
 // unit_conversions
@@ -55,15 +57,34 @@ model Unit_Conversions {
 model Items {
   item_id          String   @id @db.VarChar(10)
   item_name        String   @db.VarChar(50)
+  item_barcode     String?  @db.VarChar(43) 
   item_category_id String   @db.VarChar(6)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @default(now())
+  status           String   @default("සක්‍රීය")
 
   itemCategory Item_Categories? @relation("ItemCategory", fields: [item_category_id], references: [category_id])
 
-  stocks Stocks[] @relation("ItemStockRelation")
+  stocks    Stocks[]    @relation("ItemStockRelation")
+  itemUnits ItemUnits[] @relation("UnitItems")
 
   @@index([item_category_id])
+}
+
+
+// join table for Many-to-Many relationship
+model ItemUnits {
+  item_id        String
+  unit_id        String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now())
+  status         String   @default("සක්‍රීය")
+  default_status String   @default("අවශ්‍ය")
+
+  item Items @relation("UnitItems", fields: [item_id], references: [item_id])
+  unit Units @relation("UnitItems", fields: [unit_id], references: [unit_id])
+
+  @@id([item_id, unit_id])
 }
 
 // Update the Item_Categories model to reference the new relationship

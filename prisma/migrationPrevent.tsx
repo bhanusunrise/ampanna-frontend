@@ -1,7 +1,6 @@
 // src/app/dbInstallation.tsx
 const { PrismaClient } = require('@prisma/client');
-const { UNIT_CATEGORY_LIST, UNIT_LIST, UNIT_CONVERSIONS } = require('../src/app/constants/dbInstallation');
-const { ITEM_CATEGORY_LIST } = require('../src/app/constants/itemCategories'); // Import the new item categories
+const { UNIT_CATEGORY_LIST, UNIT_LIST, UNIT_CONVERSIONS, ITEM_CATEGORY_LIST } = require('../src/app/constants/dbInstallation');
 
 const prisma = new PrismaClient();
 
@@ -50,7 +49,7 @@ async function preventMigration() {
 
         // Insert item categories last
         for (const itemCategory of ITEM_CATEGORY_LIST) {
-            await prisma.item_Categories.create({ data: itemCategory });
+            await prisma.item_Categories.create({ data: itemCategory }); // Corrected here
         }
 
         console.log('Inserted units, categories, conversions, and item categories successfully.');
