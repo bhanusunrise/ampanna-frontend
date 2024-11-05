@@ -2,7 +2,7 @@
 
 import BasicTable from "@/app/components/Tables/basic_table";
 import SelectCheckBox from "@/app/components/Forms/select_check_box";
-import { ITEMS_PAGE_NAME, ITEMS_TABLE_FIELDS, COMPULSARY, NULL_VALUE, ADD_ITEM_PAGE_NAME, ITEM_CATEGORY_SELECTION_LABAL, ADD_UNIT_CATEGORY_LABAL, ADD_UNITS_LABAL, ADD_MOST_USED_UNIT_LABAL, ITEM_INPUT_LABAL, ITEM_INPUT_PLACEHOLDER, CLEAR_BUTTON_LABAL, ADD_BUTTON_LABAL } from "@/app/constants/constants";
+import { ITEMS_PAGE_NAME, ITEMS_TABLE_FIELDS, COMPULSARY, NULL_VALUE, ADD_ITEM_PAGE_NAME, ITEM_CATEGORY_SELECTION_LABAL, ADD_UNIT_CATEGORY_LABAL, ADD_UNITS_LABAL, ADD_MOST_USED_UNIT_LABAL, ITEM_INPUT_LABAL, ITEM_INPUT_PLACEHOLDER, CLEAR_BUTTON_LABAL, ADD_BUTTON_LABAL, SEARCH } from "@/app/constants/constants";
 import React, { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import { fetchItemsWithUnits, fetchActiveItemCategories, fetchActiveUnitCategories, fetchUnitsByCategory, addItemWithUnits, restoreItem } from "./functions";
@@ -36,6 +36,7 @@ export default function Page() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showRestoreModal, setShowRestoreModal] = useState(false); 
   const [itemToRestore, setItemToRestore] = useState<any>(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const recordsPerPage = 10;
 
   const formatDate = (dateString: string) => {
@@ -118,6 +119,17 @@ export default function Page() {
     setSelectedUnitIds([]);
     setSelectedUnitIdsForNewSelectBox([]);
     setTextInputValue('');
+  };
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const query = event.target.value.toLowerCase();
+    setSearchQuery(query);
+    const filtered = items.filter(
+      (item) =>
+        item[1].toLowerCase().includes(query) || item[2].toLowerCase().includes(query)
+    );
+    setFilteredItems(filtered);
+    setCurrentPage(0);
   };
 
   const handleAddItem = async () => {
@@ -217,7 +229,17 @@ export default function Page() {
     <>
       <Row>
         <Col md={3}><h3 className={'text-primary'}>{ITEMS_PAGE_NAME}</h3></Col>
-        <Col md={6}>Add searchbar<br/></Col>
+        <Col md={6}><div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', flexWrap: 'nowrap' }}>
+            <TextInput
+              form_id="search_item"
+              onChangeText={handleSearch}
+              form_message=""
+              placeholder_text={SEARCH}
+              label=""
+              value={searchQuery}
+            />
+          </div>
+          <br /></Col>
       </Row>
       <Row>
         <Col md={9}>
@@ -292,6 +314,7 @@ export default function Page() {
           />
         </Col>
       </Row>
+      
 
       {itemToDelete && (
         <DeleteModal

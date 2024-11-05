@@ -163,6 +163,7 @@ export const RESTORE_CONFIRM = " ප්‍රතිස්ථාපනය කි�
 export const DELETE_CONFIRM = " ඉවත් කිරීම තහවුරු කරන්න"
 export const BACK = "ආපසු"
 export const DELTETION = "ඉවත් කිරීම"
+export const SEARCH = "සෙවුම් කරන්න"
 
 /** Unit Category */
 export const UNIT_CATEGORY_PAGE_NAME = "ඒකක වර්ග"
@@ -214,6 +215,7 @@ export const UNIT_TYPE_SELECTION_PLACEHOLDER = "භාණ්ඩ වර්ගය 
 export const ADD_UNIT_CATEGORY_LABAL = "ඒකක වර්ගය"
 export const ADD_UNITS_LABAL = "ඒකක"
 export const ADD_MOST_USED_UNIT_LABAL = "බහුල ඒකකය"
+export const UPDATE_ITEM_MODEL_TITLE = ITEMS_PAGE_NAME + UPDATE
 
 
 /** Item Categories */

@@ -8,10 +8,17 @@ export async function GET() {
   try {
     // Fetch all items
     const itemsQuery = `
-      SELECT i.item_id, i.item_name, i.item_category_id, i.createdAt, i.updatedAt, i.item_barcode, i.status,
-             ic.category_name AS item_category_name
-      FROM Items i
-      LEFT JOIN Item_Categories ic ON i.item_category_id = ic.category_id
+      SELECT i.item_id, 
+       i.item_name, 
+       i.item_category_id, 
+       i.createdAt, 
+       i.updatedAt, 
+       i.item_barcode, 
+       i.status,
+       ic.category_name AS item_category_name
+FROM Items i
+LEFT JOIN Item_Categories ic ON i.item_category_id = ic.category_id
+ORDER BY i.item_id DESC;
     `;
     const [items] = await db.execute(itemsQuery);
 
