@@ -14,7 +14,7 @@ export default function page(){
         <>
             <Row>
                 <Col md={3}><h3 className={'text-primary'}>{ITEMS_PAGE_NAME}</h3></Col>
-                <Col md={6}><br/></Col>
+                <Col md={6}>Add searchbar<br/></Col>
             </Row>
             <Row>
                 <Col md={9}>

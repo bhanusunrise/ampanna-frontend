@@ -57,6 +57,7 @@ model Unit_Conversions {
 model Items {
   item_id          String   @id @db.VarChar(10)
   item_name        String   @db.VarChar(50)
+  item_barcode     String?  @db.VarChar(43) 
   item_category_id String   @db.VarChar(6)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @default(now())
@@ -69,6 +70,7 @@ model Items {
 
   @@index([item_category_id])
 }
+
 
 // join table for Many-to-Many relationship
 model ItemUnits {
