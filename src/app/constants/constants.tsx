@@ -13,14 +13,14 @@ export const CALCULATOR_TABLE_FIELDS = [
 ]
 
 /** customer Table */
-export const CUSTOMER_TABLE_FIELDS = [
-    "Customer_ID",
-    "Customer_Name",
-    "Customer_Address",
-    "Customer_Phone",
-    "Customer_Email",
-    "Warrenty Items",
-    "Warrenty Status"
+export const SUPPLIER_TABLE_FIELDS = [
+    "සැපයුම්කරුගේ නම",
+    "දුරකතන අංකය",
+    "පදිංචි ලිපිනය",
+    "විද්‍යුත් තැපල් ලිපිනය",
+    "එකතු කිරීම",
+    "වෙනස් කිරීම",
+   /* "තත්වය"*/
 ]
 
 export const ITEMS_TABLE_FIELDS = [
@@ -73,6 +73,7 @@ export const UNIT_CONVERSION_API = "/api/unit_conversions/"
 export const UNIT_CATEGORY_API = "/api/unit_categories/"
 export const ITEM_CATEGORY_API = "/api/item_categories/"
 export const ITEMS_API = "/api/items/"
+export const SUPPLIER_API = "/api/suppliers/"
 
 
 /** Default DB values */
@@ -229,6 +230,20 @@ export const DEFAULT_UNIT_NAME_LABAL = "බහුලවම භාවිතා �
 
 export const UPDATE_ITEM_CATEGORY_MODEL_TITLE = ITEM_CATEGORIES_PAGE_NAME + UPDATE
 
+
+/** Suppliers */
+
+export const SUPPLIERS_PAGE_NAME = "සැපයුම්කරුවන්"
+export const ADD_SUPPLIER = NEW + " සැපයුම්කරු"
+
+export const SUPPLIER_NAME_LABAL = "සැපයුම්කරු නම"
+export const SUPPLIER_NAME_PLACEHOLDER = "සැපයුම්කරුයේ නම ඇතුලත් කරන්න"
+export const SUPPLIER_ADDRESS_LABAL = "සැපයුම්කරු ලිපිනය"
+export const SUPPLIER_ADDRESS_PLACEHOLDER = "සැපයුම්කරුයේ ලිපිනය ඇතුලත් කරන්න"
+export const SUPPLIER_PHONE_LABAL = "සැපයුම්කරු දුරකථන"
+export const SUPPLIER_PHONE_PLACEHOLDER = "දුරකථන ඇතුලත් කරන්න"
+export const SUPPLIER_EMAIL_LABAL = "ඊමේල් ලිපිනය"
+export const SUPPLIER_EMAIL_PLACEHOLDER = "ඊමේල් ලිපිනය ඇතුලත් කරන්න"
 
 
 
