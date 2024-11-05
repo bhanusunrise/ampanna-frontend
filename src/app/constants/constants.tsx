@@ -69,6 +69,7 @@ export const UNIT_API = "/api/units/"
 export const UNIT_CONVERSION_API = "/api/unit_conversions/"
 export const UNIT_CATEGORY_API = "/api/unit_categories/"
 export const ITEM_CATEGORY_API = "/api/item_categories/"
+export const ITEMS_API = "/api/items/"
 
 
 /** Default DB values */
