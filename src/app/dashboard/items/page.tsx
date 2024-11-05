@@ -1,13 +1,15 @@
 'use client';
 
 import BasicTable from "@/app/components/Tables/basic_table";
-import SelectCheckBox from "@/app/components/Forms/select_check_box"; 
-import { ITEMS_PAGE_NAME, ITEMS_TABLE_FIELDS, COMPULSARY, NULL_VALUE, ADD_ITEM_PAGE_NAME, ITEM_CATEGORY_SELECTION_LABAL, ADD_UNIT_CATEGORY_LABAL, ADD_UNITS_LABAL, ADD_MOST_USED_UNIT_LABAL, ITEM_INPUT_LABAL, ITEM_INPUT_PLACEHOLDER } from "@/app/constants/constants";
+import SelectCheckBox from "@/app/components/Forms/select_check_box";
+import { ITEMS_PAGE_NAME, ITEMS_TABLE_FIELDS, COMPULSARY, NULL_VALUE, ADD_ITEM_PAGE_NAME, ITEM_CATEGORY_SELECTION_LABAL, ADD_UNIT_CATEGORY_LABAL, ADD_UNITS_LABAL, ADD_MOST_USED_UNIT_LABAL, ITEM_INPUT_LABAL, ITEM_INPUT_PLACEHOLDER, CLEAR_BUTTON_LABAL, ADD_BUTTON_LABAL } from "@/app/constants/constants";
 import React, { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
-import { fetchItemsWithUnits, fetchActiveItemCategories, fetchActiveUnitCategories, fetchUnitsByCategory } from "./functions"; 
+import { fetchItemsWithUnits, fetchActiveItemCategories, fetchActiveUnitCategories, fetchUnitsByCategory, addItemWithUnits } from "./functions";
 import SelectBox from "@/app/components/Forms/select_box";
 import TextInput from "@/app/components/Forms/text_input";
+import ClearButton from "@/app/components/Buttons/clear_button";
+import AddButton from "@/app/components/Buttons/add_button";
 
 export default function Page() {
   const [items, setItems] = useState<string[][]>([]);
@@ -20,24 +22,20 @@ export default function Page() {
   const [unitCategoryNames, setUnitCategoryNames] = useState<string[]>([]);
   const [selectedItemCategoryId, setSelectedItemCategoryId] = useState('');
   const [selectedUnitCategoryId, setSelectedUnitCategoryId] = useState('');
-
   const [unitIds, setUnitIds] = useState<string[]>([]);
   const [unitNames, setUnitNames] = useState<string[]>([]);
-  const [selectedUnitIds, setSelectedUnitIds] = useState<string[]>([]); 
-  const [selectedUnitIdsForNewSelectBox, setSelectedUnitIdsForNewSelectBox] = useState<string[]>([]); 
-
-  // New state for TextInput
+  const [selectedUnitIds, setSelectedUnitIds] = useState<string[]>([]);
+  const [selectedUnitIdsForNewSelectBox, setSelectedUnitIdsForNewSelectBox] = useState<string[]>([]);
   const [textInputValue, setTextInputValue] = useState('');
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toISOString().split('T')[0]; 
+    return date.toISOString().split('T')[0];
   };
 
   useEffect(() => {
     async function loadItemsData() {
       const fetchedItems = await fetchItemsWithUnits();
-
       const processedItems = fetchedItems.map((item: any) => {
         const unitNames = item.units.map((unit: any) => unit.unit_name).join(', ');
         const defaultUnit = item.units.find((unit: any) => unit.default_status === COMPULSARY);
@@ -66,7 +64,7 @@ export default function Page() {
       if (fetchedCategories) {
         const ids = fetchedCategories.map(category => category.category_id);
         const names = fetchedCategories.map(category => category.category_name);
-        
+
         setCategoryIds(ids);
         setCategoryNames(names);
       }
@@ -79,7 +77,7 @@ export default function Page() {
       if (fetchedUnitCategories) {
         const ids = fetchedUnitCategories.map(category => category.unit_category_id);
         const names = fetchedUnitCategories.map(category => category.unit_category_name);
-        
+
         setUnitCategoryIds(ids);
         setUnitCategoryNames(names);
       }
@@ -108,8 +106,36 @@ export default function Page() {
     loadUnitsByCategory();
   }, [selectedUnitCategoryId]);
 
+  const handleClear = () => {
+    setSelectedItemCategoryId('');
+    setSelectedUnitCategoryId('');
+    setSelectedUnitIds([]);
+    setSelectedUnitIdsForNewSelectBox([]);
+    setTextInputValue('');
+  };
+
+  const handleAddItem = async () => {
+    if (!selectedItemCategoryId || !textInputValue || selectedUnitIds.length === 0) {
+      alert("Please fill all fields before adding an item.");
+      return;
+    }
+
+    const units = selectedUnitIds.map(unit_id => ({
+      unit_id,
+      default_status: selectedUnitIdsForNewSelectBox.includes(unit_id) ? COMPULSARY : undefined
+    }));
+
+    const result = await addItemWithUnits(selectedItemCategoryId, textInputValue, units);
+    if (result) {
+      alert("Item added successfully!");
+      handleClear();
+    } else {
+      alert("Failed to add item. Please try again.");
+    }
+  };
+
   const isUnitCategoryDisabled = selectedUnitIds.length > 0;
-  const isSelectedUnitIdsEmpty = selectedUnitIds.length === 0; 
+  const isSelectedUnitIdsEmpty = selectedUnitIds.length === 0;
 
   return (
     <>
@@ -124,46 +150,55 @@ export default function Page() {
         <Col md={3}>
           <h3 className={'text-primary'}>{ADD_ITEM_PAGE_NAME}</h3>
           <SelectBox 
-                values={categoryIds}
-                display_values={categoryNames}
-                label_name={ITEM_CATEGORY_SELECTION_LABAL}
-                form_id="item_category_id"
-                onChange={(value) => setSelectedItemCategoryId(value)} 
-                selected_value={selectedItemCategoryId}
+            values={categoryIds}
+            display_values={categoryNames}
+            label_name={ITEM_CATEGORY_SELECTION_LABAL}
+            form_id="item_category_id"
+            onChange={(value) => setSelectedItemCategoryId(value)} 
+            selected_value={selectedItemCategoryId}
           />
-          {/* New TextInput component */}
           <TextInput
-            label={ITEM_INPUT_LABAL} // Change the label as needed
-            onChangeText={(event) => setTextInputValue(event.target.value)} // Update state on change
-            form_id="idem_name" 
-            placeholder_text={ITEM_INPUT_PLACEHOLDER} // Placeholder text
-            value={textInputValue} // Bind state to input value
+            label={ITEM_INPUT_LABAL}
+            onChangeText={(event) => setTextInputValue(event.target.value)}
+            form_id="item_name"
+            placeholder_text={ITEM_INPUT_PLACEHOLDER}
+            value={textInputValue}
           />
           <SelectBox 
-                values={unitCategoryIds}
-                display_values={unitCategoryNames}
-                label_name={ADD_UNIT_CATEGORY_LABAL}
-                form_id="unit_category_id"
-                onChange={(value) => setSelectedUnitCategoryId(value)} 
-                selected_value={selectedUnitCategoryId}
-                disabled={isUnitCategoryDisabled}
+            values={unitCategoryIds}
+            display_values={unitCategoryNames}
+            label_name={ADD_UNIT_CATEGORY_LABAL}
+            form_id="unit_category_id"
+            onChange={(value) => setSelectedUnitCategoryId(value)} 
+            selected_value={selectedUnitCategoryId}
+            disabled={isUnitCategoryDisabled}
           />
           <SelectCheckBox 
-                values={unitIds}
-                display_values={unitNames}
-                label_name={ADD_UNITS_LABAL}
-                form_id="unit_ids"
-                onChange={setSelectedUnitIds}
-                selected_values={selectedUnitIds}
+            values={unitIds}
+            display_values={unitNames}
+            label_name={ADD_UNITS_LABAL}
+            form_id="unit_ids"
+            onChange={setSelectedUnitIds}
+            selected_values={selectedUnitIds}
           />
           <SelectBox 
-                values={selectedUnitIds} 
-                display_values={unitNames} 
-                label_name={ADD_MOST_USED_UNIT_LABAL} 
-                form_id="selected_unit_ids"
-                onChange={setSelectedUnitIdsForNewSelectBox} 
-                selected_value={selectedUnitIdsForNewSelectBox} 
-                disabled={isSelectedUnitIdsEmpty} 
+            values={selectedUnitIds}
+            display_values={unitNames}
+            label_name={ADD_MOST_USED_UNIT_LABAL}
+            form_id="selected_unit_ids"
+            onChange={setSelectedUnitIdsForNewSelectBox}
+            selected_value={selectedUnitIdsForNewSelectBox}
+            disabled={isSelectedUnitIdsEmpty}
+          />
+          <ClearButton
+            label={CLEAR_BUTTON_LABAL}
+            onClickButton={handleClear}
+            btn_id="clear_button"
+          />
+          <AddButton
+            label={ADD_BUTTON_LABAL}
+            onClickButton={handleAddItem}
+            btn_id="add_button"
           />
         </Col>
       </Row>
