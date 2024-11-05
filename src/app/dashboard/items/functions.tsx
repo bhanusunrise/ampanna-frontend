@@ -54,7 +54,7 @@ export async function fetchActiveUnitCategories() {
 export async function fetchUnitsByCategory(unit_category_id: string) {
   try {
 
-    const uri = ITEMS_API + 'load_all_unit_categories'
+    const uri = ITEMS_API + 'load_all_units'
     const response = await fetch(uri, {
       method: 'POST',
       headers: {

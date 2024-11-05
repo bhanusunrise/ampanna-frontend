@@ -207,6 +207,14 @@ export const UPDATE_UNIT_CONVERSION_MODEL_TITLE = UNIT_PAGE_NAME + UPDATE
 export const ITEMS_PAGE_NAME = "භාණ්ඩ"
 export const ADD_ITEM_PAGE_NAME = NEW + " භාණ්ඩය"
 
+export const ITEM_CATEGORY_SELECTION_LABAL = "භාණ්ඩ වර්ගය"
+export const ITEM_INPUT_LABAL = "භාණ්ඩය"
+export const ITEM_INPUT_PLACEHOLDER = "භාණ්ඩයේ නම ඇතුළත් කරන්න"
+export const UNIT_TYPE_SELECTION_PLACEHOLDER = "භාණ්ඩ වර්ගය තෝරන්න"
+export const ADD_UNIT_CATEGORY_LABAL = "ඒකක වර්ගය"
+export const ADD_UNITS_LABAL = "ඒකක"
+export const ADD_MOST_USED_UNIT_LABAL = "බහුල ඒකකය"
+
 
 /** Item Categories */
 export const ITEM_CATEGORIES_PAGE_NAME = "භාණ්ඩ වර්ග"
