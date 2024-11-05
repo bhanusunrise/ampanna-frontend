@@ -35,44 +35,43 @@ export default function Page() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const recordsPerPage = 10;
 
-
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toISOString().split('T')[0];
   };
 
+  const reloadData = async () => {
+    const fetchedItems = await fetchItemsWithUnits();
+    const processedItems = fetchedItems.map((item: any) => {
+      const unitNames = item.units.map((unit: any) => unit.unit_name).join(', ');
+      const defaultUnit = item.units.find((unit: any) => unit.default_status === COMPULSARY);
+      const defaultUnitName = defaultUnit ? defaultUnit.unit_name : NULL_VALUE;
+
+      return [
+        item.item_id,
+        item.item_name + "\n(" + item.item_category_name + ")",
+        item.item_barcode,
+        unitNames,
+        defaultUnitName,
+        formatDate(item.createdAt),
+        formatDate(item.updatedAt),
+        item.status,
+      ];
+    });
+
+    setItems(processedItems);
+    setFilteredItems(processedItems);
+  };
+
   useEffect(() => {
-    async function loadItemsData() {
-      const fetchedItems = await fetchItemsWithUnits();
-      const processedItems = fetchedItems.map((item: any) => {
-        const unitNames = item.units.map((unit: any) => unit.unit_name).join(', ');
-        const defaultUnit = item.units.find((unit: any) => unit.default_status === COMPULSARY);
-        const defaultUnitName = defaultUnit ? defaultUnit.unit_name : NULL_VALUE;
-
-        return [
-          item.item_id,
-          item.item_name + "\n(" + item.item_category_name + ")",
-          item.item_barcode,
-          unitNames,
-          defaultUnitName,
-          formatDate(item.createdAt),
-          formatDate(item.updatedAt),
-          item.status,
-        ];
-      });
-
-      setItems(processedItems);
-      setFilteredItems(processedItems);
-    }
+    reloadData();
 
     async function loadActiveItemCategories() {
       const fetchedCategories = await fetchActiveItemCategories();
       setActiveItemCategories(fetchedCategories || []);
-
       if (fetchedCategories) {
         const ids = fetchedCategories.map(category => category.category_id);
         const names = fetchedCategories.map(category => category.category_name);
-
         setCategoryIds(ids);
         setCategoryNames(names);
       }
@@ -81,17 +80,14 @@ export default function Page() {
     async function loadActiveUnitCategories() {
       const fetchedUnitCategories = await fetchActiveUnitCategories();
       setActiveUnitCategories(fetchedUnitCategories || []);
-
       if (fetchedUnitCategories) {
         const ids = fetchedUnitCategories.map(category => category.unit_category_id);
         const names = fetchedUnitCategories.map(category => category.unit_category_name);
-
         setUnitCategoryIds(ids);
         setUnitCategoryNames(names);
       }
     }
 
-    loadItemsData();
     loadActiveItemCategories();
     loadActiveUnitCategories();
   }, []);
@@ -101,7 +97,6 @@ export default function Page() {
       if (selectedUnitCategoryId) {
         const fetchedUnits = await fetchUnitsByCategory(selectedUnitCategoryId);
         console.log('Fetched Units:', fetchedUnits);
-
         if (fetchedUnits) {
           const ids = fetchedUnits.map((unit: any) => unit.unit_id);
           const names = fetchedUnits.map((unit: any) => unit.unit_name);
@@ -137,6 +132,7 @@ export default function Page() {
     if (result) {
       alert("Item added successfully!");
       handleClear();
+      await reloadData(); // Reload data after adding an item
     } else {
       alert("Failed to add item. Please try again.");
     }
@@ -145,8 +141,7 @@ export default function Page() {
   const isUnitCategoryDisabled = selectedUnitIds.length > 0;
   const isSelectedUnitIdsEmpty = selectedUnitIds.length === 0;
 
-
-    const handleNext = () => {
+  const handleNext = () => {
     if (currentPage < Math.ceil(filteredItems.length / recordsPerPage) - 1) {
       setCurrentPage(currentPage + 1);
     }
@@ -178,13 +173,13 @@ export default function Page() {
     if (itemToDelete) {
       const result = await deleteIteam(itemToDelete.item_id);
       if (result.success) {
-        //await reloadData();
+        await reloadData(); // Reload data after deleting an item
         handleCloseDeleteModal();
       }
     }
   };
 
-const handleCloseDeleteModal = () => {
+  const handleCloseDeleteModal = () => {
     setShowDeleteModal(false);
     setItemToDelete(null);
   };
@@ -203,7 +198,7 @@ const handleCloseDeleteModal = () => {
             table_id='table_1'
             startingIndex={startingIndex}
             onDelete={handleDeleteItem}
-            />
+          />
           <NavigateButtons
             currentPage={currentPage}
             totalPages={totalPages}
@@ -267,7 +262,7 @@ const handleCloseDeleteModal = () => {
         </Col>
       </Row>
 
-       {itemToDelete && (
+      {itemToDelete && (
         <DeleteModal
           show={showDeleteModal}
           handleClose={handleCloseDeleteModal}
@@ -278,4 +273,3 @@ const handleCloseDeleteModal = () => {
     </>
   );
 }
-
