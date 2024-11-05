@@ -10,6 +10,9 @@ import SelectBox from "@/app/components/Forms/select_box";
 import TextInput from "@/app/components/Forms/text_input";
 import ClearButton from "@/app/components/Buttons/clear_button";
 import AddButton from "@/app/components/Buttons/add_button";
+import NavigateButtons from "@/app/components/Buttons/navigate_button";
+import DeleteModal from "@/app/components/Models/delete_model";
+import { deleteIteam } from "./functions";
 
 export default function Page() {
   const [items, setItems] = useState<string[][]>([]);
@@ -27,6 +30,11 @@ export default function Page() {
   const [selectedUnitIds, setSelectedUnitIds] = useState<string[]>([]);
   const [selectedUnitIdsForNewSelectBox, setSelectedUnitIdsForNewSelectBox] = useState<string[]>([]);
   const [textInputValue, setTextInputValue] = useState('');
+  const [currentPage, setCurrentPage] = useState(0);
+  const [itemToDelete, setItemToDelete] = useState<any>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const recordsPerPage = 10;
+
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -137,6 +145,50 @@ export default function Page() {
   const isUnitCategoryDisabled = selectedUnitIds.length > 0;
   const isSelectedUnitIdsEmpty = selectedUnitIds.length === 0;
 
+
+    const handleNext = () => {
+    if (currentPage < Math.ceil(filteredItems.length / recordsPerPage) - 1) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const currentRecords = filteredItems.slice(
+    currentPage * recordsPerPage,
+    (currentPage + 1) * recordsPerPage
+  );
+  const totalPages = Math.ceil(filteredItems.length / recordsPerPage);
+  const startingIndex = currentPage * recordsPerPage;
+
+  const handleDeleteItem = (rowIndex: number) => {
+    const selectedItemData = filteredItems[rowIndex];
+    setItemToDelete({
+      item_id: selectedItemData[0],
+      item_name: selectedItemData[1],
+    });
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (itemToDelete) {
+      const result = await deleteIteam(itemToDelete.item_id);
+      if (result.success) {
+        //await reloadData();
+        handleCloseDeleteModal();
+      }
+    }
+  };
+
+const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+    setItemToDelete(null);
+  };
+
   return (
     <>
       <Row>
@@ -145,7 +197,19 @@ export default function Page() {
       </Row>
       <Row>
         <Col md={9}>
-          <BasicTable table_fields={ITEMS_TABLE_FIELDS} table_records={items} table_id='table_1'/>
+          <BasicTable 
+            table_fields={ITEMS_TABLE_FIELDS} 
+            table_records={items} 
+            table_id='table_1'
+            startingIndex={startingIndex}
+            onDelete={handleDeleteItem}
+            />
+          <NavigateButtons
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onNext={handleNext}
+            onPrevious={handlePrevious}
+          />
         </Col>
         <Col md={3}>
           <h3 className={'text-primary'}>{ADD_ITEM_PAGE_NAME}</h3>
@@ -202,6 +266,16 @@ export default function Page() {
           />
         </Col>
       </Row>
+
+       {itemToDelete && (
+        <DeleteModal
+          show={showDeleteModal}
+          handleClose={handleCloseDeleteModal}
+          handleDelete={confirmDelete}
+          itemName={itemToDelete.item_name}
+        />
+      )}
     </>
   );
 }
+

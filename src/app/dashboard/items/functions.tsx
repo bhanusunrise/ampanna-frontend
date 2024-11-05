@@ -159,7 +159,7 @@ export async function updateItemAndDefaultUnit(item_id: string, item_name: strin
 
 // Delete items and units
 
-export async function markItemAsInactive(item_id: string) {
+export async function deleteIteam(item_id: string) {
   try {
 
     const uri = ITEMS_API + "delete_item"
@@ -176,7 +176,7 @@ export async function markItemAsInactive(item_id: string) {
     }
 
     const data = await response.json();
-    return data;
+    return {success: true, message: data.message};
   } catch (error) {
     console.error('Error marking item as inactive:', error);
     return null;
