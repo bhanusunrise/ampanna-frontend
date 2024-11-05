@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { dbConnect } from '../../../lib/db';
+import { NULL_VALUE } from '@/app/constants/constants';
 
 export async function GET() {
   const db = await dbConnect();
@@ -7,7 +8,7 @@ export async function GET() {
   try {
     // Fetch all items
     const itemsQuery = `
-      SELECT i.item_id, i.item_name, i.item_category_id, i.createdAt, i.updatedAt,
+      SELECT i.item_id, i.item_name, i.item_category_id, i.createdAt, i.updatedAt, i.item_barcode, i.status,
              ic.category_name AS item_category_name
       FROM Items i
       LEFT JOIN Item_Categories ic ON i.item_category_id = ic.category_id
@@ -26,7 +27,15 @@ export async function GET() {
     // Combine item and unit data
     const itemsWithUnits = items.map((item: any) => {
       const units = itemUnits.filter((unit: any) => unit.item_id === item.item_id);
-      return { ...item, units };
+
+      // Set item_barcode to "N/A" if it is null
+      const itemWithBarcode = {
+        ...item,
+        item_barcode: item.item_barcode || NULL_VALUE,
+        units,
+      };
+
+      return itemWithBarcode;
     });
 
     return NextResponse.json(itemsWithUnits);
@@ -35,4 +44,3 @@ export async function GET() {
     return NextResponse.json({ error: 'Failed to fetch data.' }, { status: 500 });
   }
 }
-

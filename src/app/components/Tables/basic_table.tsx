@@ -29,6 +29,7 @@ const BasicTable: React.FC<BasicTableProps> = ({
 }) => {
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
   const [tableSize, setTableSize] = useState<'sm' | 'md'>('sm');
+  const [fontSize, setFontSize] = useState<number>(15); // Default font size
 
   useEffect(() => {
     const updateTableSize = () => {
@@ -58,7 +59,7 @@ const BasicTable: React.FC<BasicTableProps> = ({
         rowIndex = 9;
       }
 
-      if (rowIndex !== null && rowIndex < table_records.length) {
+      if (rowIndex !== null && rowIndex < (table_records?.length || 0)) {
         setSelectedRow(rowIndex);
       }
     };
@@ -67,21 +68,38 @@ const BasicTable: React.FC<BasicTableProps> = ({
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [table_records.length]);
+  }, [table_records?.length]);
+
+  useEffect(() => {
+  // Calculate the maximum length of the records' values
+  const maxLength = table_records?.reduce((max, record) => {
+    // Get the maximum length of the current record's cells
+    const currentMax = record.reduce((recordMax, cell) => {
+      return Math.max(recordMax, cell.length);
+    }, 0);
+    return Math.max(max, currentMax); // Return the maximum between the current max and the overall max
+  }, 0) || 0;
+
+  // Adjust the font size based on the maximum length
+  if (maxLength > 20) { // Example threshold
+    setFontSize(12); // Smaller font size if any value is too long
+  } else {
+    setFontSize(15); // Default font size
+  }
+}, [table_records]);
+
 
   const isInactive = (record: string[]) => {
-    const statusIndex = table_fields.indexOf('තත්වය') + 1;
-    console.log("Status column index:", statusIndex);
-    console.log("Status field value in row:", record[statusIndex]);
+    const statusIndex = table_fields?.indexOf('තත්වය') + 1;
     return statusIndex !== -1 && record[statusIndex] === 'අක්‍රීය';
   };
 
   return (
-    <Table responsive bordered striped hover id={table_id} size={tableSize} style={{ fontSize: 15 }}>
+    <Table responsive bordered striped hover id={table_id} size={tableSize} style={{ fontSize }}>
       <thead>
         <tr>
           <th className="bg-primary text-white">#</th>
-          {table_fields.map((field, index) => (
+          {table_fields?.map((field, index) => (
             <th key={index} className="bg-primary text-white">
               {field}
             </th>
@@ -99,7 +117,7 @@ const BasicTable: React.FC<BasicTableProps> = ({
 
             return (
               <tr key={rowIndex} className={rowClasses}>
-                <td>{startingIndex + rowIndex + 1}</td>
+                <td>{startingIndex ? startingIndex + rowIndex + 1 : rowIndex + 1}</td>
                 {Array.isArray(displayedRecord) &&
                   displayedRecord.map((cell, cellIndex) => (
                     <td key={cellIndex} style={{ maxWidth: 10 }}>{cell}</td>
@@ -108,23 +126,23 @@ const BasicTable: React.FC<BasicTableProps> = ({
                   {isInactive(record) ? (
                     <RestoreButton
                       label={RESTORE_BUTTON_LABAL}
-                      onClickButton={() => onRestore(startingIndex + rowIndex)}
-                      btn_id={`restore_button_${startingIndex + rowIndex}`}
-                      rowIndex={startingIndex + rowIndex}
+                      onClickButton={() => onRestore && onRestore(startingIndex ? startingIndex + rowIndex : rowIndex)}
+                      btn_id={`restore_button_${startingIndex ? startingIndex + rowIndex : rowIndex}`}
+                      rowIndex={startingIndex ? startingIndex + rowIndex : rowIndex}
                     />
                   ) : (
                     <>
                       <UpdateButton
                         label={UPDATE_BUTTON_LABAL}
-                        onClickButton={() => onUpdate(startingIndex + rowIndex)}
-                        btn_id={`update_button_${startingIndex + rowIndex}`}
-                        rowIndex={startingIndex + rowIndex}
+                        onClickButton={() => onUpdate && onUpdate(startingIndex ? startingIndex + rowIndex : rowIndex)}
+                        btn_id={`update_button_${startingIndex ? startingIndex + rowIndex : rowIndex}`}
+                        rowIndex={startingIndex ? startingIndex + rowIndex : rowIndex}
                       />
                       <DeleteButton
                         label={DELETE_BUTTON_LABAL}
-                        onClickButton={() => onDelete(startingIndex + rowIndex)}
-                        btn_id={`delete_button_${startingIndex + rowIndex}`}
-                        rowIndex={startingIndex + rowIndex}
+                        onClickButton={() => onDelete && onDelete(startingIndex ? startingIndex + rowIndex : rowIndex)}
+                        btn_id={`delete_button_${startingIndex ? startingIndex + rowIndex : rowIndex}`}
+                        rowIndex={startingIndex ? startingIndex + rowIndex : rowIndex}
                       />
                     </>
                   )}
@@ -134,7 +152,7 @@ const BasicTable: React.FC<BasicTableProps> = ({
           })
         ) : (
           <tr>
-            <td colSpan={table_fields.length + 1} className="text-center">
+            <td colSpan={table_fields ? table_fields.length + 1 : 2} className="text-center">
               No records available.
             </td>
           </tr>
@@ -145,3 +163,5 @@ const BasicTable: React.FC<BasicTableProps> = ({
 };
 
 export default BasicTable;
+
+

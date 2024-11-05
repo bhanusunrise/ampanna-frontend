@@ -24,10 +24,13 @@ export const CUSTOMER_TABLE_FIELDS = [
 ]
 
 export const ITEMS_TABLE_FIELDS = [
-    "Item_ID",
-    "Item_Name",
-    "Item_Category",
-    "Item_Units",
+    "භාණ්ඩය",
+    "බාර් කෝඩය",
+    "ඒකක වර්ග",
+    "බහුල ඒකකය",
+    "එකතු කිරීම",
+    "වෙනස් කිරීම",
+    "තත්වය"
 ]
 
 export const UNIT_TABLE_FIELDS = [
@@ -80,6 +83,10 @@ export const UNIT_CATEGORY_TYPES = [COMPULSARY, OPTIONAL]
 /** Default status values */
 export const ACTIVE_ITEM = "සක්‍රීය"
 export const DELETED_ITEM = "අක්‍රීය"
+
+/** Default null/ not null values */
+export const NULL_VALUE = "නැත"
+export const NOT_NULL_VALUE = "ඇත"
 
 
 /** Log messages */
