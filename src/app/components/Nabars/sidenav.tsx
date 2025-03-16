@@ -1,11 +1,9 @@
 import React from 'react';
 import { Nav } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css'; 
-import { BiCoin, BiDiamond } from 'react-icons/bi';
+import { BiCoin } from 'react-icons/bi';
 import { CgCalculator, CgProfile, CgToolbarTop } from 'react-icons/cg';
 import { Md10K, MdBackpack, MdCarCrash, MdNumbers, MdRecycling } from 'react-icons/md';
-import { GrGroup } from 'react-icons/gr';
-import { IoMdPaper } from 'react-icons/io';
 import { ITEM_CATEGORIES_PAGE_NAME, ITEMS_PAGE_NAME, LOGO_WHITE_PATH, SUPPLIERS_PAGE_NAME, UNIT_CATEGORY_PAGE_NAME, UNIT_CONVERSION_PAGE_NAME, UNIT_PAGE_NAME } from '@/app/constants/constants';
 
 const SideNav = () => {

@@ -1,7 +1,7 @@
 'use client';
 
 import { BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_CONFIRM, DELTETION } from '@/app/constants/constants';
-import React, { useState } from 'react';
+import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
 interface DeleteModalProps {

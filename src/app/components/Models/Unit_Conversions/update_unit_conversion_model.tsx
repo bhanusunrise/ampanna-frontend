@@ -1,4 +1,4 @@
-import { BACK, CLEAR_BUTTON_LABAL, FIRST_UNIT_LABEL, MULTIPLIER_LABAL, SECOND_UNIT_LABEL, UPDATE_BUTTON_UPDATE_MODAL, UPDATE_UNIT_CONVERSION_MODEL_TITLE } from '@/app/constants/constants';
+import { BACK, FIRST_UNIT_LABEL, MULTIPLIER_LABAL, SECOND_UNIT_LABEL, UPDATE_BUTTON_UPDATE_MODAL, UPDATE_UNIT_CONVERSION_MODEL_TITLE } from '@/app/constants/constants';
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 

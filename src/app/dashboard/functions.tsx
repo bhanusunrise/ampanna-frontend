@@ -10,7 +10,6 @@ interface search_handler_props {
 export const search_handler = ({
   search_value,
   table_values,
-  fields,
   setFilteredData,
 }: search_handler_props) => {
   // Filter table_values based on the search input

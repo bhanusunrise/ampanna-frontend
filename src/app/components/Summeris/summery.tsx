@@ -1,6 +1,5 @@
 import React from 'react';
 import { Row, Col, ProgressBar } from 'react-bootstrap';
-import AddButton from '../Buttons/add_button';
 
 interface SummaryProps {
   fields: string[]; // An array of field names
