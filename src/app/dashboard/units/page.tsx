@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import BasicTable from '@/app/components/Tables/basic_table';
 import { ADD_BUTTON_LABAL, ADD_UNIT_PAGE_NAME, CLEAR_BUTTON_LABAL, UNIT_ABBRAVIATION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_NAME_LABAL, UNIT_NAME_PLACEHOLDER, UNIT_PAGE_NAME, UNIT_TABLE_FIELDS } from '@/app/constants/constants';
-import { fetchAllUnits, addUnit, updateUnit, blankFunction, deleteUnit, RestoreUnit, fetchAllUnitCategories } from './functions';
+import { fetchAllUnits, addUnit, updateUnit, deleteUnit, RestoreUnit, fetchAllUnitCategories } from './functions';
 import NavigateButtons from '@/app/components/Buttons/navigate_button';
 import { Col, Row } from 'react-bootstrap';
 import AddButton from '@/app/components/Buttons/add_button';
@@ -119,7 +119,7 @@ export default function Page() {
   };
 
   const handleUpdateUnit = async (unitData: { status: any; unit_name: string; abbreviation: string }) => {
-    const result = await updateUnit(selectedUnit.unit_id, unitData.unit_name, unitData.abbreviation, unitData.status);
+    await updateUnit(selectedUnit.unit_id, unitData.unit_name, unitData.abbreviation, unitData.status);
 
     handleCloseModal();
     const updatedUnits = await fetchAllUnits();
@@ -139,7 +139,7 @@ export default function Page() {
 
   const confirmDelete = async () => {
     if (itemToDelete) {
-      const result = await deleteUnit(itemToDelete.unit_id);/*
+      await deleteUnit(itemToDelete.unit_id);/*
       if (result.success) {
         const updatedUnits = await fetchAllUnits();
         const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.status]);

@@ -66,7 +66,7 @@ export const addUnitConversion = async (unit_01: string, unit_02: string, multip
             throw new Error(errorData.message || 'Failed to add unit conversion');
         }
 
-        const data = await response.json();
+        await response.json();
         return { success: true, message: 'Unit conversion added successfully!' }; // Adjust return data
     } catch (error) {
         console.error('Error adding unit conversion:', error);
@@ -92,7 +92,7 @@ export const updateUnitConversion = async (conversionId: string, newMultiplier: 
       throw new Error(errorData.message || 'Failed to update unit conversion');
     }
 
-    const data = await response.json();
+    await response.json();
     return { success: true, message: 'Unit conversion updated successfully!' };
   } catch (error) {
     console.error('Error updating unit conversion:', error);
@@ -116,7 +116,7 @@ export const deleteUnitConversion = async (unit_conversion_id: string) => {
       throw new Error('Failed to delete unit conversion');
     }
 
-    const data = await response.json();
+    await response.json();
     return { success: true, message: 'Unit conversion deleted successfully!' };
   } catch (error) {
     console.error('Error delete unit conversion:', error);
@@ -140,7 +140,7 @@ export const restoreUnitConversion = async (unit_conversion_id: string) => {
       throw new Error('Failed to restore unit conversion');
     }
 
-    const data = await response.json();
+    await response.json();
     return { success: true, message: 'Unit conversion restored successfully!' };
   } catch (error) {
     console.error('Error restoring unit conversion:', error);

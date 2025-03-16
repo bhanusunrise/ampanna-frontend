@@ -9,8 +9,6 @@ import {
   UNIT_CATEGORY_NAME_PLACEHOLDER,
   UNIT_CATEGORY_PAGE_NAME,
   UNIT_CATEGORY_TABLE_FIELDS,
-  UNIT_CATEGORY_TYPES,
-  UNIT_CATEGORY_TYPE_LABAL, // Import the label constant for the select box
 } from '@/app/constants/constants';
 import {
   fetchAllUnitCategories,

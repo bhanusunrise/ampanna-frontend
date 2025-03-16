@@ -49,7 +49,7 @@ export const addUnit = async (unit_name: string, abbreviation: string, unit_cate
       throw new Error('Failed to add unit');
     }
 
-    const data = await response.json();
+    await response.json();
     return { success: true, message: 'Unit added successfully!' }; // Adjust return data
   } catch (error) {
     console.error('Error adding unit:', error);
@@ -59,7 +59,7 @@ export const addUnit = async (unit_name: string, abbreviation: string, unit_cate
 
 
 // New function to update an existing unit
-export const updateUnit = async (unit_id: string, unit_name: string, abbreviation: string, status: any) => {
+export const updateUnit = async (unit_id: string, unit_name: string, abbreviation: string) => {
 
   const uri = UNIT_API + 'update_unit'
   try {
@@ -126,7 +126,7 @@ export const RestoreUnit = async (unit_id: string) => {
       throw new Error('Failed to restore unit');
     }
 
-    const data = await response.json();
+    await response.json();
     return { success: true, message: 'Unit restored successfully!' };
   } catch (error) {
     console.error('Error restoring unit:', error);

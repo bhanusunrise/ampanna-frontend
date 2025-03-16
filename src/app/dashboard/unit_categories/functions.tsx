@@ -33,7 +33,7 @@ export const addUnitCategory = async (unit_category_name: string, unit_category_
       throw new Error('Failed to add unit category');
     }
 
-    const data = await response.json();
+    await response.json();
     return { success: true, message: 'Unit category added successfully!' }; // Adjust return data
   } catch (error) {
     console.error('Error adding unit category:', error);
@@ -58,7 +58,7 @@ export const updateUnitCategory = async (unit_category_id: string, unit_category
       throw new Error('Failed to update unit catrgory');
     }
 
-    const data = await response.json();
+    await response.json();
    return { success: true, message: 'Unit category updated successfully!' };
   } catch (error) {
     console.error('Error updating unit category:', error);
@@ -81,7 +81,7 @@ export const deleteUnitCategory = async (unit_category_id: string) => {
       throw new Error('Failed to delete unit category');
     }
 
-    const data = await response.json();
+    await response.json();
     return { success: true, message: 'Unit category deleted successfully!' };
   } catch (error) {
     console.error('Error delete unit category:', error);
@@ -105,7 +105,7 @@ export const restoreUnitCategory = async (unit_category_id: string) => {
       throw new Error('Failed to restore unit category');
     }
 
-    const data = await response.json();
+    await response.json();
     return { success: true, message: 'Unit category restored successfully!' };
   } catch (error) {
     console.error('Error restoring unit category:', error);
