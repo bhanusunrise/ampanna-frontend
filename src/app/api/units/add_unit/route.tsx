@@ -32,7 +32,7 @@ export async function POST(req: Request) {
 
         // Insert the new unit into the database
         const query = 'INSERT INTO units (unit_id, unit_name, abbreviation, unit_category_id) VALUES (?, ?, ?, ?)';
-        const [result] = await connection.execute(query, [newUnitId, unit_name, abbreviation, unit_category_id]);
+        await connection.execute(query, [newUnitId, unit_name, abbreviation, unit_category_id]);
 
         // Return a success response
         return NextResponse.json({

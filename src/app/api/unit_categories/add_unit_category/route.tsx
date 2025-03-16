@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { dbConnect } from '../../../lib/db'; // Adjust the path if necessary
-import { ADDED_UNIT_CATEGORY, COMPULSARY, FAILED_TO_ADD_UNIT_CATEGORY, FILL_UNIT_CATEGORY, OPTIONAL, UNIT_CATEGORY_PRIMARY_KEY_FIRST_VALUE, UNIT_CATEGORY_PRIMARY_KEY_LETTER } from '@/app/constants/constants';
+import { ADDED_UNIT_CATEGORY, FILL_UNIT_CATEGORY, OPTIONAL, UNIT_CATEGORY_PRIMARY_KEY_FIRST_VALUE, UNIT_CATEGORY_PRIMARY_KEY_LETTER } from '@/app/constants/constants';
 
 export async function POST(req: Request) {
     const connection = await dbConnect();
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
         // Insert the new unit into the database
         const query = 'INSERT INTO unit_categories (unit_category_id, unit_category_name, default_status) VALUES (?, ?, ?)';
         //const [result] = await connection.execute(query, [newUnitCategoryId, unit_category_name, COMPULSARY]);
-        const [result] = await connection.execute(query, [newUnitCategoryId, unit_category_name, OPTIONAL]);
+        await connection.execute(query, [newUnitCategoryId, unit_category_name, OPTIONAL]);
 
         // Return a success response
         return NextResponse.json({

@@ -28,7 +28,7 @@ export async function POST(req: Request) {
         }
 
         // Insert the new item category
-        const [result] = await connection.execute(
+        await connection.execute(
             `INSERT INTO Item_Categories (category_id, category_name, createdAt, updatedAt) VALUES (?, ?, NOW(), NOW())`,
             [newCategoryId, item_category_name]
         );

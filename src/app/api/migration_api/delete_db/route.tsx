@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { dbConnect } from '../../../lib/db'; // Adjust the path if necessary
 
-export async function DELETE(req: Request) {
+export async function DELETE() {
     const connection = await dbConnect();
 
     try {

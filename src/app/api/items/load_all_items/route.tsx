@@ -32,8 +32,30 @@ ORDER BY i.item_id DESC;
     const [itemUnits] = await db.execute(itemUnitsQuery);
 
     // Combine item and unit data
-    const itemsWithUnits = items.map((item: any) => {
-      const units = itemUnits.filter((unit: any) => unit.item_id === item.item_id);
+    interface Item {
+      item_id: number;
+      item_name: string;
+      item_category_id: number;
+      createdAt: Date;
+      updatedAt: Date;
+      item_barcode: string | null;
+      status: string;
+      item_category_name: string;
+    }
+
+    interface ItemUnit {
+      item_id: number;
+      unit_id: number;
+      unit_name: string;
+      abbreviation: string;
+      default_status: string;
+      status: string;
+      createdAt: Date;
+      updatedAt: Date;
+    }
+
+    const itemsWithUnits = items.map((item: Item) => {
+      const units = itemUnits.filter((unit: ItemUnit) => unit.item_id === item.item_id);
 
       // Set item_barcode to "N/A" if it is null
       const itemWithBarcode = {
