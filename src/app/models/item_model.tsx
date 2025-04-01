@@ -20,8 +20,8 @@ const ItemSchema: Schema = new Schema(
         other_unit_ids: { type: [String], required: false }, // Array of unit IDs
         other_parameters: [
             {
-                parameter_name: { type: String, required: true }, // Parameter name
-                value: { type: String, required: true }, // Parameter value
+                parameter_name: { type: String, required: false }, // Parameter name
+                value: { type: String, required: false }, // Parameter value
             },
         ],
     },
