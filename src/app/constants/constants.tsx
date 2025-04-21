@@ -46,8 +46,7 @@ export const UNIT_TABLE_FIELDS = [
 
 export const UNIT_CATEGORY_TABLE_FIELDS = [
     "ඒකක වර්ගය",
-    "වර්ගය",
-    "තත්වය",
+    "විස්තරය",
     "එකතු කිරීම",
     "වෙනස් කිරීම"
 ]
@@ -68,12 +67,12 @@ export const ITEM_CATEGORIES_TABLE_FIELDS = [
     "වෙනස් කිරීම"
 ]
 /** API base routes */
-export const UNIT_API = "/api/units/"
-export const UNIT_CONVERSION_API = "/api/unit_conversions/"
-export const UNIT_CATEGORY_API = "/api/unit_categories/"
-export const ITEM_CATEGORY_API = "/api/item_categories/"
-export const ITEMS_API = "/api/items/"
-export const SUPPLIER_API = "/api/suppliers/"
+export const UNIT_API = "/api_new/operations/units/"
+export const UNIT_CONVERSION_API = "/api_new/operations/unit_conversions/"
+export const UNIT_CATEGORY_API = "/api_new/operations/unit_categories/"
+export const ITEM_CATEGORY_API = "/api_new/operations/item_categories/"
+export const ITEMS_API = "/api_new/operations/items/"
+export const SUPPLIER_API = "/api_new/operations/suppliers/"
 
 
 /** Default DB values */
