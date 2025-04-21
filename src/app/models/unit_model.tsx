@@ -1,10 +1,9 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import UnitInterface from '../interfaces/unit_interface';
 
-export interface IUnit extends Document {
-    _id: string;
-    unit_category_id: string;
-    unit_name: string;
-    description: string;
+// Extend the imported interface to include Document
+export interface IUnit extends Omit<UnitInterface, '_id'>, Document {
+    _id: string; // Ensure compatibility with the Document type
 }
 
 const UnitSchema: Schema = new Schema(

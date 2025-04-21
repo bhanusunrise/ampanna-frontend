@@ -1,13 +1,9 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import ItemInterface from '../interfaces/item_interface';
 
-// Define an interface for the Item model
-export interface IItem extends Document {
-    _id: string;
-    name: string;
-    description: string;
-    main_unit_id: string;
-    other_unit_ids: string[]; // Array of unit IDs (strings)
-    other_parameters: { parameter_name: string; value: string }[]; // Array of objects for parameter details
+// Extend the imported interface to include Document
+export interface IItem extends Omit<ItemInterface, '_id'>, Document {
+    _id: string; // Ensure compatibility with the Document type
 }
 
 // Define the Item schema

@@ -1,11 +1,9 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import UnitConversionInterface from '../interfaces/unit_conversion_interface';
 
-export interface IUnitConversion extends Document {
-    _id: string;
-    first_unit_id: string;
-    second_unit_id: string;
-    multiplier: number;
-    description: string;
+// Extend the imported interface to include Document
+export interface IUnitConversion extends Omit<UnitConversionInterface, '_id'>, Document {
+    _id: string; // Ensure compatibility with the Document type
 }
 
 const UnitConversionSchema: Schema = new Schema(

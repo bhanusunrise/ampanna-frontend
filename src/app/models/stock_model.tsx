@@ -1,19 +1,9 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import StockInterface from '../interfaces/stock_interface';
 
-// Define an interface for the Stock model
-export interface IStock extends Document {
-    _id: string;
-    name: string;
-    description: string;
-    supplier_id: string; // Reference to supplier
-    item_id: string; // Reference to item
-    date: Date; // Date for stock entry
-    total_quantity: number;
-    sold_quantity: number;
-    damaged_quantity: number;
-    buying_price: number; // Price per unit
-    selling_price: number; // Price per unit
-    discount: { _id: string; start_date: Date; end_date: Date }[]; // Array of discount objects
+// Extend the imported interface to include Document
+export interface IStock extends Omit<StockInterface, '_id'>, Document {
+    _id: string; // Ensure compatibility with the Document type
 }
 
 // Define the Stock schema

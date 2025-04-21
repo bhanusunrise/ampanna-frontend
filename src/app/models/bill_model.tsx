@@ -1,11 +1,9 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import { BillInterface } from '../interfaces/bill_interface';
 
-// Define an interface for the Bill model
-export interface IBill extends Document {
-    _id: string;
-    date: Date; // Bill date
-    bill_item: { _id: string; stock_id: string; quantity: number }[]; // Array of bill items
-    additional_discount: number; // Additional discount applied to the bill
+// Extend the imported interface to include Document
+export interface IBill extends Omit<BillInterface, '_id'>, Document {
+    _id: string; // Ensure compatibility with the Document type
 }
 
 // Define the Bill schema

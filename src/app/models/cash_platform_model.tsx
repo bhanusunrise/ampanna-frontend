@@ -1,12 +1,10 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import { CashPlatformInterface } from '../interfaces/cash_platform_interface';
 
 // Define an interface for the CashPlatform model
-export interface ICashPlatform extends Document {
-    _id: string;
-    name: string;
-    description: string;
-    transaction: { _id: string; description: string; is_in: boolean; amount: number }[]; // Array of transactions
-    is_loan: boolean; // Indicates if the cash platform involves a loan
+// Extend the imported interface to include Document
+export interface ICashPlatform extends Omit<CashPlatformInterface, '_id'>, Document {
+    _id: string; // Ensure compatibility with the Document type
 }
 
 // Define the CashPlatform schema
