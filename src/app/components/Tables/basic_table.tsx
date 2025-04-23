@@ -10,7 +10,7 @@ import { ACTONS_FIELD, DELETE_BUTTON_LABAL, RESTORE_BUTTON_LABAL, UPDATE_BUTTON_
 
 interface BasicTableProps {
   table_fields?: string[];
-  table_records?: string[][];
+  table_records?: object[][];
   table_id: string;
   startingIndex?: number;
   onUpdate?: (rowIndex: number) => void;
@@ -89,8 +89,10 @@ const BasicTable: React.FC<BasicTableProps> = ({
 }, [table_records]);
 
 
+
   const isInactive = (record: string[]) => {
-    const statusIndex = table_fields?.indexOf('තත්වය') + 1;
+    //const statusIndex = table_fields?.indexOf('තත්වය') + 1;
+    const statusIndex = 1; // Use -1 if not found
     return statusIndex !== -1 && record[statusIndex] === 'අක්‍රීය';
   };
 

@@ -45,10 +45,10 @@ export const UNIT_TABLE_FIELDS = [
 
 
 export const UNIT_CATEGORY_TABLE_FIELDS = [
+    "#",
     "ඒකක වර්ගය",
     "විස්තරය",
-    "එකතු කිරීම",
-    "වෙනස් කිරීම"
+    "සැකසීම්"
 ]
 
 export const UNIT_CONVERSION_TABLE_FIELDS = [
@@ -64,7 +64,8 @@ export const ITEM_CATEGORIES_TABLE_FIELDS = [
     "භාණ්ඩ වර්ගයේ නම",
     "තත්වය",
     "එකතු කිරීම",
-    "වෙනස් කිරීම"
+    "වෙනස් කිරීම",
+    "සැකසීම්"
 ]
 /** API base routes */
 export const UNIT_API = "/api_new/operations/units/"
