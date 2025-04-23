@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { UNIT_CATEGORY_API, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_TABLE_FIELDS } from '@/app/constants/constants';
+import { NO_RECORDS_FOUND, UNIT_CATEGORY_API, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_TABLE_FIELDS } from '@/app/constants/constants';
 import UnitCategoryInterface from '@/app/interfaces/unit_category_interface';
 import { Table } from 'react-bootstrap';
 
@@ -59,7 +59,7 @@ const UnitCategoryPage = () => {
             ))
           ) : (
             <tr>
-              <td colSpan={UNIT_CATEGORY_TABLE_FIELDS.length} className="text-center">No unit categories found</td>
+              <td colSpan={UNIT_CATEGORY_TABLE_FIELDS.length} className="text-center">{NO_RECORDS_FOUND}</td>
             </tr>
           )}
         </tbody>
