@@ -71,6 +71,9 @@ export const ITEM_CATEGORIES_TABLE_FIELDS = [
 /** Not found records */
 export const NO_RECORDS_FOUND = "සොයාගත නොහැකිය"
 
+export const UNIT_CATEGORIES_SEARCH_PLACEHOLDER = "බර, උස ..."
+
+
 /** API base routes */
 export const UNIT_API = "/api_new/operations/units/"
 export const UNIT_CONVERSION_API = "/api_new/operations/unit_conversions/"

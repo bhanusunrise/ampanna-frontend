@@ -13,7 +13,7 @@ interface TextInputProps {
 const TextInput: React.FC<TextInputProps> = ({ label, onChangeText, form_id, form_message, placeholder_text, value }) => {
   return (
     <>
-      <Form.Label htmlFor={form_id}>{label}</Form.Label>
+      <Form.Label htmlFor={form_id} className='text-primary'>{label}</Form.Label>
       <Form.Control
         type="text"
         id={form_id}
