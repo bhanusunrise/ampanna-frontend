@@ -1,4 +1,5 @@
-// components/UpdateModel.tsx
+'use client'
+
 import React from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { UpdateModelProps } from '../../interfaces/models/update_model_interface';
@@ -30,8 +31,8 @@ const UpdateModel: React.FC<UpdateModelProps> = ({
             <TextInput
               key={`text-input-${index}`}
               label={input.label}
-              placeholder_text={input.placeholder}
-              value={input.value}
+              placeholder={input.placeholder}
+              value={input.value }
               onChange={input.onChange}
               required={input.required}
             />

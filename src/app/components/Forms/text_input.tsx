@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { Form } from 'react-bootstrap';
 
@@ -20,7 +22,7 @@ const TextInput: React.FC<TextInputProps> = ({ label, onChangeText, form_id, for
         aria-describedby="passwordHelpBlock"
         onChange={onChangeText} // Attach onChangeText prop
         placeholder={placeholder_text}
-        style={{ maxWidth: '300px' }}
+        
         value={value}
         size='sm'
       />

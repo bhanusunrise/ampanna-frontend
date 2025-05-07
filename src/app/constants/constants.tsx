@@ -165,7 +165,7 @@ export const UNIT_CATEGORY_PRIMARY_KEY_FIRST_VALUE = UNIT_CATEGORY_PRIMARY_KEY_L
 const NEW = "නව"
 const FIRST = "පළමු"
 const SECOND = "දෙවන"
-const UPDATE = " වෙනස් කරන්න"
+export const UPDATE = " වෙනස් කරන්න"
 export const RESTORE = "ප්‍රතිස්ථාපනය කිරීම"
 export const RESTORE_CONFIRM = " ප්‍රතිස්ථාපනය කිරීම තහවුරු කරන්න"
 export const DELETE_CONFIRM = " ඉවත් කිරීම තහවුරු කරන්න"
@@ -177,9 +177,10 @@ export const SEARCH = "සෙවුම් කරන්න"
 export const UNIT_CATEGORY_PAGE_NAME = "ඒකක වර්ග"
 export const ADD_UNIT_CATEGORY_PAGE_NAME = NEW + " ඒකක වර්ගය"
 
-export const UNIT_CATEGORY_NAME_LABAL = "ඒකක වර්ගයේ නම"
-export const UNIT_CATEGORY_TYPE_LABAL = "වර්ගය :"
+export const UNIT_CATEGORY_NAME_LABAL = "ඒකක වර්ගයේ නම :"
+export const UNIT_CATEGORY_DESCRIPTION_LABAL = "විස්තරය :"
 export const UNIT_CATEGORY_NAME_PLACEHOLDER = "ඒකක වර්ගයක් ඇතුලත් කරන්න"
+export const UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER = "විස්තරයක් ඇතුලත් කරන්න"
 
 export const UPDATE_UNIT_CATEGORY_MODEL_TITLE = UNIT_CATEGORY_PAGE_NAME + UPDATE
 
