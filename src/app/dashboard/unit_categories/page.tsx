@@ -5,9 +5,6 @@ import { ADD_BUTTON_LABAL, BACK, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CON
 import UnitCategoryInterface from '@/app/interfaces/unit_category_interface';
 import { Button, Modal, Table } from 'react-bootstrap';
 import TextInput from '@/app/components/Forms/text_input';
-import Checkbox from '@/app/components/Forms/check_box';
-import UpdateModel from '@/app/components/Models/update_model';
-import AddButton from '@/app/components/Buttons/add_button';
 
 const UnitCategoryPage = () => {
   const [unitCategories, setUnitCategories] = useState<UnitCategoryInterface[]>([]);
