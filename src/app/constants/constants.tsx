@@ -189,7 +189,7 @@ export const UPDATE_UNIT_CATEGORY_MODEL_TITLE = UNIT_CATEGORY_PAGE_NAME + UPDATE
 
 /** Unit */
 export const UNIT_PAGE_NAME = "ඒකක"
-export const ADD_UNIT_PAGE_NAME = NEW + " ඒකකය"
+export const NEW_UNIT_TITLE = NEW + " ඒකකය"
 
 export const UNIT_NAME_LABAL = "ඒකකයේ නම"
 export const UNIT_ABBRAVIATION_LABAL = "සංකේතය"
@@ -264,6 +264,7 @@ export const DELETE_BUTTON_LABAL = "🗑️"
 export const RESTORE_BUTTON_LABAL = "🔁"
 export const DELETE_BUTTON_DELETE_MODAL = "ඉවත් කරන්න"
 export const UPDATE_BUTTON_UPDATE_MODAL = "වෙනස් කරන්න"
+export const DELETE_CONFIRM_MESSEGE = "ඔබට විශ්වාසද ඉවත් කිරීම?"
 
 
 /** Select Box */

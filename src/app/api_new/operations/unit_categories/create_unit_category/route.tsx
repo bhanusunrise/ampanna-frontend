@@ -14,39 +14,47 @@ export async function POST(request: Request) {
         if (!body.unit_category_name) {
             return NextResponse.json(
                 { success: false, message: 'Unit Category Name is required' },
-                { status: 400 } // Bad Request
+                { status: 400 }
             );
         }
 
-        // Get the maximum `_id` from the existing documents
-        const lastUnitCategory = await UnitCategory.findOne().sort({ _id: -1 }); // Sort by `_id` in descending order
-        const newId = lastUnitCategory ? parseInt(lastUnitCategory._id) + 1 : 1; // Increment `_id` or start from 1
+        // Get all documents to calculate the max numeric _id
+        const allCategories = await UnitCategory.find({});
+        const maxId = allCategories.reduce((max, doc) => {
+            const idNum = parseInt(doc._id);
+            return idNum > max ? idNum : max;
+        }, 0);
+        const newId = (maxId + 1).toString();
 
-        // Create a new Unit Category object
+        console.log('New ID:', newId); // Debug log
+
+        // Create and save the new Unit Category
         const newUnitCategory = new UnitCategory({
-            _id: newId.toString(), // Convert number to string to match schema
+            _id: newId,
             unit_category_name: body.unit_category_name,
             description: body.description,
         });
 
-        // Save the object to the database
         const savedUnitCategory = await newUnitCategory.save();
 
-        // Return the saved object as a response
         return NextResponse.json(
             { success: true, data: savedUnitCategory },
-            { status: 201 } // Created
+            { status: 201 }
         );
     } catch (error: any) {
-        if (error.code === 11000) { // Check for duplicate key error
+        if (error.code === 11000) {
+            // Extract which field caused the duplicate
+            const field = Object.keys(error.keyPattern || {})[0];
+            const fieldName = field === 'unit_category_name' ? 'Unit Category Name' : 'ID';
             return NextResponse.json(
-                { success: false, message: 'Unit Category Name must be unique' },
-                { status: 400 } // Bad Request
+                { success: false, message: `${fieldName} must be unique.` },
+                { status: 400 }
             );
         }
+
         console.error('Error adding new Unit Category:', error);
         return NextResponse.json(
-            { success: false, message: 'Server error. Please try again later. + ' + error },
+            { success: false, message: 'Server error. Please try again later.' },
             { status: 500 }
         );
     }
