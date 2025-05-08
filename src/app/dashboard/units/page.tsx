@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ADD_BUTTON_LABAL, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, NEW_UNIT_TITLE, NO_RECORDS_FOUND, SEARCH, UNIT_API, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_TABLE_FIELDS, UNIT_PAGE_NAME, UNIT_TABLE_FIELDS, UNITS_SEARCH_PLACEHOLDER, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
+import { ADD_BUTTON_LABAL, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, NEW_UNIT_TITLE, NO_RECORDS_FOUND, SEARCH, UNIT_API, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_TABLE_FIELDS, UNIT_NAME_LABAL, UNIT_NAME_PLACEHOLDER, UNIT_PAGE_NAME, UNIT_TABLE_FIELDS, UNITS_SEARCH_PLACEHOLDER, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
 import { Button, Modal, Table } from 'react-bootstrap';
 import TextInput from '@/app/components/Forms/text_input';
 import UnitInterface from '@/app/interfaces/unit_interface';
+import UnitCategoryInterface from '@/app/interfaces/unit_category_interface';
 
 const UnitCategoryPage = () => {
   const [units, setUnits] = useState<UnitInterface[]>([]);
@@ -17,6 +18,7 @@ const UnitCategoryPage = () => {
   const [isNameSelected, setIsNameSelected] = useState<boolean>(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [unitCategories, setUnitCategories] = useState<UnitCategoryInterface[]>([]);
 
   const fetchUnits = async () => {
       try {
@@ -36,6 +38,25 @@ const UnitCategoryPage = () => {
         console.error('Error fetching units:', error);
       }
     };
+
+    const fetchUnitCategories = async () => {
+          try {
+            const response = await fetch(`${UNIT_CATEGORY_API}fetch_all_unit_categories`);
+            if (!response.ok) {
+              throw new Error('Failed to fetch unit categories');
+            }
+    
+            const { success, data } = await response.json();
+            if (success && Array.isArray(data)) {
+              setUnitCategories(data);
+            } else {
+              throw new Error('Invalid API response format');
+            }
+          } catch (error) {
+            console.error('Error fetching unit categories:', error);
+          }
+        };
+    
 
   const fetchSelectedUnit = async (id: string) => {
     try {
@@ -94,7 +115,7 @@ const UnitCategoryPage = () => {
 
   const addUnit = async () => {
     try {
-      const response = await fetch(`${UNIT_CATEGORY_API}create_unit`, {
+      const response = await fetch(`${UNIT_API}create_unit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -146,6 +167,7 @@ const UnitCategoryPage = () => {
         
   useEffect(() => {
     fetchUnits();
+    fetchUnitCategories();
   }, []);
 
   // Handle search functionality
@@ -198,9 +220,9 @@ const UnitCategoryPage = () => {
               filteredUnits.map((unit, index) => (
                 <tr key={index}>
                   <td>{unit._id}</td>
-                  <td>{unit.description}</td>
-                  <td id = {unit.unit_category_id}>{unit.unit_category_name}</td>
                   <td>{unit.unit_name}</td>
+                  <td id = {unit.unit_category_id}>{unit.unit_category_name}</td>
+                  <td>{unit.description}</td>
                   <td>
                     <button className="btn btn-primary btn-sm" onClick={() => fetchSelectedUnit(unit._id)}>{UPDATE_BUTTON_LABAL}</button>
                     <button className="btn btn-danger btn-sm ms-2" onClick={() => {setShowDeleteModal(true); setSelectedUnitId(unit._id)}}>{DELETE_BUTTON_LABAL}</button>
@@ -220,13 +242,24 @@ const UnitCategoryPage = () => {
           <h3 className='text-primary'>{NEW_UNIT_TITLE}</h3>
 
           <TextInput
-            form_id="unit_category_name"
+            form_id="unit_name"
             onChangeText={(e) => setSelectedUnit({ ...selectedUnit, unit_name: e.target.value })}
             form_message=""
-            placeholder_text={UNIT_CATEGORY_NAME_PLACEHOLDER}
-            label={UNIT_CATEGORY_NAME_LABAL}
+            placeholder_text={UNIT_NAME_PLACEHOLDER}
+            label={UNIT_NAME_LABAL}
             value={selectedUnit?.unit_name}
           />
+
+          <label className="form-label mt-2 text-primary">{UNIT_CATEGORY_NAME_LABAL}</label>
+
+          <select className="form-select mb-2" onChange={(e) => setSelectedUnit({ ...selectedUnit, unit_category_id: e.target.value })}>
+           
+            {unitCategories.map((category) => (
+              <option key={category._id} value={category._id}>
+                {category.unit_category_name}
+              </option>
+            ))}
+          </select>
 
            <TextInput
             form_id="description"
