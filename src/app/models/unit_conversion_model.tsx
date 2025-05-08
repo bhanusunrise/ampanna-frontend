@@ -10,7 +10,9 @@ const UnitConversionSchema: Schema = new Schema(
     {
         _id: { type: String, required: false },
         first_unit_id: { type: String, required: true },
+        first_unit_name: { type: String, required: false },
         second_unit_id: { type: String, required: true },
+        second_unit_name: { type: String, required: false },
         multiplier: { type: Number, required: true },
         description: { type: String, required: false },
     },

@@ -50,12 +50,12 @@ export const UNIT_CATEGORY_TABLE_FIELDS = [
 ]
 
 export const UNIT_CONVERSION_TABLE_FIELDS = [
+    "#",
+    "විස්තරය",
     "පළමු ඒකකය",
     "ගුණාකාරය",
     "දෙවන ඒකකය",
-    "තත්වය",
-    "එකතු කිරීම",
-    "වෙනස් කිරීම"
+    "සැකසීම්"
 ]
 
 export const ITEM_CATEGORIES_TABLE_FIELDS = [
