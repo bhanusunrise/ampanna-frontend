@@ -10,6 +10,7 @@ const UnitSchema: Schema = new Schema(
     {
         _id: { type: String, required: false },
         unit_category_id: { type: String, required: true },
+        unit_category_name: { type: String, required: false },
         unit_name: { type: String, required: true, unique: true },
         description: { type: String, required: false },
     },

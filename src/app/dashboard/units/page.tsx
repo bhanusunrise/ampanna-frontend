@@ -1,315 +1,305 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import BasicTable from '@/app/components/Tables/basic_table';
-import { ADD_BUTTON_LABAL, ADD_UNIT_PAGE_NAME, CLEAR_BUTTON_LABAL, UNIT_ABBRAVIATION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_NAME_LABAL, UNIT_NAME_PLACEHOLDER, UNIT_PAGE_NAME, UNIT_TABLE_FIELDS } from '@/app/constants/constants';
-import { fetchAllUnits, addUnit, updateUnit, deleteUnit, RestoreUnit, fetchAllUnitCategories } from './functions';
-import NavigateButtons from '@/app/components/Buttons/navigate_button';
-import { Col, Row } from 'react-bootstrap';
-import AddButton from '@/app/components/Buttons/add_button';
+import { ADD_BUTTON_LABAL, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, NEW_UNIT_TITLE, NO_RECORDS_FOUND, SEARCH, UNIT_API, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_TABLE_FIELDS, UNIT_PAGE_NAME, UNIT_TABLE_FIELDS, UNITS_SEARCH_PLACEHOLDER, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
+import { Button, Modal, Table } from 'react-bootstrap';
 import TextInput from '@/app/components/Forms/text_input';
-import ClearButton from '@/app/components/Buttons/clear_button';
-import UpdateUnitModal from '@/app/components/Models/Units/update_unit_model';
-import DeleteModal from '@/app/components/Models/delete_model'; // Import DeleteModal
-import RestoreModal from '@/app/components/Models/restore_model';
-import SelectBox from '@/app/components/Forms/select_box';
+import UnitInterface from '@/app/interfaces/unit_interface';
 
-export default function Page() {
-  const [units, setUnits] = useState<string[][]>([]);
-  const [filteredUnits, setFilteredUnits] = useState<string[][]>([]);
-  const [unitCategories, setUnitCategories] = useState<{ id: string; name: string }[]>([]); // State for unit categories
-  const [currentPage, setCurrentPage] = useState(0);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [unitName, setUnitName] = useState('');
-  const [unitAbbreviation, setUnitAbbreviation] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>(''); // State for selected category
+const UnitCategoryPage = () => {
+  const [units, setUnits] = useState<UnitInterface[]>([]);
+  const [filteredUnits, setFilteredUnits] = useState<UnitInterface[]>([]);
+  const [selectedUnitId, setSelectedUnitId] = useState<string | null>(null);
+  const [selectedUnit, setSelectedUnit] = useState<UnitInterface | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [isIdSelected, setIsIdSelected] = useState<boolean>(false);
+  const [isDescriptionSelected, setIsDescriptionSelected] = useState<boolean>(false);
+  const [isNameSelected, setIsNameSelected] = useState<boolean>(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false); // State for delete modal
-  const [selectedUnit, setSelectedUnit] = useState<any>(null);
-  const recordsPerPage = 10;
-  const [itemToDelete, setItemToDelete] = useState<any>(null); // Track item to be deleted
-  const [showRestoreModal, setShowRestoreModal] = useState(false); // State for restore modal
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-    // Utility function to format date
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toISOString().split('T')[0]; // Get YYYY-MM-DD format
+  const fetchUnits = async () => {
+      try {
+        const response = await fetch(`${UNIT_API}fetch_all_units`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch units');
+        }
+
+        const { success, data } = await response.json();
+        if (success && Array.isArray(data)) {
+          setUnits(data);
+          setFilteredUnits(data);
+        } else {
+          throw new Error('Invalid API response format');
+        }
+      } catch (error) {
+        console.error('Error fetching units:', error);
+      }
+    };
+
+  const fetchSelectedUnit = async (id: string) => {
+    try {
+      const response = await fetch(`${UNIT_API}fetch_all_units?_id=${id}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch unit category');
+      }
+      // Since the api returns an array of categories, update the type to UnitCategoryInterface[]
+      const { success, data } = await response.json() as {
+        success: boolean;
+        data: UnitInterface[];  // Note the array here
+      };
+
+      if (success && data && data.length > 0) {
+        setSelectedUnit(data[0]);
+        console.log('Selected Unit:', data[0]);
+        setShowUpdateModal(true);
+      } else {
+        throw new Error('Invalid API response format');
+      }
+    } catch (error) {
+      console.error('Error fetching unit category:', error);
+    }
   };
 
-
-  useEffect(() => {
-    async function fetchData() {
-      const fetchedUnits = await fetchAllUnits();
-      setUnits(fetchedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.unit_category_name ,unit.status, formatDate(unit.createdAt), formatDate(unit.updatedAt)]));
-      setFilteredUnits(fetchedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.unit_category_name ,unit.status,  formatDate(unit.createdAt), formatDate(unit.updatedAt)]));
+  const callUpdateUnitAPI = async (id: string) => {
+    try {
+      const response = await fetch(`${UNIT_API}update_unit`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: id,
+          unit_name: selectedUnit?.unit_name,
+          description: selectedUnit?.description,
+          unit_category_id: selectedUnit?.unit_category_id,
       
-      // Fetch unit categories
-      const fetchedCategories = await fetchAllUnitCategories();
-      setUnitCategories(fetchedCategories.map((category: any) => ({ id: category.unit_category_id, name: category.unit_category_name })));
-    
+        }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update unit');
+      }
+      const { success, data } = await response.json();
+      if (success && data) {
+        console.log('Updated Unit:', data);
+        setShowUpdateModal(false);
+        fetchUnits();
+      } else {
+        throw new Error('Invalid API response format');
+      }
+    } catch (error) {
+      console.error('Error updating unit category:', error);
     }
+  }
 
-    fetchData();
+  const addUnit = async () => {
+    try {
+      const response = await fetch(`${UNIT_CATEGORY_API}create_unit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          unit_name: selectedUnit?.unit_name,
+          description: selectedUnit?.description,
+          unit_category_id: selectedUnit?.unit_category_id,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to add unit');
+      }
+      const { success, data } = await response.json();
+      if (success && data) {
+        console.log('Added Unit:', data);
+        fetchUnits();
+      } else {
+        throw new Error('Invalid API response format');
+      }
+    } catch (error) {
+      console.error('Error adding unit:', error);
+    }
+  }
+
+  const deleteUnit = async (id: string) => {
+    try {
+      const response = await fetch(`${UNIT_API}delete_unit?id=${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to delete unit');
+      }
+      const { success, data } = await response.json();
+      fetchUnits();
+      if (success && data) {
+        console.log('Deleted Unit:', data);
+      } else {
+        throw new Error('Invalid API response format');
+      }
+    } catch (error) {
+      console.error('Error deleting unit:', error);
+    }
+  }
+        
+  useEffect(() => {
+    fetchUnits();
   }, []);
 
-  const handleNext = () => {
-    if (currentPage < Math.ceil(filteredUnits.length / recordsPerPage) - 1) {
-      setCurrentPage(currentPage + 1);
+  // Handle search functionality
+  useEffect(() => {
+    if (searchQuery.trim() === '') {
+      setFilteredUnits(units);
+    } else {
+      const filtered = units.filter(unit => {
+        const searchLower = searchQuery.toLowerCase();
+        return (
+          (isIdSelected && unit._id.toLowerCase().includes(searchLower)) ||
+          (isNameSelected && unit.unit_name.toLowerCase().includes(searchLower)) ||
+          (isDescriptionSelected && unit.description.toLowerCase().includes(searchLower)) ||
+          // If no checkboxes are selected, search in all fields
+          (!isIdSelected && !isNameSelected && !isDescriptionSelected && (
+            unit._id.toLowerCase().includes(searchLower) ||
+            unit.unit_name.toLowerCase().includes(searchLower) ||
+            unit.description.toLowerCase().includes(searchLower)
+          ))
+        );
+      });
+      setFilteredUnits(filtered);
     }
-  };
-
-  const handlePrevious = () => {
-    if (currentPage > 0) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const currentRecords = filteredUnits.slice(currentPage * recordsPerPage, (currentPage + 1) * recordsPerPage);
-  const totalPages = Math.ceil(filteredUnits.length / recordsPerPage);
-  const startingIndex = currentPage * recordsPerPage;
-
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const query = event.target.value.toLowerCase();
-    setSearchQuery(query);
-    const filtered = units.filter(
-      (unit) =>
-        unit[1].toLowerCase().includes(query) || unit[2].toLowerCase().includes(query)
-    );
-    setFilteredUnits(filtered);
-    setCurrentPage(0);
-  };
-
-    const handleAddUnit = async () => {
-      console.log(selectedCategory)
-    if (!unitName || !unitAbbreviation || !selectedCategory) {
-        console.log("Please fill in all fields");
-        return;
-    }
-
-    const unitData = { unit_name: unitName, abbreviation: unitAbbreviation, unit_category_id: selectedCategory };
-    console.log("Adding unit:", unitData); // Log the unit data
-
-    const result = await addUnit(unitData.unit_name, unitData.abbreviation, unitData.unit_category_id);
-    console.log("Add Unit Result:", result); // Log the result of the addition
-
-    if (result.success) {
-        const updatedUnits = await fetchAllUnits();
-        const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.unit_category_name ,unit.status, formatDate(unit.createdAt), formatDate(unit.updatedAt)]);
-        setUnits(formattedUnits);
-        setFilteredUnits(formattedUnits);
-
-        setUnitName('');
-        setUnitAbbreviation('');
-        setSelectedCategory(''); // Clear selected category
-    }
-};
-
-  const handleUpdate = (rowIndex: number) => {
-    const selectedUnitData = filteredUnits[rowIndex];
-
-    setSelectedUnit({
-      unit_id: selectedUnitData[0],
-      unit_name: selectedUnitData[1],
-      abbreviation: selectedUnitData[2],
-      unit_category_id: selectedUnitData[3]
-    });
-
-    console.log(selectedUnit)
-    setShowUpdateModal(true);
-  };
-
-  const handleUpdateUnit = async (unitData: { status: any; unit_name: string; abbreviation: string }) => {
-    await updateUnit(selectedUnit.unit_id, unitData.unit_name, unitData.abbreviation, unitData.status);
-
-    handleCloseModal();
-    const updatedUnits = await fetchAllUnits();
-    const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.unit_category_name ,unit.status, formatDate(unit.createdAt), formatDate(unit.updatedAt)]);
-    setUnits(formattedUnits);
-    setFilteredUnits(formattedUnits);
-  };
-
-  const handleDelete = (rowIndex: number) => {
-    const unitToDelete = filteredUnits[rowIndex];
-    setItemToDelete({
-      unit_id: unitToDelete[0],
-      unit_name: unitToDelete[1],
-    });
-    setShowDeleteModal(true); // Open the delete modal
-  };
-
-  const confirmDelete = async () => {
-    if (itemToDelete) {
-      await deleteUnit(itemToDelete.unit_id);/*
-      if (result.success) {
-        const updatedUnits = await fetchAllUnits();
-        const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.status]);
-        setUnits(formattedUnits);
-        setFilteredUnits(formattedUnits);
-      }*/
-
-      const updatedUnits = await fetchAllUnits();
-        const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.unit_category_name ,unit.status, formatDate(unit.createdAt), formatDate(unit.updatedAt)]);
-        setUnits(formattedUnits);
-        setFilteredUnits(formattedUnits);
-
-      setShowDeleteModal(false); // Close modal after deletion
-      setItemToDelete(null); // Clear the selected item
-    }
-  };
-
-  const handleRestore = (rowIndex: number) => {
-  const unitToRestore = filteredUnits[rowIndex];
-  setItemToDelete({
-    unit_id: unitToRestore[0],
-    unit_name: unitToRestore[1],
-  });
-  setShowRestoreModal(true); // Open the restore modal
-};
-
-const confirmRestore = async () => {
-  if (itemToDelete) {
-    const result = await RestoreUnit(itemToDelete.unit_id);
-    
-    if (result.success) {
-      const updatedUnits = await fetchAllUnits();
-      const formattedUnits = updatedUnits.map((unit: any) => [unit.unit_id, unit.unit_name, unit.abbreviation, unit.unit_category_name ,unit.status, formatDate(unit.createdAt), formatDate(unit.updatedAt)]);
-      setUnits(formattedUnits);
-      setFilteredUnits(formattedUnits);
-    }
-    
-    setShowRestoreModal(false); // Close modal after restoration
-    setItemToDelete(null); // Clear the selected item
-  }
-};
-
-
-  const handleCloseModal = () => {
-    setShowUpdateModal(false);
-    setSelectedUnit(null);
-  };
-
-  const handleCloseDeleteModal = () => {
-    setShowDeleteModal(false);
-    setItemToDelete(null);
-  };
-
-  const handleCloseRestoreModal = () => {
-  setShowRestoreModal(false);
-  setItemToDelete(null);
-};
-
+  }, [searchQuery, units, isIdSelected, isNameSelected, isDescriptionSelected]);
 
   return (
     <>
-      <Row>
-        <Col md={3}><h3 className={'text-primary'}>{UNIT_PAGE_NAME}</h3></Col>
-        <Col md={6}>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', flexWrap: 'nowrap' }}>
-            <TextInput
-              form_id="search_unit"
-              onChangeText={handleSearch}
-              form_message=""
-              placeholder_text="Search"
-              label=""
-              value={searchQuery}
-            />
-          </div>
-          <br />
-        </Col>
-        <Col md={3}></Col>
-      </Row>
-      <Row>
-        <Col md={9}>
-          <BasicTable
-          table_fields={UNIT_TABLE_FIELDS}
-          table_records={currentRecords}
-          table_id="units_table"
-          startingIndex={startingIndex}
-          onUpdate={handleUpdate}
-          onDelete={handleDelete}
-          onRestore={handleRestore}  // <-- Add this line
-          />
-
-          <NavigateButtons
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onNext={handleNext}
-            onPrevious={handlePrevious}
-          />
-        </Col>
-        <Col md={3}>
-          <h3 className='text-primary'>{ADD_UNIT_PAGE_NAME}</h3>
-          <TextInput 
-            form_id="unit_name"
-            onChangeText={(event) => setUnitName(event.target.value)}
-            form_message=""
-            placeholder_text={UNIT_NAME_PLACEHOLDER}
-            label={UNIT_NAME_LABAL}
-            value={unitName}
-          />
-          <TextInput 
-            form_id="unit_abbreviation"
-            onChangeText={(event) => setUnitAbbreviation(event.target.value)}
-            form_message=""
-            placeholder_text={UNIT_ABBRAVIATION_PLACEHOLDER}
-            label={UNIT_NAME_LABAL}
-            value={unitAbbreviation}
-          />
-          <SelectBox 
-  values={unitCategories.map(category => category.id)} 
-  display_values={unitCategories.map(category => category.name)} 
-  label_name={UNIT_CATEGORY_NAME_LABAL}
-  form_id="unit_categories"
-  onChange={(value) => setSelectedCategory(value)}
-  selected_value={selectedCategory} // Pass selectedCategory here
-/>
-
-          <br/>
-          <ClearButton 
-            label={CLEAR_BUTTON_LABAL}
-            onClickButton={() => { 
-              setUnitName(''); 
-              setUnitAbbreviation(''); 
-            }} 
-            btn_id="clear_unit" 
-          />
-          <AddButton label={ADD_BUTTON_LABAL} onClickButton={handleAddUnit} btn_id="add_unit" />
-        </Col>
-      </Row>
-
-      {/* Update Unit Modal */}
-      {selectedUnit && (
-        <UpdateUnitModal
-          show={showUpdateModal}
-          handleClose={handleCloseModal}
-          handleUpdateUnit={handleUpdateUnit}
-          unitName={selectedUnit.unit_name}
-          abbreviation={selectedUnit.abbreviation}
-          selectedCategory={selectedUnit.unit_category_id}
-          
+     <div className='row'>
+      <div className='col-md-8'>
+        <h3 className='text-primary'>{UNIT_PAGE_NAME}</h3>
+        <TextInput 
+          label={SEARCH} 
+          onChangeText={(e) => setSearchQuery(e.target.value)} 
+          form_id="search" 
+          form_message="" 
+          placeholder_text={UNITS_SEARCH_PLACEHOLDER} 
+          value={searchQuery}
         />
+        <div className="scrollable-table">
+        <Table striped bordered hover className='mt-3' size='sm'>
+          <thead>
+            <tr>
+              {UNIT_TABLE_FIELDS.map((field, index) => (
+                <th key={index} className='text-primary'>{field}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {filteredUnits.length > 0 ? (
+              filteredUnits.map((unit, index) => (
+                <tr key={index}>
+                  <td>{unit._id}</td>
+                  <td>{unit.description}</td>
+                  <td id = {unit.unit_category_id}>{unit.unit_category_name}</td>
+                  <td>{unit.unit_name}</td>
+                  <td>
+                    <button className="btn btn-primary btn-sm" onClick={() => fetchSelectedUnit(unit._id)}>{UPDATE_BUTTON_LABAL}</button>
+                    <button className="btn btn-danger btn-sm ms-2" onClick={() => {setShowDeleteModal(true); setSelectedUnitId(unit._id)}}>{DELETE_BUTTON_LABAL}</button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={UNIT_CATEGORY_TABLE_FIELDS.length} className="text-center">{NO_RECORDS_FOUND}</td>
+              </tr>
+            )}
+          </tbody>
+        </Table>
+        </div>
+        </div>
+        <div className='col-md-4'>
+          <h3 className='text-primary'>{NEW_UNIT_TITLE}</h3>
+
+          <TextInput
+            form_id="unit_category_name"
+            onChangeText={(e) => setSelectedUnit({ ...selectedUnit, unit_name: e.target.value })}
+            form_message=""
+            placeholder_text={UNIT_CATEGORY_NAME_PLACEHOLDER}
+            label={UNIT_CATEGORY_NAME_LABAL}
+            value={selectedUnit?.unit_name}
+          />
+
+           <TextInput
+            form_id="description"
+            onChangeText={(e) => setSelectedUnit({ ...selectedUnit, description: e.target.value })}
+            form_message=""
+            placeholder_text={UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER}
+            label={UNIT_CATEGORY_DESCRIPTION_LABAL}
+            value={selectedUnit?.description}
+          />
+
+          <Button variant='success' className='mt-3' onClick={addUnit}>
+            {ADD_BUTTON_LABAL}
+          </Button>
+
+        </div>
+      </div>
+
+      {showUpdateModal && selectedUnit && (
+
+      <Modal show={showUpdateModal}>
+        <Modal.Header closeButton onClick={() => setShowUpdateModal(false)}>
+          <Modal.Title className='text-primary'>{UPDATE_UNIT_CATEGORY_MODEL_TITLE}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+
+          <TextInput
+            form_id="unit_category_name"
+            onChangeText={(e) => setSelectedUnit({ ...selectedUnit, unit_name: e.target.value })}
+            form_message=""
+            placeholder_text={UNIT_CATEGORY_NAME_PLACEHOLDER}
+            label={UNIT_CATEGORY_NAME_LABAL}
+            value={selectedUnit.unit_name}
+          />
+          <TextInput
+            form_id="description"
+            onChangeText={(e) => setSelectedUnit({ ...selectedUnit, description: e.target.value })}
+            form_message=""
+            placeholder_text={UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER}
+            label={UNIT_CATEGORY_DESCRIPTION_LABAL}
+            value={selectedUnit.description}
+          />
+
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowUpdateModal(false)}>
+            {BACK}
+          </Button>
+          <Button variant="primary" onClick={() => {console.log(selectedUnit._id); callUpdateUnitAPI(selectedUnit._id); setShowUpdateModal(false); }}>
+            {UPDATE}
+          </Button>
+        </Modal.Footer>
+      </Modal>
       )}
 
-      {/* Delete Unit Modal */}
-      {itemToDelete && (
-        <DeleteModal
-          show={showDeleteModal}
-          handleClose={handleCloseDeleteModal}
-          handleDelete={confirmDelete}
-          itemName={itemToDelete.unit_name}
-        />
+      {showDeleteModal && selectedUnitId && (
+        
+        <Modal show={showDeleteModal}>
+          <Modal.Header closeButton onClick={() => setShowDeleteModal(false)}>
+            <Modal.Title className='text-danger'>{DELETE_CONFIRM}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>{`${DELETE_CONFIRM_MESSEGE} ID = ${selectedUnitId}`}</Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+              {BACK}
+            </Button>
+            <Button variant="danger" onClick={() => {deleteUnit(selectedUnitId); setShowDeleteModal(false); }}>
+              {DELETE_BUTTON_DELETE_MODAL}
+            </Button>
+          </Modal.Footer>
+        </Modal>
       )}
-
-      {/* Restore Unit Modal */}
-{itemToDelete && (
-  <RestoreModal
-    show={showRestoreModal}
-    handleClose={handleCloseRestoreModal}
-    handleRestore={confirmRestore}
-    itemName={itemToDelete.unit_name}
-  />
-)}
-
     </>
   );
-}
+};
+
+export default UnitCategoryPage;

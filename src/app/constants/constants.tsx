@@ -34,13 +34,11 @@ export const ITEMS_TABLE_FIELDS = [
 ]
 
 export const UNIT_TABLE_FIELDS = [
-    //"Unit ID",
+    "#",
     "ඒකකය",
-    "සංකේතය",
     "ඒකක වර්ගය",
-    "තත්වය",
-    "එකතු කිරීම",
-    "වෙනස් කිරීම"
+    "විස්තරය",
+    "සැකසීම්"
 ]
 
 
@@ -197,6 +195,8 @@ export const UNIT_NAME_PLACEHOLDER = "ඒකකයක් ඇතුලත් ක�
 export const UNIT_ABBRAVIATION_PLACEHOLDER = "සංකේතයක් ඇතුලත් කරන්න"
 
 export const UPDATE_UNIT_MODEL_TITLE = UNIT_PAGE_NAME + UPDATE
+
+export const UNITS_SEARCH_PLACEHOLDER = "කිලෝග්‍රෑම්, මීටර් ..."
 
 
 /** Unit Conversion */
