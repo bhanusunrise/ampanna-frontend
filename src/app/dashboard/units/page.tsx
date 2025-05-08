@@ -293,6 +293,17 @@ const UnitCategoryPage = () => {
             label={UNIT_CATEGORY_NAME_LABAL}
             value={selectedUnit.unit_name}
           />
+
+          <label className="form-label mt-2 text-primary">{UNIT_CATEGORY_NAME_LABAL}</label>
+
+          <select className="form-select mb-2" onChange={(e) => setSelectedUnit({ ...selectedUnit, unit_category_id: e.target.value })} value={selectedUnit.unit_category_id}>
+            
+            {unitCategories.map((category) => (
+              <option key={category._id} value={category._id}>
+                {category.unit_category_name}
+              </option>
+            ))}
+          </select>
           <TextInput
             form_id="description"
             onChangeText={(e) => setSelectedUnit({ ...selectedUnit, description: e.target.value })}
