@@ -18,8 +18,6 @@ const UnitConversionPage = () => {
   const [selectedConversionId, setSelectedConversionId] = useState<string | null>(null);
   const [selectedConversion, setSelectedConversion] = useState<UnitConversionInterface | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<UnitCategoryInterface | null>(null);
-  const [selectedFirstUnit, setSelectedFirstUnit] = useState<UnitInterface | null>(null);
-  const [selectedSecondUnit, setSelectedSecondUnit] = useState<UnitInterface | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isIdSelected, setIsIdSelected] = useState<boolean>(false);
   const [isDescriptionSelected, setIsDescriptionSelected] = useState<boolean>(false);
