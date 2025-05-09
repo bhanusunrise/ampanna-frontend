@@ -1,20 +1,24 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ADD_BUTTON_LABAL, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, MULTIPLIER_LABAL, MULTIPLIER_PLACEHOLDER, NEW_UNIT_TITLE, NO_RECORDS_FOUND, SEARCH, UNIT_CATEGORIES_SEARCH_PLACEHOLDER, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_TABLE_FIELDS, UNIT_CONVERSION_API, UNIT_CONVERSION_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
+import { ADD_BUTTON_LABAL, ADD_UNIT_CONVERSION, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, FIRST_UNIT_NAME_LABAL, MULTIPLIER_LABAL, MULTIPLIER_PLACEHOLDER, NEW_UNIT_TITLE, NO_RECORDS_FOUND, SEARCH, SECOND_UNIT_NAME_LABAL, UNIT_API, UNIT_CATEGORIES_SEARCH_PLACEHOLDER, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_TABLE_FIELDS, UNIT_CONVERSION_API, UNIT_CONVERSION_PAGE_NAME, UNIT_CONVERSION_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
 import UnitCategoryInterface from '@/app/interfaces/unit_category_interface';
 import { Button, Modal, Table } from 'react-bootstrap';
 import TextInput from '@/app/components/Forms/text_input';
 import UnitConversionInterface from '@/app/interfaces/unit_conversion_interface';
 import NumberInput from '@/app/components/Forms/number_input';
+import UnitInterface from '@/app/interfaces/unit_interface';
 
 const UnitConversionPage = () => {
   const [unitConversions, setUnitConversions] = useState<UnitConversionInterface[]>([]);
   const [unitCategories, setUnitCategories] = useState<UnitCategoryInterface[]>([]);
   const [filteredConversions, setFilteredConversions] = useState<UnitConversionInterface[]>([]);
+  const [filteredUnits, setFilteredUnits] = useState<UnitInterface[]>([]);
   const [selectedConversionId, setSelectedConversionId] = useState<string | null>(null);
   const [selectedConversion, setSelectedConversion] = useState<UnitConversionInterface | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<UnitCategoryInterface | null>(null);
+  const [selectedFirstUnit, setSelectedFirstUnit] = useState<UnitInterface | null>(null);
+  const [selectedSecondUnit, setSelectedSecondUnit] = useState<UnitInterface | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isIdSelected, setIsIdSelected] = useState<boolean>(false);
   const [isDescriptionSelected, setIsDescriptionSelected] = useState<boolean>(false);
@@ -87,6 +91,29 @@ const UnitConversionPage = () => {
     }
   };
 
+  const fetchUnitsForSelectedCategory = async (unit_category_id: string) => {
+    try {
+      const response = await fetch(`${UNIT_API}fetch_all_units?unit_category_id=${unit_category_id}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch unit');
+      }
+      // Since the api returns an array of categories, update the type to UnitCategoryInterface[]
+      const { success, data } = await response.json() as {
+        success: boolean;
+        data: UnitInterface[];  // Note the array here
+      };
+
+      if (success && data && data.length > 0) {
+        setFilteredUnits(data);
+        console.log('Selected Units:', data);
+      } else {
+        throw new Error('Invalid API response format');
+      }
+    } catch (error) {
+      console.error('Error fetching unit category:', error);
+    }
+  };
+
   const callUpdateCategoryAPI = async (id: string) => {
     try {
       const response = await fetch(`${UNIT_CATEGORY_API}update_unit_category`, {
@@ -116,30 +143,36 @@ const UnitConversionPage = () => {
     }
   }
 
-  const addUnitCategory = async () => {
+  const addUnitConversion = async () => {
     try {
-      const response = await fetch(`${UNIT_CATEGORY_API}create_unit_category`, {
+      console.log('Selected Conversion:', selectedConversion);
+      const response = await fetch(`${UNIT_CONVERSION_API}create_unit_conversion`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          unit_category_name: selectedCategory?.unit_category_name,
-          description: selectedCategory?.description,
+          first_unit_id: selectedConversion?.first_unit_id,
+          second_unit_id: selectedConversion?.second_unit_id,
+          multiplier: selectedConversion?.multiplier,
+          description: selectedConversion?.description,
+          
         }),
       });
       if (!response.ok) {
-        throw new Error('Failed to add unit category');
+        throw new Error('Failed to add unit conversion');
       }
       const { success, data } = await response.json();
       if (success && data) {
-        console.log('Added Category:', data);
+        console.log('Added Conversion:', data);
         fetchUnitCategories();
+        fetchUnitConversions();
+        setSelectedConversion({ first_unit_id: '', second_unit_id: '', multiplier: 0, description: '', first_unit_name: '', second_unit_name: '' });
       } else {
         throw new Error('Invalid API response format');
       }
     } catch (error) {
-      console.error('Error adding unit category:', error);
+      console.error('Error adding unit conversion:', error);
     }
   }
 
@@ -171,6 +204,7 @@ const UnitConversionPage = () => {
   useEffect(() => {
     fetchUnitCategories();
     fetchUnitConversions();
+    fetchUnitsForSelectedCategory(selectedCategory?._id || '');
   }, []);
 
   // Handle search functionality
@@ -208,7 +242,7 @@ const UnitConversionPage = () => {
     <>
      <div className='row'>
       <div className='col-md-8'>
-        <h3 className='text-primary'>{UNIT_CATEGORY_PAGE_NAME}</h3>
+        <h3 className='text-primary'>{UNIT_CONVERSION_PAGE_NAME}</h3>
         <TextInput 
           label={SEARCH} 
           onChangeText={(e) => setSearchQuery(e.target.value)} 
@@ -251,11 +285,11 @@ const UnitConversionPage = () => {
         </div>
         </div>
         <div className='col-md-4'>
-          <h3 className='text-primary'>{NEW_UNIT_TITLE}</h3>
+          <h3 className='text-primary'>{ADD_UNIT_CONVERSION}</h3>
 
           <label className="form-label">{UNIT_CATEGORY_NAME_LABAL}</label>
 
-          <select className="form-select mb-2" onChange={(e) => setSelectedCategory({ ...selectedCategory, _id: e.target.value })} value={selectedCategory?._id}>
+          <select className="form-select mb-2" onChange={(e) => {setSelectedCategory({ ...selectedCategory, _id: e.target.value }); fetchUnitsForSelectedCategory(e.target.value)}} value={selectedCategory?._id}>
             
             {unitCategories.map((category) => (
               <option key={category._id} value={category._id}>
@@ -263,6 +297,38 @@ const UnitConversionPage = () => {
               </option>
             ))}
           </select>
+
+          <TextInput 
+            form_id="unit_category_name" 
+            onChangeText={(e) => setSelectedConversion({ ...selectedConversion, description: e.target.value })} 
+            form_message="" 
+            placeholder_text={UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER} 
+            label={UNIT_CATEGORY_DESCRIPTION_LABAL} 
+            value={selectedConversion?.description}
+          />
+
+          <label className="form-label">{FIRST_UNIT_NAME_LABAL}</label>
+
+          <select className="form-select mb-2" onChange={(e) => setSelectedConversion(selectedConversion ? { ...selectedConversion, first_unit_id: e.target.value } : { first_unit_id: e.target.value, second_unit_id: '', multiplier: 0, description: '', first_unit_name: '', second_unit_name: '' })} value={selectedConversion?.first_unit_id}>
+            
+            {filteredUnits.map((unit) => (
+              <option key={unit._id} value={unit._id}>
+                {unit.unit_name}
+              </option>
+            ))}
+          </select>
+
+          <label className="form-label">{SECOND_UNIT_NAME_LABAL}</label>
+
+          <select className="form-select mb-2" onChange={(e) => setSelectedConversion(selectedConversion ? { ...selectedConversion, second_unit_id: e.target.value } : null)} value={selectedConversion?.second_unit_id}>
+            
+            {filteredUnits.map((unit) => (
+              <option key={unit._id} value={unit._id}>
+                {unit.unit_name}
+              </option>
+            ))}            
+          </select>
+
 
           
 
@@ -274,7 +340,7 @@ const UnitConversionPage = () => {
             label={MULTIPLIER_LABAL}
             value={selectedConversion?.multiplier} min_value={0} max_value={999999}          />
 
-          <Button variant='success' className='mt-3' onClick={addUnitCategory}>
+          <Button variant='success' className='mt-3' onClick={addUnitConversion}>
             {ADD_BUTTON_LABAL}
           </Button>
 
