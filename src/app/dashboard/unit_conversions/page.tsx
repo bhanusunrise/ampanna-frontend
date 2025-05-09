@@ -1,13 +1,14 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ADD_BUTTON_LABAL, ADD_UNIT_CONVERSION, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, FIRST_UNIT_NAME_LABAL, MULTIPLIER_LABAL, MULTIPLIER_PLACEHOLDER, NEW_UNIT_TITLE, NO_RECORDS_FOUND, SEARCH, SECOND_UNIT_NAME_LABAL, UNIT_API, UNIT_CATEGORIES_SEARCH_PLACEHOLDER, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_TABLE_FIELDS, UNIT_CONVERSION_API, UNIT_CONVERSION_PAGE_NAME, UNIT_CONVERSION_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
+import { ADD_BUTTON_LABAL, ADD_UNIT_CONVERSION, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, FIRST_UNIT_NAME_LABAL, MULTIPLIER_LABAL, MULTIPLIER_PLACEHOLDER, NO_RECORDS_FOUND, SEARCH, SECOND_UNIT_NAME_LABAL, UNIT_API, UNIT_CATEGORIES_SEARCH_PLACEHOLDER, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_TABLE_FIELDS, UNIT_CONVERSION_API, UNIT_CONVERSION_PAGE_NAME, UNIT_CONVERSION_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_UNIT_CONVERSION_MODEL_TITLE } from '@/app/constants/constants';
 import UnitCategoryInterface from '@/app/interfaces/unit_category_interface';
 import { Button, Modal, Table } from 'react-bootstrap';
 import TextInput from '@/app/components/Forms/text_input';
 import UnitConversionInterface from '@/app/interfaces/unit_conversion_interface';
 import NumberInput from '@/app/components/Forms/number_input';
 import UnitInterface from '@/app/interfaces/unit_interface';
+import DisabledInput from '@/app/components/Forms/disabled_input';
 
 const UnitConversionPage = () => {
   const [unitConversions, setUnitConversions] = useState<UnitConversionInterface[]>([]);
@@ -67,27 +68,27 @@ const UnitConversionPage = () => {
       }
     };
 
-  const fetchSelectedCategory = async (id: string) => {
+  const fetchSelectedConversion = async (id: string) => {
     try {
-      const response = await fetch(`${UNIT_CATEGORY_API}fetch_all_unit_categories?_id=${id}`);
+      const response = await fetch(`${UNIT_CONVERSION_API}fetch_all_unit_conversions?_id=${id}`);
       if (!response.ok) {
-        throw new Error('Failed to fetch unit category');
+        throw new Error('Failed to fetch unit conversion');
       }
       // Since the api returns an array of categories, update the type to UnitCategoryInterface[]
       const { success, data } = await response.json() as {
         success: boolean;
-        data: UnitCategoryInterface[];  // Note the array here
+        data: UnitConversionInterface[];  // Note the array here
       };
 
       if (success && data && data.length > 0) {
-        setSelectedCategory(data[0]);
-        console.log('Selected Category:', data[0]);
+        setSelectedConversion(data[0]);
+        console.log('Selected Conversion:', data[0]);
         setShowUpdateModal(true);
       } else {
         throw new Error('Invalid API response format');
       }
     } catch (error) {
-      console.error('Error fetching unit category:', error);
+      console.error('Error fetching unit conversion:', error);
     }
   };
 
@@ -114,32 +115,36 @@ const UnitConversionPage = () => {
     }
   };
 
-  const callUpdateCategoryAPI = async (id: string) => {
+  const callUpdateConversionAPI = async (id: string) => {
     try {
-      const response = await fetch(`${UNIT_CATEGORY_API}update_unit_category`, {
+      const response = await fetch(`${UNIT_CONVERSION_API}update_unit_conversion`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           id: id,
-          unit_category_name: selectedCategory?.unit_category_name,
-          description: selectedCategory?.description,
+          first_unit_id: selectedConversion?.first_unit_id,
+          second_unit_id: selectedConversion?.second_unit_id,
+          multiplier: selectedConversion?.multiplier,
+          description: selectedConversion?.description,
         }),
       });
       if (!response.ok) {
-        throw new Error('Failed to update unit category');
+        throw new Error('Failed to update unit conversion');
       }
       const { success, data } = await response.json();
       if (success && data) {
-        console.log('Updated Category:', data);
+        console.log('Updated Conversion:', data);
         setShowUpdateModal(false);
         fetchUnitCategories();
+        fetchUnitConversions();
+        setSelectedConversion({ first_unit_id: '', second_unit_id: '', multiplier: 0, description: '', first_unit_name: '', second_unit_name: '' });
       } else {
         throw new Error('Invalid API response format');
       }
     } catch (error) {
-      console.error('Error updating unit category:', error);
+      console.error('Error updating unit conversion:', error);
     }
   }
 
@@ -270,7 +275,7 @@ const UnitConversionPage = () => {
                   <td>{conversion.multiplier}</td>
                   <td id = {conversion.second_unit_id}>{conversion.second_unit_name}</td>                
                   <td>
-                    <button className="btn btn-primary btn-sm" onClick={() => fetchSelectedCategory(conversion._id)}>{UPDATE_BUTTON_LABAL}</button>
+                    <button className="btn btn-primary btn-sm" onClick={() => fetchSelectedConversion(conversion._id)}>{UPDATE_BUTTON_LABAL}</button>
                     <button className="btn btn-danger btn-sm ms-2" onClick={() => {setShowDeleteModal(true); setSelectedConversionId(conversion._id)}}>{DELETE_BUTTON_LABAL}</button>
                   </td>
                 </tr>
@@ -347,37 +352,53 @@ const UnitConversionPage = () => {
         </div>
       </div>
 
-      {showUpdateModal && selectedCategory && (
+      {showUpdateModal && selectedConversion && (
 
       <Modal show={showUpdateModal}>
         <Modal.Header closeButton onClick={() => setShowUpdateModal(false)}>
-          <Modal.Title className='text-primary'>{UPDATE_UNIT_CATEGORY_MODEL_TITLE}</Modal.Title>
+          <Modal.Title className='text-primary'>{UPDATE_UNIT_CONVERSION_MODEL_TITLE}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
 
           <TextInput
-            form_id="unit_category_name"
-            onChangeText={(e) => setSelectedCategory({ ...selectedCategory, unit_category_name: e.target.value })}
-            form_message=""
-            placeholder_text={UNIT_CATEGORY_NAME_PLACEHOLDER}
-            label={UNIT_CATEGORY_NAME_LABAL}
-            value={selectedCategory.unit_category_name}
-          />
-          <TextInput
             form_id="description"
-            onChangeText={(e) => setSelectedCategory({ ...selectedCategory, description: e.target.value })}
+            onChangeText={(e) => setSelectedConversion({...selectedConversion, description: e.target.value })}
             form_message=""
             placeholder_text={UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER}
             label={UNIT_CATEGORY_DESCRIPTION_LABAL}
-            value={selectedCategory.description}
+            value={selectedConversion.description}
           />
+
+          <DisabledInput
+            form_id="first_unit_name"
+            form_message=""
+            label={FIRST_UNIT_NAME_LABAL}
+            value={selectedConversion.first_unit_name}
+          />
+
+          <NumberInput
+            form_id="multiplier"
+            onChangeText={(e) => setSelectedConversion({...selectedConversion, multiplier: e.target.value })}
+            form_message=""
+            placeholder_text={MULTIPLIER_PLACEHOLDER}
+            label={MULTIPLIER_LABAL}
+            value={selectedConversion.multiplier} min_value={0} max_value={999999}          />
+
+          <DisabledInput
+            form_id="second_unit_name"
+            form_message=""
+            label={SECOND_UNIT_NAME_LABAL}
+            value={selectedConversion.second_unit_name}
+          />
+
+          
 
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowUpdateModal(false)}>
             {BACK}
           </Button>
-          <Button variant="primary" onClick={() => {console.log(selectedCategory._id); callUpdateCategoryAPI(selectedCategory._id); setShowUpdateModal(false); }}>
+          <Button variant="primary" onClick={() => {callUpdateConversionAPI(selectedConversion._id); setShowUpdateModal(false); }}>
             {UPDATE}
           </Button>
         </Modal.Footer>

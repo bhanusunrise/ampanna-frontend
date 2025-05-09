@@ -36,7 +36,6 @@ const NumberInput: React.FC<NumberInputProps> = ({
         placeholder={placeholder_text}
         min={min_value}
         max={max_value}
-        style={{ maxWidth: '300px' }}
         size='sm'
         value={value} // Set the value prop here
       />

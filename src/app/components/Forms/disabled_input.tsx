@@ -17,10 +17,10 @@ const DisabledInput: React.FC<DisabledInputProps> = ({ label, form_id, form_mess
         type="text"
         id={form_id}
         aria-describedby="passwordHelpBlock"
-        style={{ maxWidth: '300px' }}
         value={value}
         size="sm"
         disabled={disabled} // Apply disabled prop
+        readOnly // Make the input read-only
       />
       <Form.Text id="passwordHelpBlock" muted>
         {form_message}
