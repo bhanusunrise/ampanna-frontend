@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { dbConnect } from "@/app/lib/db";
-import Item from "@/app/models/item_model"; // Ensure your model is correctly exported
+import Item from "@/app/models/item_model";
 
 export async function PATCH(request: NextRequest) {
   try {
@@ -16,6 +16,7 @@ export async function PATCH(request: NextRequest) {
       main_unit_id,
       other_unit_ids,
       other_parameters,
+      barcode,
     } = body;
 
     // Validate required fields
@@ -26,15 +27,27 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
+    // Check if barcode already exists in another item
+    if (barcode) {
+      const existingItem = await Item.findOne({ barcode, _id: { $ne: id } });
+      if (existingItem) {
+        return NextResponse.json(
+          { success: false, message: "Barcode must be unique" },
+          { status: 400 } // Bad Request
+        );
+      }
+    }
+
     // Find the item by ID and update it
     const updatedItem = await Item.findOneAndUpdate(
       { _id: id }, // Match the document by `_id`
       {
-        ...(name && { name }), // Update only if provided
-        ...(description !== undefined && { description }), // Update even if null or empty string
-        ...(main_unit_id && { main_unit_id }), // Update only if provided
-        ...(other_unit_ids && { other_unit_ids }), // Update only if provided
-        ...(other_parameters && { other_parameters }), // Update only if provided
+        ...(name && { name }),
+        ...(description !== undefined && { description }),
+        ...(main_unit_id && { main_unit_id }),
+        ...(other_unit_ids && { other_unit_ids }),
+        ...(other_parameters && { other_parameters }),
+        ...(barcode && { barcode }),
       },
       { new: true } // Return the updated document
     );
@@ -54,7 +67,7 @@ export async function PATCH(request: NextRequest) {
   } catch (error) {
     console.error("Error updating Item:", error);
     return NextResponse.json(
-      { success: false, message: "Server error. Please try again later. + " + error },
+      { success: false, message: "Server error. Please try again later." },
       { status: 500 }
     );
   }

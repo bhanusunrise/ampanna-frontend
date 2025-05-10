@@ -24,13 +24,14 @@ export const SUPPLIER_TABLE_FIELDS = [
 ]
 
 export const ITEMS_TABLE_FIELDS = [
+    "#",
     "භාණ්ඩය",
     "බාර් කෝඩය",
-    "ඒකක වර්ග",
-    "බහුල ඒකකය",
-    "එකතු කිරීම",
-    "වෙනස් කිරීම",
-    "තත්වය"
+    "ඒකකය",
+    "වෙනත් ඒකක",
+    "විස්තරය",
+    "වෙනත් පරාමිතීන්",
+    "සැකසීම්"
 ]
 
 export const UNIT_TABLE_FIELDS = [
@@ -58,13 +59,6 @@ export const UNIT_CONVERSION_TABLE_FIELDS = [
     "සැකසීම්"
 ]
 
-export const ITEM_CATEGORIES_TABLE_FIELDS = [
-    "භාණ්ඩ වර්ගයේ නම",
-    "තත්වය",
-    "එකතු කිරීම",
-    "වෙනස් කිරීම",
-    "සැකසීම්"
-]
 
 /** Not found records */
 export const NO_RECORDS_FOUND = "සොයාගත නොහැකිය"

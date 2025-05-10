@@ -39,11 +39,6 @@ const SideNav = () => {
           <CgToolbarTop size={20} className="m-2" />{ITEMS_PAGE_NAME}
         </Nav.Link>
       </Nav.Item>
-       <Nav.Item>
-        <Nav.Link href="/dashboard/item_categories" className="text-white">
-          <MdBackpack size={20} className="m-2" />{ITEM_CATEGORIES_PAGE_NAME}
-        </Nav.Link>
-      </Nav.Item>
       <Nav.Item>
         <Nav.Link href="/dashboard/unit_categories" className="text-white">
           <Md10K size={20} className="m-2" />{UNIT_CATEGORY_PAGE_NAME}

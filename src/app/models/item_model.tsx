@@ -15,6 +15,9 @@ const ItemSchema: Schema = new Schema(
         main_unit_id: { type: String, required: true }, // Reference to the main unit ID
         other_unit_ids: { type: [String], required: false }, // Array of unit IDs
         category: { type: String, required: false }, // Category of the item
+        main_unit_name: { type: String, required: false }, // Name of the main unit (optional)
+        other_unit_names: { type: [String], required: false }, // Array of names for other units (optional)
+        barcode: { type: String, required: false }, // Barcode for the item (optional)
         other_parameters: [
             {
                 parameter_name: { type: String, required: false }, // Parameter name

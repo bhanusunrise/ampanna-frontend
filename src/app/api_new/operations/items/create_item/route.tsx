@@ -10,7 +10,7 @@ export async function POST(request: Request) {
         // Parse the incoming JSON data
         const body = await request.json();
 
-        const { name, description, main_unit_id, other_unit_ids, other_parameters } = body;
+        const { name, description, main_unit_id, other_unit_ids, other_parameters, barcode } = body;
 
         // Validate required fields except `_id`
         if (!name || !main_unit_id) {
@@ -20,18 +20,30 @@ export async function POST(request: Request) {
             );
         }
 
+        // Check if barcode already exists
+        if (barcode) {
+            const existingItem = await Item.findOne({ barcode });
+            if (existingItem) {
+                return NextResponse.json(
+                    { success: false, message: 'Barcode must be unique' },
+                    { status: 400 } // Bad Request
+                );
+            }
+        }
+
         // Get the maximum `_id` from the existing documents
-        const lastItem = await Item.findOne().sort({ _id: -1 }); // Sort by `_id` in descending order
-        const newId = lastItem ? parseInt(lastItem._id) + 1 : 1; // Increment `_id` or start from 1
+        const lastItem = await Item.findOne().sort({ _id: -1 });
+        const newId = lastItem ? parseInt(lastItem._id) + 1 : 1;
 
         // Create a new Item object
         const newItem = new Item({
-            _id: newId.toString(), // Convert number to string to match schema
+            _id: newId.toString(),
             name,
             description,
             main_unit_id,
             other_unit_ids,
             other_parameters,
+            barcode,
         });
 
         // Save the object to the database
@@ -51,7 +63,7 @@ export async function POST(request: Request) {
         }
         console.error('Error adding new Item:', error);
         return NextResponse.json(
-            { success: false, message: 'Server error. Please try again later. + ' + error },
+            { success: false, message: 'Server error. Please try again later.' },
             { status: 500 }
         );
     }
