@@ -6,5 +6,6 @@ export default interface ItemInterface {
     description: string;
     main_unit_id: string;
     other_unit_ids: string[]; // Array of unit IDs (strings)
+    category:string;
     other_parameters: { parameter_name: string; value: string }[]; // Array of objects for parameter details
 }

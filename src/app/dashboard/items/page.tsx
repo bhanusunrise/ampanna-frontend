@@ -1,337 +1,427 @@
 'use client';
 
-import BasicTable from "@/app/components/Tables/basic_table";
-import SelectCheckBox from "@/app/components/Forms/select_check_box";
-import { ITEMS_PAGE_NAME, ITEMS_TABLE_FIELDS, COMPULSARY, NULL_VALUE, ADD_ITEM_PAGE_NAME, ITEM_CATEGORY_SELECTION_LABAL, ADD_UNIT_CATEGORY_LABAL, ADD_UNITS_LABAL, ADD_MOST_USED_UNIT_LABAL, ITEM_INPUT_LABAL, ITEM_INPUT_PLACEHOLDER, CLEAR_BUTTON_LABAL, ADD_BUTTON_LABAL, SEARCH } from "@/app/constants/constants";
-import React, { useEffect, useState } from "react";
-import { Col, Row } from "react-bootstrap";
-import { fetchItemsWithUnits, fetchActiveItemCategories, fetchActiveUnitCategories, fetchUnitsByCategory, addItemWithUnits, restoreItem } from "./functions";
-import SelectBox from "@/app/components/Forms/select_box";
-import TextInput from "@/app/components/Forms/text_input";
-import ClearButton from "@/app/components/Buttons/clear_button";
-import AddButton from "@/app/components/Buttons/add_button";
-import NavigateButtons from "@/app/components/Buttons/navigate_button";
-import DeleteModal from "@/app/components/Models/delete_model";
-import { deleteIteam } from "./functions";
-import RestoreModal from "@/app/components/Models/restore_model";
+import React, { useEffect, useState } from 'react';
+import { ADD_BUTTON_LABAL, ADD_UNIT_CONVERSION, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, FIRST_UNIT_NAME_LABAL, MULTIPLIER_LABAL, MULTIPLIER_PLACEHOLDER, NO_RECORDS_FOUND, SEARCH, SECOND_UNIT_NAME_LABAL, UNIT_API, UNIT_CATEGORIES_SEARCH_PLACEHOLDER, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_TABLE_FIELDS, UNIT_CONVERSION_API, UNIT_CONVERSION_PAGE_NAME, UNIT_CONVERSION_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_UNIT_CONVERSION_MODEL_TITLE } from '@/app/constants/constants';
+import UnitCategoryInterface from '@/app/interfaces/unit_category_interface';
+import { Button, Modal, Table } from 'react-bootstrap';
+import TextInput from '@/app/components/Forms/text_input';
+import UnitConversionInterface from '@/app/interfaces/unit_conversion_interface';
+import NumberInput from '@/app/components/Forms/number_input';
+import UnitInterface from '@/app/interfaces/unit_interface';
+import DisabledInput from '@/app/components/Forms/disabled_input';
 
-export default function Page() {
-  const [items, setItems] = useState<string[][]>([]);
-  const [filteredItems, setFilteredItems] = useState<string[][]>([]);
-  const [activeItemCategories, setActiveItemCategories] = useState<any[]>([]);
-  const [categoryIds, setCategoryIds] = useState<string[]>([]);
-  const [categoryNames, setCategoryNames] = useState<string[]>([]);
-  const [activeUnitCategories, setActiveUnitCategories] = useState<any[]>([]);
-  const [unitCategoryIds, setUnitCategoryIds] = useState<string[]>([]);
-  const [unitCategoryNames, setUnitCategoryNames] = useState<string[]>([]);
-  const [selectedItemCategoryId, setSelectedItemCategoryId] = useState('');
-  const [selectedUnitCategoryId, setSelectedUnitCategoryId] = useState('');
-  const [unitIds, setUnitIds] = useState<string[]>([]);
-  const [unitNames, setUnitNames] = useState<string[]>([]);
-  const [selectedUnitIds, setSelectedUnitIds] = useState<string[]>([]);
-  const [selectedUnitIdsForNewSelectBox, setSelectedUnitIdsForNewSelectBox] = useState<string[]>([]);
-  const [textInputValue, setTextInputValue] = useState('');
-  const [currentPage, setCurrentPage] = useState(0);
-  const [itemToDelete, setItemToDelete] = useState<any>(null);
+const UnitConversionPage = () => {
+  const [unitConversions, setUnitConversions] = useState<UnitConversionInterface[]>([]);
+  const [unitCategories, setUnitCategories] = useState<UnitCategoryInterface[]>([]);
+  const [filteredConversions, setFilteredConversions] = useState<UnitConversionInterface[]>([]);
+  const [filteredUnits, setFilteredUnits] = useState<UnitInterface[]>([]);
+  const [selectedConversionId, setSelectedConversionId] = useState<string | null>(null);
+  const [selectedConversion, setSelectedConversion] = useState<UnitConversionInterface | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<UnitCategoryInterface | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [isIdSelected, setIsIdSelected] = useState<boolean>(false);
+  const [isDescriptionSelected, setIsDescriptionSelected] = useState<boolean>(false);
+  const [isMultiplierSelected, setIsMultiplierSelected] = useState<boolean>(false);
+  const [isFirstUnitIdSelected, setIsFirstUnitIdSelected] = useState<boolean>(false);
+  const [isFirstUnitNameSelected, setIsFirstUnitNameSelected] = useState<boolean>(false);
+  const [isSecondUnitIdSelected, setIsSecondUnitIdSelected] = useState<boolean>(false);
+  const [isSecondUnitNameSelected, setIsSecondUnitNameSelected] = useState<boolean>(false);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showRestoreModal, setShowRestoreModal] = useState(false); 
-  const [itemToRestore, setItemToRestore] = useState<any>(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const recordsPerPage = 10;
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toISOString().split('T')[0];
+  const fetchUnitCategories = async () => {
+      try {
+        const response = await fetch(`${UNIT_CATEGORY_API}fetch_all_unit_categories`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch unit categories');
+        }
+
+        const { success, data } = await response.json();
+        if (success && Array.isArray(data)) {
+          setUnitCategories(data);
+        } else {
+          throw new Error('Invalid API response format');
+        }
+      } catch (error) {
+        console.error('Error fetching unit categories:', error);
+      }
+    };
+
+  const fetchUnitConversions = async () => {
+      try {
+        const response = await fetch(`${UNIT_CONVERSION_API}fetch_all_unit_conversions`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch unit conversions');
+        }
+
+        const { success, data } = await response.json();
+        if (success && Array.isArray(data)) {
+          setUnitConversions(data);
+          setFilteredConversions(data);
+        } else {
+          throw new Error('Invalid API response format');
+        }
+      } catch (error) {
+        console.error('Error fetching unit conversions:', error);
+      }
+    };
+
+  const fetchSelectedConversion = async (id: string) => {
+    try {
+      const response = await fetch(`${UNIT_CONVERSION_API}fetch_all_unit_conversions?_id=${id}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch unit conversion');
+      }
+      // Since the api returns an array of categories, update the type to UnitCategoryInterface[]
+      const { success, data } = await response.json() as {
+        success: boolean;
+        data: UnitConversionInterface[];  // Note the array here
+      };
+
+      if (success && data && data.length > 0) {
+        setSelectedConversion(data[0]);
+        console.log('Selected Conversion:', data[0]);
+        setShowUpdateModal(true);
+      } else {
+        throw new Error('Invalid API response format');
+      }
+    } catch (error) {
+      console.error('Error fetching unit conversion:', error);
+    }
   };
 
-  const reloadData = async () => {
-    const fetchedItems = await fetchItemsWithUnits();
-    const processedItems = fetchedItems.map((item: any) => {
-      const unitNames = item.units.map((unit: any) => unit.unit_name).join(', ');
-      const defaultUnit = item.units.find((unit: any) => unit.default_status === COMPULSARY);
-      const defaultUnitName = defaultUnit ? defaultUnit.unit_name : NULL_VALUE;
+  const fetchUnitsForSelectedCategory = async (unit_category_id: string) => {
+    try {
+      const response = await fetch(`${UNIT_API}fetch_all_units?unit_category_id=${unit_category_id}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch unit');
+      }
+      // Since the api returns an array of categories, update the type to UnitCategoryInterface[]
+      const { success, data } = await response.json() as {
+        success: boolean;
+        data: UnitInterface[];  // Note the array here
+      };
 
-      return [
-        item.item_id,
-        item.item_name + "\n(" + item.item_category_name + ")",
-        item.item_barcode,
-        unitNames,
-        defaultUnitName,
-        formatDate(item.createdAt),
-        formatDate(item.updatedAt),
-        item.status,
-      ];
-    });
-
-    setItems(processedItems);
-    setFilteredItems(processedItems);
+      if (success && data && data.length > 0) {
+        setFilteredUnits(data);
+        console.log('Selected Units:', data);
+      } else {
+        throw new Error('Invalid API response format');
+      }
+    } catch (error) {
+      console.error('Error fetching unit category:', error);
+    }
   };
 
+  const callUpdateConversionAPI = async (id: string) => {
+    try {
+      const response = await fetch(`${UNIT_CONVERSION_API}update_unit_conversion`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: id,
+          first_unit_id: selectedConversion?.first_unit_id,
+          second_unit_id: selectedConversion?.second_unit_id,
+          multiplier: selectedConversion?.multiplier,
+          description: selectedConversion?.description,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update unit conversion');
+      }
+      const { success, data } = await response.json();
+      if (success && data) {
+        console.log('Updated Conversion:', data);
+        setShowUpdateModal(false);
+        fetchUnitCategories();
+        fetchUnitConversions();
+        setSelectedConversion({ first_unit_id: '', second_unit_id: '', multiplier: 0, description: '', first_unit_name: '', second_unit_name: '' });
+      } else {
+        throw new Error('Invalid API response format');
+      }
+    } catch (error) {
+      console.error('Error updating unit conversion:', error);
+    }
+  }
+
+  const addUnitConversion = async () => {
+    try {
+      console.log('Selected Conversion:', selectedConversion);
+      const response = await fetch(`${UNIT_CONVERSION_API}create_unit_conversion`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          first_unit_id: selectedConversion?.first_unit_id,
+          second_unit_id: selectedConversion?.second_unit_id,
+          multiplier: selectedConversion?.multiplier,
+          description: selectedConversion?.description,
+          
+        }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to add unit conversion');
+      }
+      const { success, data } = await response.json();
+      if (success && data) {
+        console.log('Added Conversion:', data);
+        fetchUnitCategories();
+        fetchUnitConversions();
+        setSelectedConversion({ first_unit_id: '', second_unit_id: '', multiplier: 0, description: '', first_unit_name: '', second_unit_name: '' });
+      } else {
+        throw new Error('Invalid API response format');
+      }
+    } catch (error) {
+      console.error('Error adding unit conversion:', error);
+    }
+  }
+
+  const deleteUnitConversion = async (id: string) => {
+    try {
+      const response = await fetch(`${UNIT_CONVERSION_API}delete_unit_conversion?id=${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to delete unit conversion');
+      }
+      const { success, data } = await response.json();
+      fetchUnitCategories();
+      fetchUnitConversions();
+      if (success && data) {
+        console.log('Deleted Conversion:', data);
+      } else {
+        throw new Error('Invalid API response format');
+      }
+    } catch (error) {
+      console.error('Error deleting unit conversion:', error);
+    }
+  }
+        
   useEffect(() => {
-    reloadData();
-
-    async function loadActiveItemCategories() {
-      const fetchedCategories = await fetchActiveItemCategories();
-      setActiveItemCategories(fetchedCategories || []);
-      if (fetchedCategories) {
-        const ids = fetchedCategories.map(category => category.category_id);
-        const names = fetchedCategories.map(category => category.category_name);
-        setCategoryIds(ids);
-        setCategoryNames(names);
-      }
-    }
-
-    async function loadActiveUnitCategories() {
-      const fetchedUnitCategories = await fetchActiveUnitCategories();
-      setActiveUnitCategories(fetchedUnitCategories || []);
-      if (fetchedUnitCategories) {
-        const ids = fetchedUnitCategories.map(category => category.unit_category_id);
-        const names = fetchedUnitCategories.map(category => category.unit_category_name);
-        setUnitCategoryIds(ids);
-        setUnitCategoryNames(names);
-      }
-    }
-
-    loadActiveItemCategories();
-    loadActiveUnitCategories();
+    fetchUnitCategories();
+    fetchUnitConversions();
+    fetchUnitsForSelectedCategory(selectedCategory?._id || '');
   }, []);
 
+  // Handle search functionality
   useEffect(() => {
-    async function loadUnitsByCategory() {
-      if (selectedUnitCategoryId) {
-        const fetchedUnits = await fetchUnitsByCategory(selectedUnitCategoryId);
-        console.log('Fetched Units:', fetchedUnits);
-        if (fetchedUnits) {
-          const ids = fetchedUnits.map((unit: any) => unit.unit_id);
-          const names = fetchedUnits.map((unit: any) => unit.unit_name);
-          setUnitIds(ids);
-          setUnitNames(names);
-        }
-      }
-    }
-
-    loadUnitsByCategory();
-  }, [selectedUnitCategoryId]);
-
-  const handleClear = () => {
-    setSelectedItemCategoryId('');
-    setSelectedUnitCategoryId('');
-    setSelectedUnitIds([]);
-    setSelectedUnitIdsForNewSelectBox([]);
-    setTextInputValue('');
-  };
-
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const query = event.target.value.toLowerCase();
-    setSearchQuery(query);
-    const filtered = items.filter(
-      (item) =>
-        item[1].toLowerCase().includes(query) || item[2].toLowerCase().includes(query)
-    );
-    setFilteredItems(filtered);
-    setCurrentPage(0);
-  };
-
-  const handleAddItem = async () => {
-    if (!selectedItemCategoryId || !textInputValue || selectedUnitIds.length === 0) {
-      alert("Please fill all fields before adding an item.");
-      return;
-    }
-
-    const units = selectedUnitIds.map(unit_id => ({
-      unit_id,
-      default_status: selectedUnitIdsForNewSelectBox.includes(unit_id) ? COMPULSARY : undefined
-    }));
-
-    const result = await addItemWithUnits(selectedItemCategoryId, textInputValue, units);
-    if (result) {
-      //alert("Item added successfully!");
-      handleClear();
-      await reloadData(); // Reload data after adding an item
+    if (searchQuery.trim() === '') {
+      setFilteredConversions(unitConversions);
     } else {
-      alert("Failed to add item. Please try again.");
+      const filtered = unitConversions.filter(conversion => {
+        const searchLower = searchQuery.toLowerCase();
+        return (
+          (isIdSelected && conversion._id.toLowerCase().includes(searchLower)) ||
+          (isMultiplierSelected && conversion.description.toLowerCase().includes(searchLower)) ||
+          (isDescriptionSelected && conversion.description.toLowerCase().includes(searchLower)) ||
+          (isFirstUnitNameSelected && conversion.first_unit_name.toLowerCase().includes(searchLower)) ||
+          (isSecondUnitNameSelected && conversion.second_unit_name.toLowerCase().includes(searchLower)) ||
+          (isFirstUnitIdSelected && conversion.first_unit_id.toLowerCase().includes(searchLower)) ||
+          (isSecondUnitIdSelected && conversion.second_unit_id.toLowerCase().includes(searchLower)) ||
+          // If no checkboxes are selected, search in all fields
+          (!isIdSelected && !isMultiplierSelected && !isDescriptionSelected && !isFirstUnitNameSelected && !isSecondUnitNameSelected && !isFirstUnitIdSelected && !isSecondUnitIdSelected && (
+            conversion._id.toLowerCase().includes(searchLower) ||
+            conversion.multiplier.toString().toLowerCase().includes(searchLower) ||
+            conversion.description.toLowerCase().includes(searchLower) ||
+            conversion.first_unit_name.toLowerCase().includes(searchLower) ||
+            conversion.second_unit_name.toLowerCase().includes(searchLower) ||
+            conversion.first_unit_id.toLowerCase().includes(searchLower) ||
+            conversion.second_unit_id.toLowerCase().includes(searchLower)
+          ))
+        );
+      });
+      setFilteredConversions(filtered);
     }
-  };
-
-  const isUnitCategoryDisabled = selectedUnitIds.length > 0;
-  const isSelectedUnitIdsEmpty = selectedUnitIds.length === 0;
-
-  const handleNext = () => {
-    if (currentPage < Math.ceil(filteredItems.length / recordsPerPage) - 1) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handlePrevious = () => {
-    if (currentPage > 0) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const currentRecords = filteredItems.slice(
-    currentPage * recordsPerPage,
-    (currentPage + 1) * recordsPerPage
-  );
-  const totalPages = Math.ceil(filteredItems.length / recordsPerPage);
-  const startingIndex = currentPage * recordsPerPage;
-
-  const handleDeleteItem = (rowIndex: number) => {
-    const selectedItemData = filteredItems[rowIndex];
-    setItemToDelete({
-      item_id: selectedItemData[0],
-      item_name: selectedItemData[1],
-    });
-    setShowDeleteModal(true);
-  };
-
-  const confirmDelete = async () => {
-    if (itemToDelete) {
-      const result = await deleteIteam(itemToDelete.item_id);
-      if (result.success) {
-        await reloadData(); // Reload data after deleting an item
-        handleCloseDeleteModal();
-      }
-    }
-  };
-
-    const handleRestoreItem = (rowIndex: number) => {
-    const selectedItemData = filteredItems[rowIndex];
-    setItemToRestore({
-      item_id: selectedItemData[0],
-      item_name: selectedItemData[1],
-    });
-    setShowRestoreModal(true);
-  };
-
-    const confirmRestore = async () => {
-    if (itemToRestore) {
-      const result = await restoreItem(itemToRestore.item_id);
-      if (result.success) {
-        await reloadData();
-        handleCloseRestoreModal();
-      }
-    }
-  };
-
-
-  const handleCloseDeleteModal = () => {
-    setShowDeleteModal(false);
-    setItemToDelete(null);
-  };
-
-    const handleCloseRestoreModal = () => {
-    setShowRestoreModal(false);
-    setItemToRestore(null);
-  };
-  
+  }, [searchQuery, unitConversions, isIdSelected, isMultiplierSelected, isDescriptionSelected, isFirstUnitNameSelected, isSecondUnitNameSelected, isFirstUnitIdSelected, isSecondUnitIdSelected]);
 
   return (
     <>
-      <Row>
-        <Col md={3}><h3 className={'text-primary'}>{ITEMS_PAGE_NAME}</h3></Col>
-        <Col md={6}><div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', flexWrap: 'nowrap' }}>
-            <TextInput
-              form_id="search_item"
-              onChangeText={handleSearch}
-              form_message=""
-              placeholder_text={SEARCH}
-              label=""
-              value={searchQuery}
-            />
-          </div>
-          <br /></Col>
-      </Row>
-      <Row>
-        <Col md={9}>
-          <BasicTable 
-            table_fields={ITEMS_TABLE_FIELDS} 
-            table_records={currentRecords} 
-            table_id='items_table'
-            startingIndex={startingIndex}
-            onDelete={handleDeleteItem}
-            onRestore={handleRestoreItem}
-          />
-          <NavigateButtons
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onNext={handleNext}
-            onPrevious={handlePrevious}
-          />
-        </Col>
-        <Col md={3}>
-          <h3 className={'text-primary'}>{ADD_ITEM_PAGE_NAME}</h3>
-          <SelectBox 
-            values={categoryIds}
-            display_values={categoryNames}
-            label_name={ITEM_CATEGORY_SELECTION_LABAL}
-            form_id="item_category_id"
-            onChange={(value) => setSelectedItemCategoryId(value)} 
-            selected_value={selectedItemCategoryId}
-          />
-          <TextInput
-            label={ITEM_INPUT_LABAL}
-            onChangeText={(event) => setTextInputValue(event.target.value)}
-            form_id="item_name"
-            placeholder_text={ITEM_INPUT_PLACEHOLDER}
-            value={textInputValue}
-          />
-          <SelectBox 
-            values={unitCategoryIds}
-            display_values={unitCategoryNames}
-            label_name={ADD_UNIT_CATEGORY_LABAL}
-            form_id="unit_category_id"
-            onChange={(value) => setSelectedUnitCategoryId(value)} 
-            selected_value={selectedUnitCategoryId}
-            disabled={isUnitCategoryDisabled}
-          />
-          <SelectCheckBox 
-            values={unitIds}
-            display_values={unitNames}
-            label_name={ADD_UNITS_LABAL}
-            form_id="unit_ids"
-            onChange={setSelectedUnitIds}
-            selected_values={selectedUnitIds}
-          />
-          <SelectBox 
-            values={selectedUnitIds}
-            display_values={unitNames}
-            label_name={ADD_MOST_USED_UNIT_LABAL}
-            form_id="selected_unit_ids"
-            onChange={setSelectedUnitIdsForNewSelectBox}
-            selected_value={selectedUnitIdsForNewSelectBox}
-            disabled={isSelectedUnitIdsEmpty}
-          />
-          <br/>
-          <ClearButton
-            label={CLEAR_BUTTON_LABAL}
-            onClickButton={handleClear}
-            btn_id="clear_button"
-          />
-          <AddButton
-            label={ADD_BUTTON_LABAL}
-            onClickButton={handleAddItem}
-            btn_id="add_button"
-          />
-        </Col>
-      </Row>
-      
+     <div className='row'>
+      <div className='col-md-8'>
+        <h3 className='text-primary'>{UNIT_CONVERSION_PAGE_NAME}</h3>
+        <TextInput 
+          label={SEARCH} 
+          onChangeText={(e) => setSearchQuery(e.target.value)} 
+          form_id="search" 
+          form_message="" 
+          placeholder_text={UNIT_CATEGORIES_SEARCH_PLACEHOLDER} 
+          value={searchQuery}
+        />
+        <div className="scrollable-table">
+        <Table striped bordered hover className='mt-3' size='sm'>
+          <thead>
+            <tr>
+              {UNIT_CONVERSION_TABLE_FIELDS.map((field, index) => (
+                <th key={index} className='text-primary'>{field}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {filteredConversions.length > 0 ? (
+              filteredConversions.map((conversion, index) => (
+                <tr key={index}>
+                  <td>{conversion._id}</td>
+                  <td>{conversion.description}</td>
+                  <td id = {conversion.first_unit_id}>{conversion.first_unit_name}</td>
+                  <td>{conversion.multiplier}</td>
+                  <td id = {conversion.second_unit_id}>{conversion.second_unit_name}</td>                
+                  <td>
+                    <button className="btn btn-primary btn-sm" onClick={() => fetchSelectedConversion(conversion._id)}>{UPDATE_BUTTON_LABAL}</button>
+                    <button className="btn btn-danger btn-sm ms-2" onClick={() => {setShowDeleteModal(true); setSelectedConversionId(conversion._id)}}>{DELETE_BUTTON_LABAL}</button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={UNIT_CATEGORY_TABLE_FIELDS.length} className="text-center">{NO_RECORDS_FOUND}</td>
+              </tr>
+            )}
+          </tbody>
+        </Table>
+        </div>
+        </div>
+        <div className='col-md-4'>
+          <h3 className='text-primary'>{ADD_UNIT_CONVERSION}</h3>
 
-      {itemToDelete && (
-        <DeleteModal
-          show={showDeleteModal}
-          handleClose={handleCloseDeleteModal}
-          handleDelete={confirmDelete}
-          itemName={itemToDelete.item_name}
-        />
+          <label className="form-label">{UNIT_CATEGORY_NAME_LABAL}</label>
+
+          <select className="form-select mb-2" onChange={(e) => {setSelectedCategory({ ...selectedCategory, _id: e.target.value }); fetchUnitsForSelectedCategory(e.target.value)}} value={selectedCategory?._id}>
+            
+            {unitCategories.map((category) => (
+              <option key={category._id} value={category._id}>
+                {category.unit_category_name}
+              </option>
+            ))}
+          </select>
+
+          <TextInput 
+            form_id="unit_category_name" 
+            onChangeText={(e) => setSelectedConversion({ ...selectedConversion, description: e.target.value })} 
+            form_message="" 
+            placeholder_text={UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER} 
+            label={UNIT_CATEGORY_DESCRIPTION_LABAL} 
+            value={selectedConversion?.description}
+          />
+
+          <label className="form-label">{FIRST_UNIT_NAME_LABAL}</label>
+
+          <select className="form-select mb-2" onChange={(e) => setSelectedConversion(selectedConversion ? { ...selectedConversion, first_unit_id: e.target.value } : { first_unit_id: e.target.value, second_unit_id: '', multiplier: 0, description: '', first_unit_name: '', second_unit_name: '' })} value={selectedConversion?.first_unit_id}>
+            
+            {filteredUnits.map((unit) => (
+              <option key={unit._id} value={unit._id}>
+                {unit.unit_name}
+              </option>
+            ))}
+          </select>
+
+          <label className="form-label">{SECOND_UNIT_NAME_LABAL}</label>
+
+          <select className="form-select mb-2" onChange={(e) => setSelectedConversion(selectedConversion ? { ...selectedConversion, second_unit_id: e.target.value } : null)} value={selectedConversion?.second_unit_id}>
+            
+            {filteredUnits.map((unit) => (
+              <option key={unit._id} value={unit._id}>
+                {unit.unit_name}
+              </option>
+            ))}            
+          </select>
+
+
+          
+
+          <NumberInput
+            form_id="multiplier"
+            onChangeText={(e) => setSelectedConversion({ ...selectedConversion, multiplier: e.target.value })}
+            form_message=""
+            placeholder_text={MULTIPLIER_PLACEHOLDER}
+            label={MULTIPLIER_LABAL}
+            value={selectedConversion?.multiplier} min_value={0} max_value={999999}          />
+
+          <Button variant='success' className='mt-3' onClick={addUnitConversion}>
+            {ADD_BUTTON_LABAL}
+          </Button>
+
+        </div>
+      </div>
+
+      {showUpdateModal && selectedConversion && (
+
+      <Modal show={showUpdateModal}>
+        <Modal.Header closeButton onClick={() => setShowUpdateModal(false)}>
+          <Modal.Title className='text-primary'>{UPDATE_UNIT_CONVERSION_MODEL_TITLE}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+
+          <TextInput
+            form_id="description"
+            onChangeText={(e) => setSelectedConversion({...selectedConversion, description: e.target.value })}
+            form_message=""
+            placeholder_text={UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER}
+            label={UNIT_CATEGORY_DESCRIPTION_LABAL}
+            value={selectedConversion.description}
+          />
+
+          <DisabledInput
+            form_id="first_unit_name"
+            form_message=""
+            label={FIRST_UNIT_NAME_LABAL}
+            value={selectedConversion.first_unit_name}
+          />
+
+          <NumberInput
+            form_id="multiplier"
+            onChangeText={(e) => setSelectedConversion({...selectedConversion, multiplier: e.target.value })}
+            form_message=""
+            placeholder_text={MULTIPLIER_PLACEHOLDER}
+            label={MULTIPLIER_LABAL}
+            value={selectedConversion.multiplier} min_value={0} max_value={999999}          />
+
+          <DisabledInput
+            form_id="second_unit_name"
+            form_message=""
+            label={SECOND_UNIT_NAME_LABAL}
+            value={selectedConversion.second_unit_name}
+          />
+
+          
+
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowUpdateModal(false)}>
+            {BACK}
+          </Button>
+          <Button variant="primary" onClick={() => {callUpdateConversionAPI(selectedConversion._id); setShowUpdateModal(false); }}>
+            {UPDATE}
+          </Button>
+        </Modal.Footer>
+      </Modal>
       )}
-      {itemToRestore && (
-        <RestoreModal
-          show={showRestoreModal}
-          handleClose={handleCloseRestoreModal}
-          handleRestore={confirmRestore}
-          itemName={itemToRestore.item_name}
-        />
+
+      {showDeleteModal && selectedConversionId && (
+        
+        <Modal show={showDeleteModal}>
+          <Modal.Header closeButton onClick={() => setShowDeleteModal(false)}>
+            <Modal.Title className='text-danger'>{DELETE_CONFIRM}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>{`${DELETE_CONFIRM_MESSEGE} ID = ${selectedConversionId}`}</Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+              {BACK}
+            </Button>
+            <Button variant="danger" onClick={() => {deleteUnitConversion(selectedConversionId); setShowDeleteModal(false); }}>
+              {DELETE_BUTTON_DELETE_MODAL}
+            </Button>
+          </Modal.Footer>
+        </Modal>
       )}
     </>
   );
-}
+};
+
+export default UnitConversionPage;
