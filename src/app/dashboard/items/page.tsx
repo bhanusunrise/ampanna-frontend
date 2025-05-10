@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ADD_BUTTON_LABAL, ADD_UNIT_CONVERSION, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, FIRST_UNIT_NAME_LABAL, ITEMS_API, ITEMS_TABLE_FIELDS, MULTIPLIER_LABAL, MULTIPLIER_PLACEHOLDER, NO_RECORDS_FOUND, SEARCH, SECOND_UNIT_NAME_LABAL, UNIT_API, UNIT_CATEGORIES_SEARCH_PLACEHOLDER, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_TABLE_FIELDS, UNIT_CONVERSION_API, UNIT_CONVERSION_PAGE_NAME, UNIT_CONVERSION_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_UNIT_CONVERSION_MODEL_TITLE } from '@/app/constants/constants';
+import { ADD_BUTTON_LABAL, ADD_UNIT_CONVERSION, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, FIRST_UNIT_NAME_LABAL, ITEMS_API, ITEMS_PAGE_NAME, ITEMS_SEARCH_PLACEHOLDER, ITEMS_TABLE_FIELDS, MULTIPLIER_LABAL, MULTIPLIER_PLACEHOLDER, NO_RECORDS_FOUND, SEARCH, SECOND_UNIT_NAME_LABAL, UNIT_API, UNIT_CATEGORIES_SEARCH_PLACEHOLDER, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_TABLE_FIELDS, UNIT_CONVERSION_API, UNIT_CONVERSION_PAGE_NAME, UNIT_CONVERSION_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_UNIT_CONVERSION_MODEL_TITLE } from '@/app/constants/constants';
 import UnitCategoryInterface from '@/app/interfaces/unit_category_interface';
 import { Badge, Button, Modal, Table } from 'react-bootstrap';
 import TextInput from '@/app/components/Forms/text_input';
@@ -15,7 +15,7 @@ const ItemsPage = () => {
   const [unitCategories, setUnitCategories] = useState<UnitCategoryInterface[]>([]);
   const [filteredItems, setFilteredItems] = useState<ItemInterface[]>([]);
   const [filteredUnits, setFilteredUnits] = useState<UnitInterface[]>([]);
-  const [selectedConversionId, setSelectedConversionId] = useState<string | null>(null);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<ItemInterface | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<UnitCategoryInterface | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -184,9 +184,10 @@ const ItemsPage = () => {
         throw new Error('Failed to delete item');
       }
       const { success, data } = await response.json();
+      fetchItems();
 
       if (success && data) {
-        console.log('Deleted Conversion:', data);
+        console.log('Deleted Conversion:', data); // Refresh the items list after deletion
       } else {
         throw new Error('Invalid API response format');
       }
@@ -247,13 +248,13 @@ const ItemsPage = () => {
     <>
      <div className='row'>
       <div className='col-md-8'>
-        <h3 className='text-primary'>{UNIT_CONVERSION_PAGE_NAME}</h3>
+        <h3 className='text-primary'>{ITEMS_PAGE_NAME}</h3>
         <TextInput 
           label={SEARCH} 
           onChangeText={(e) => setSearchQuery(e.target.value)} 
           form_id="search" 
           form_message="" 
-          placeholder_text={UNIT_CATEGORIES_SEARCH_PLACEHOLDER} 
+          placeholder_text={ITEMS_SEARCH_PLACEHOLDER} 
           value={searchQuery}
         />
         <div className="scrollable-table">
@@ -293,7 +294,7 @@ const ItemsPage = () => {
                   ))}</td>                
                   <td>
                     <button className="btn btn-primary btn-sm" onClick={() => fetchSelectedItem(item._id)}>{UPDATE_BUTTON_LABAL}</button>
-                    <button className="btn btn-danger btn-sm ms-2" onClick={() => {setShowDeleteModal(true); setSelectedConversionId(item._id)}}>{DELETE_BUTTON_LABAL}</button>
+                    <button className="btn btn-danger btn-sm ms-2" onClick={() => {setShowDeleteModal(true); setSelectedItemId(item._id)}}>{DELETE_BUTTON_LABAL}</button>
                   </td>
                 </tr>
               ))
@@ -306,7 +307,27 @@ const ItemsPage = () => {
         </Table>
         </div>
         </div>
+        <div className='col-md-4'>
+
         </div>
+        </div>
+
+        {showDeleteModal && selectedItemId && (
+                
+                <Modal show={showDeleteModal}>
+                  <Modal.Header closeButton onClick={() => setShowDeleteModal(false)}>
+                    <Modal.Title className='text-danger'>{DELETE_CONFIRM}</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>{`${DELETE_CONFIRM_MESSEGE} ID = ${selectedItemId}`}</Modal.Body>
+                  <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+                      {BACK}
+                    </Button>
+                    <Button variant="danger" onClick={() => {deleteItem(selectedItemId); setShowDeleteModal(false); }}>
+                      {DELETE_BUTTON_DELETE_MODAL}
+                    </Button>
+                  </Modal.Footer>
+                </Modal>)}
         </>    
   );
 };

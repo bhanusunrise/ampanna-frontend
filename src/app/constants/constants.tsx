@@ -64,6 +64,7 @@ export const UNIT_CONVERSION_TABLE_FIELDS = [
 export const NO_RECORDS_FOUND = "සොයාගත නොහැකිය"
 
 export const UNIT_CATEGORIES_SEARCH_PLACEHOLDER = "බර, උස ..."
+export const ITEMS_SEARCH_PLACEHOLDER = "තීන්ත, සිමෙන්ති ..."
 
 
 /** API base routes */
