@@ -201,38 +201,47 @@ const ItemsPage = () => {
       
   }, []);
 
-  // Handle search functionality
+// Handle search functionality
   useEffect(() => {
-    if (searchQuery.trim() === '') {
-      setFilteredItems(items);
-    } else {
-      const filtered = items.filter(item => {
-        const searchLower = searchQuery.toLowerCase();
-        return (
-          (isIdSelected && item._id.toLowerCase().includes(searchLower)) ||
-          (isNameSelected && item.name.toLowerCase().includes(searchLower)) ||
-          (isDescriptionSelected && item.description.toLowerCase().includes(searchLower)) ||
-          (isMainUnitIdSelected && item.main_unit_id.toLowerCase().includes(searchLower)) ||
-          (isOtherUnitIdsSelected && item.other_unit_ids.toString().toLowerCase().includes(searchLower)) ||
-          (isOtherParametersSelected && item.other_parameters.toString().toLowerCase().includes(searchLower)) ||
-          (isMainUnitNameSelected && item.main_unit_name.toLowerCase().includes(searchLower)) ||
-          (isOtherUnitNameSelected && item.other_unit_names.toString().toLowerCase().includes(searchLower)) ||
-          // If no checkboxes are selected, search in all fields
-          (!isIdSelected && !isNameSelected && !isDescriptionSelected && !isMainUnitIdSelected && !isOtherUnitIdsSelected && !isOtherParametersSelected && !isMainUnitNameSelected && !isOtherUnitNameSelected && (
-            item._id.toLowerCase().includes(searchLower) ||
-            item.name.toLowerCase().includes(searchLower) ||
-            item.description.toLowerCase().includes(searchLower) ||
-            item.main_unit_id.toLowerCase().includes(searchLower) ||
-            item.other_unit_ids.toString().toLowerCase().includes(searchLower) ||
-            item.other_parameters.toString().toLowerCase().includes(searchLower) ||
-            item.main_unit_name.toLowerCase().includes(searchLower) ||
-            item.other_unit_names.toString().toLowerCase().includes(searchLower)
-          ))
-        );
-      });
-      setFilteredItems(filtered);
-    }
-  }, [searchQuery, items, isIdSelected, isNameSelected, isDescriptionSelected, isMainUnitIdSelected, isOtherUnitIdsSelected, isOtherParametersSelected, isMainUnitNameSelected, isOtherUnitNameSelected]);
+    const filtered = items.filter(item => {
+  const searchLower = searchQuery.toLowerCase();
+
+  return (
+    (isIdSelected && item._id.toLowerCase().includes(searchLower)) ||
+    (isNameSelected && item.name.toLowerCase().includes(searchLower)) ||
+    (isDescriptionSelected && item.description?.toLowerCase().includes(searchLower)) ||
+    (isMainUnitIdSelected && item.main_unit_id.toLowerCase().includes(searchLower)) ||
+    (isOtherUnitIdsSelected && item.other_unit_ids.some(unitId => unitId.toLowerCase().includes(searchLower))) ||
+    (isOtherParametersSelected && item.other_parameters.some(param => 
+      param.parameter_name.toLowerCase().includes(searchLower) || 
+      param.value.toLowerCase().includes(searchLower)
+    )) ||
+    (isMainUnitNameSelected && item.main_unit_name?.toLowerCase().includes(searchLower)) ||
+    (isOtherUnitNameSelected && item.other_unit_names.some(unitName => unitName.toLowerCase().includes(searchLower))) ||
+
+    // If no checkboxes are selected, search in all fields
+    (!isIdSelected && !isNameSelected && !isDescriptionSelected && !isMainUnitIdSelected && !isOtherUnitIdsSelected && 
+     !isOtherParametersSelected && !isMainUnitNameSelected && !isOtherUnitNameSelected &&
+      (
+        item._id.toLowerCase().includes(searchLower) ||
+        item.name.toLowerCase().includes(searchLower) ||
+        item.description?.toLowerCase().includes(searchLower) ||
+        item.main_unit_id.toLowerCase().includes(searchLower) ||
+        item.other_unit_ids.some(unitId => unitId.toLowerCase().includes(searchLower)) ||
+        item.other_parameters.some(param => 
+          param.parameter_name.toLowerCase().includes(searchLower) || 
+          param.value.toLowerCase().includes(searchLower)
+        ) ||
+        item.main_unit_name?.toLowerCase().includes(searchLower) ||
+        item.other_unit_names.some(unitName => unitName.toLowerCase().includes(searchLower))
+      )
+    )
+  );
+});
+
+    setFilteredItems(filtered);
+  }
+, [searchQuery, items, isIdSelected, isNameSelected, isDescriptionSelected, isMainUnitIdSelected, isOtherUnitIdsSelected, isOtherParametersSelected, isMainUnitNameSelected, isOtherUnitNameSelected]);
 
   return (
     <>
