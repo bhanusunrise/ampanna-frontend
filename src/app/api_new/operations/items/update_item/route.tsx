@@ -38,14 +38,18 @@ export async function PATCH(request: NextRequest) {
       }
     }
 
-    // Find the item by ID and update it
+    // Remove `main_unit_id` from `other_unit_ids` if present
+    const filteredOtherUnitIds = other_unit_ids.filter(unitId => unitId !== main_unit_id);
+    console.log("Filtered Other Unit IDs:", filteredOtherUnitIds); // Debug log
+
+
     const updatedItem = await Item.findOneAndUpdate(
       { _id: id }, // Match the document by `_id`
       {
         ...(name && { name }),
         ...(description !== undefined && { description }),
         ...(main_unit_id && { main_unit_id }),
-        ...(other_unit_ids && { other_unit_ids }),
+        ...(other_unit_ids && { other_unit_ids: filteredOtherUnitIds }), // Corrected line
         ...(other_parameters && { other_parameters }),
         ...(barcode && { barcode }),
       },
