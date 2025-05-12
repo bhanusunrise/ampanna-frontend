@@ -31,9 +31,19 @@ export async function POST(request: Request) {
             }
         }
 
-        // Get the maximum `_id` from the existing documents
-        const lastItem = await Item.findOne().sort({ _id: -1 });
-        const newId = lastItem ? parseInt(lastItem._id) + 1 : 1;
+        // Remove `main_unit_id` from `other_unit_ids` if present
+        const filteredOtherUnitIds = other_unit_ids.filter(unitId => unitId !== main_unit_id);
+
+
+        // Get all documents to calculate the max numeric _id
+                const allItems = await Item.find({});
+                const maxId = allItems.reduce((max, doc) => {
+                    const idNum = parseInt(doc._id);
+                    return idNum > max ? idNum : max;
+                }, 0);
+                const newId = (maxId + 1).toString();
+        
+                console.log('New ID:', newId); // Debug log
 
         // Create a new Item object
         const newItem = new Item({
@@ -41,7 +51,7 @@ export async function POST(request: Request) {
             name,
             description,
             main_unit_id,
-            other_unit_ids,
+            other_unit_ids : filteredOtherUnitIds,
             other_parameters,
             barcode,
         });

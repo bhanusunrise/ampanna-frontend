@@ -8,6 +8,7 @@ import TextInput from '@/app/components/Forms/text_input';
 import UnitInterface from '@/app/interfaces/unit_interface';
 import ItemInterface from '@/app/interfaces/item_interface';
 import ExtraParameters from '@/app/components/Forms/extra_parameters';
+import Checkbox from '@/app/components/Forms/check_box';
 
 const ItemsPage = () => {
   const [items, setItems] = useState<ItemInterface[]>([]);
@@ -369,53 +370,34 @@ const removeRow = (index: number) => {
           ))}
         </select>
 
-        <label className="form-label mt-2 text-primary">{ADD_UNITS_LABAL}</label>
-          <div className="form-check">
-            {filteredUnits.map((unit, index) => (
-              <div key={index} className="mb-2">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id={`unit-${unit.unit_name}`}
-                  value={unit._id}
-                  onChange={(e) => {
-                  const updatedUnits = filteredUnits
-                    .filter((u) => document.getElementById(`unit-${u._id}`)?.checked)
-                    .map((u) => ({
-                      unit_id: u._id,
-                      unit_name: u.unit_name,
-                    }));
-                  setSelectedItem({
-                    ...selectedItem,
-                    other_unit_ids: e.target.value,
-                    other_unit_names: updatedUnits.map((u) => u.unit_name),
-                  });
-              }}
-            
-          />
-          <label className="form-check-label ms-2" htmlFor={`unit-${unit._id}`}>
-            {unit.unit_name}
-          </label>
-        </div>
-            ))}
-      </div>
-            {selectedItem?.other_unit_ids && selectedItem.other_unit_ids.length > 0 && (
-            <>
-              <label className="form-label mt-2 text-primary">{ADD_MOST_USED_UNIT_LABAL}</label>
-              <select
-              className="form-select"
+        <label className="form-label mt-2 text-primary">{ITEMS_TABLE_FIELDS[3]}</label>
+        <select className="form-select" onChange={(e) => setSelectedItem({ ...selectedItem, main_unit_id: e.target.value })}>
+          {filteredUnits.map((unit, index) => (
+            <option key={index} value={unit._id}>{unit.unit_name}</option>
+          ))}
+        </select>
+
+        <label className="form-label mt-2 text-primary">{ITEMS_TABLE_FIELDS[4]}</label>
+        <div className="form-check">
+          {filteredUnits.map((unit, index) => (
+            <Checkbox 
+              key={index} 
+              value={unit._id} 
+              label={unit.unit_name} 
               onChange={(e) => {
-                setSelectedItem({ ...selectedItem, main_unit_id: e.target.value });
+                const isChecked = e.target.checked;
+                setSelectedItem((prevItem) => {
+                  if (!prevItem) return prevItem;
+                  const updatedOtherUnitIds = isChecked
+                    ? [...(prevItem.other_unit_ids || []), unit._id]
+                    : (prevItem.other_unit_ids || []).filter(id => id !== unit._id);
+                  return { ...prevItem, other_unit_ids: updatedOtherUnitIds };
+                });
               }}
-              >
-                {Array.isArray(selectedItem.other_unit_ids) && selectedItem.other_unit_ids.map((unitId, index) => (
-                <option key={index} value={unitId}>
-                  {selectedItem.other_unit_names?.[index] || ''}
-                </option>
-                ))}
-              </select>
-            </>
-            )}
+            />
+          ))}
+        </div>
+        
 
           <label className="form-label mt-2 text-primary">{ITEMS_TABLE_FIELDS[6]}</label>
           
