@@ -1,14 +1,13 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ADD_BUTTON_LABAL, ADD_UNIT_CONVERSION, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, FIRST_UNIT_NAME_LABAL, ITEMS_API, ITEMS_PAGE_NAME, ITEMS_SEARCH_PLACEHOLDER, ITEMS_TABLE_FIELDS, MULTIPLIER_LABAL, MULTIPLIER_PLACEHOLDER, NO_RECORDS_FOUND, SEARCH, SECOND_UNIT_NAME_LABAL, UNIT_API, UNIT_CATEGORIES_SEARCH_PLACEHOLDER, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_TABLE_FIELDS, UNIT_CONVERSION_API, UNIT_CONVERSION_PAGE_NAME, UNIT_CONVERSION_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_UNIT_CONVERSION_MODEL_TITLE } from '@/app/constants/constants';
+import { ADD_BUTTON_LABAL, ADD_ITEM, ADD_MOST_USED_UNIT_LABAL, ADD_UNITS_LABAL, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, ITEMS_API, ITEMS_PAGE_NAME, ITEMS_SEARCH_PLACEHOLDER, ITEMS_TABLE_FIELDS, MULTIPLIER_LABAL, MULTIPLIER_PLACEHOLDER, NO_RECORDS_FOUND, OTHER_PARAMETERS_NAME, OTHER_PARAMETERS_VALUE, SEARCH, SECOND_UNIT_NAME_LABAL, UNIT_API, UNIT_CATEGORIES_SEARCH_PLACEHOLDER, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_TABLE_FIELDS, UNIT_CONVERSION_API, UNIT_CONVERSION_PAGE_NAME, UNIT_CONVERSION_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_UNIT_CONVERSION_MODEL_TITLE } from '@/app/constants/constants';
 import UnitCategoryInterface from '@/app/interfaces/unit_category_interface';
 import { Badge, Button, Modal, Table } from 'react-bootstrap';
 import TextInput from '@/app/components/Forms/text_input';
-import NumberInput from '@/app/components/Forms/number_input';
 import UnitInterface from '@/app/interfaces/unit_interface';
-import DisabledInput from '@/app/components/Forms/disabled_input';
 import ItemInterface from '@/app/interfaces/item_interface';
+import ExtraParameters from '@/app/components/Forms/extra_parameters';
 
 const ItemsPage = () => {
   const [items, setItems] = useState<ItemInterface[]>([]);
@@ -16,7 +15,7 @@ const ItemsPage = () => {
   const [filteredItems, setFilteredItems] = useState<ItemInterface[]>([]);
   const [filteredUnits, setFilteredUnits] = useState<UnitInterface[]>([]);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
-  const [selectedItem, setSelectedItem] = useState<ItemInterface | null>(null);
+  const [selectedItem, setSelectedItem] = useState<ItemInterface | null>({ other_parameters: [] } as unknown as ItemInterface);
   const [selectedCategory, setSelectedCategory] = useState<UnitCategoryInterface | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isIdSelected, setIsIdSelected] = useState<boolean>(false);
@@ -29,6 +28,31 @@ const ItemsPage = () => {
   const [isOtherUnitNameSelected, setIsOtherUnitNameSelected] = useState<boolean>(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const handleParameterChange = (index: number, field: 'parameter_name' | 'value', newValue: string) => {
+  setSelectedItem((prevItem) => {
+    if (!prevItem) return prevItem;
+
+    const updatedParameters = [...(prevItem.other_parameters || [])];
+    updatedParameters[index][field] = newValue;
+
+    return { ...prevItem, other_parameters: updatedParameters };
+  });
+};
+
+const addNewRow = () => {
+  setSelectedItem((prevItem) => ({
+    ...prevItem,
+    other_parameters: [...(prevItem?.other_parameters || []), { parameter_name: '', value: '' }]
+  }));
+};
+
+const removeRow = (index: number) => {
+  setSelectedItem((prevItem) => ({
+    ...prevItem,
+    other_parameters: prevItem?.other_parameters?.filter((_, i) => i !== index) || []
+  }));
+};
+
 
   const fetchUnitCategories = async () => {
       try {
@@ -97,7 +121,7 @@ const ItemsPage = () => {
       }
       const { success, data } = await response.json();
       if (success && data) {
-        setSelectedItem(data);
+        setSelectedItem({ ...data, other_parameters: data.other_parameters || [] });
         console.log('Selected Item:', data);
       } else {
         throw new Error('Invalid API response format');
@@ -153,9 +177,12 @@ const ItemsPage = () => {
           main_unit_id : selectedItem?.main_unit_id,
           other_unit_ids : selectedItem?.other_unit_ids,
           other_parameters : selectedItem?.other_parameters,
+          barcode : selectedItem?.barcode,
           
         }),
       });
+
+      fetchItems();
       if (!response.ok) {
         throw new Error('Failed to add item');
       }
@@ -308,26 +335,119 @@ const ItemsPage = () => {
         </div>
         </div>
         <div className='col-md-4'>
+        <h3 className='text-primary'>{ADD_ITEM}</h3>
+        <TextInput 
+          label={ITEMS_TABLE_FIELDS[1]} 
+          onChangeText={(e) => setSelectedItem({ ...selectedItem, name: e.target.value })} 
+          form_id="name" 
+          form_message="" 
+          placeholder_text={ITEMS_TABLE_FIELDS[1]} 
+          value={selectedItem?.name || ''}
+        />
+        <TextInput 
+          label={ITEMS_TABLE_FIELDS[5]} 
+          onChangeText={(e) => setSelectedItem({ ...selectedItem, description: e.target.value })} 
+          form_id="description" 
+          form_message="" 
+          placeholder_text={ITEMS_TABLE_FIELDS[5]} 
+          value={selectedItem?.description || ''}
+        />
+        <TextInput 
+          label={ITEMS_TABLE_FIELDS[2]} 
+          onChangeText={(e) => setSelectedItem({ ...selectedItem, barcode: e.target.value })} 
+          form_id="barcode" 
+          form_message="" 
+          placeholder_text={ITEMS_TABLE_FIELDS[2]} 
+          value={selectedItem?.barcode || ''}
+        />
 
+        <label className="form-label mt-2 text-primary">{UNIT_CATEGORY_NAME_LABAL}</label>
+        <select className="form-select" onChange={(e) => {setSelectedCategory(unitCategories.find(category => category._id === e.target.value) || null); setFilteredUnits([]); fetchUnitsForSelectedCategory(e.target.value);}}>
+          
+          {unitCategories.map((category, index) => (
+            <option key={index} value={category._id}>{category.unit_category_name}</option>
+          ))}
+        </select>
+
+        <label className="form-label mt-2 text-primary">{ADD_UNITS_LABAL}</label>
+          <div className="form-check">
+            {filteredUnits.map((unit, index) => (
+              <div key={index} className="mb-2">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id={`unit-${unit.unit_name}`}
+                  value={unit._id}
+                  onChange={(e) => {
+                  const updatedUnits = filteredUnits
+                    .filter((u) => document.getElementById(`unit-${u._id}`)?.checked)
+                    .map((u) => ({
+                      unit_id: u._id,
+                      unit_name: u.unit_name,
+                    }));
+                  setSelectedItem({
+                    ...selectedItem,
+                    other_unit_ids: e.target.value,
+                    other_unit_names: updatedUnits.map((u) => u.unit_name),
+                  });
+              }}
+            
+          />
+          <label className="form-check-label ms-2" htmlFor={`unit-${unit._id}`}>
+            {unit.unit_name}
+          </label>
+        </div>
+            ))}
+      </div>
+            {selectedItem?.other_unit_ids && selectedItem.other_unit_ids.length > 0 && (
+            <>
+              <label className="form-label mt-2 text-primary">{ADD_MOST_USED_UNIT_LABAL}</label>
+              <select
+              className="form-select"
+              onChange={(e) => {
+                setSelectedItem({ ...selectedItem, main_unit_id: e.target.value });
+              }}
+              >
+                {Array.isArray(selectedItem.other_unit_ids) && selectedItem.other_unit_ids.map((unitId, index) => (
+                <option key={index} value={unitId}>
+                  {selectedItem.other_unit_names?.[index] || ''}
+                </option>
+                ))}
+              </select>
+            </>
+            )}
+
+          <label className="form-label mt-2 text-primary">{ITEMS_TABLE_FIELDS[6]}</label>
+          
+          <ExtraParameters
+            other_parameters={selectedItem?.other_parameters || []}
+            onParameterChange={handleParameterChange}
+            onAddRow={addNewRow}
+            onRemoveRow={removeRow}
+            />
+
+          <Button variant='success' className='mt-3' onClick={addItem}>
+                      {ADD_BUTTON_LABAL}
+                    </Button>
         </div>
         </div>
 
         {showDeleteModal && selectedItemId && (
                 
-                <Modal show={showDeleteModal}>
-                  <Modal.Header closeButton onClick={() => setShowDeleteModal(false)}>
-                    <Modal.Title className='text-danger'>{DELETE_CONFIRM}</Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>{`${DELETE_CONFIRM_MESSEGE} ID = ${selectedItemId}`}</Modal.Body>
-                  <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
-                      {BACK}
-                    </Button>
-                    <Button variant="danger" onClick={() => {deleteItem(selectedItemId); setShowDeleteModal(false); }}>
-                      {DELETE_BUTTON_DELETE_MODAL}
-                    </Button>
-                  </Modal.Footer>
-                </Modal>)}
+        <Modal show={showDeleteModal}>
+          <Modal.Header closeButton onClick={() => setShowDeleteModal(false)}>
+            <Modal.Title className='text-danger'>{DELETE_CONFIRM}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>{`${DELETE_CONFIRM_MESSEGE} ID = ${selectedItemId}`}</Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+              {BACK}
+            </Button>
+            <Button variant="danger" onClick={() => {deleteItem(selectedItemId); setShowDeleteModal(false); }}>
+              {DELETE_BUTTON_DELETE_MODAL}
+            </Button>
+          </Modal.Footer>
+        </Modal>)}
         </>    
   );
 };
