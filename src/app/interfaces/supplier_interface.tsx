@@ -4,7 +4,7 @@ export default interface SupplierInterface {
     _id: string;
     name: string;
     addresses: string[]; // Array of addresses
-    contactnos: string[]; // Array of contact numbers
+    contactnos: number[]; // Array of contact numbers
     emails: string[]; // Array of email addresses
     websites: string[]; // Array of website URLs
     description: string;

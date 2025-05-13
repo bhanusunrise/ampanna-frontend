@@ -12,7 +12,7 @@ const SupplierSchema: Schema = new Schema(
         _id: { type: String, required: false },
         name: { type: String, required: true, unique: true }, // Supplier name must be unique
         addresses: { type: [String], required: false }, // List of addresses
-        contactnos: { type: [String], required: false }, // List of contact numbers
+        contactnos: { type: [Number], required: false }, // List of contact numbers
         emails: { type: [String], required: false }, // List of email addresses
         websites: { type: [String], required: false }, // List of website URLs
         description: { type: String, required: false },

@@ -1,16 +1,18 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ADD_BUTTON_LABAL, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, NEW_UNIT_TITLE, NO_RECORDS_FOUND, SEARCH, SUPPLIER_API, SUPPLIER_NAME_LABAL, SUPPLIER_NAME_PLACEHOLDER, SUPPLIER_SEARCH_PLACEHOLDER, SUPPLIER_TABLE_FIELDS, UNIT_CATEGORIES_SEARCH_PLACEHOLDER, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
+import { ADD_BUTTON_LABAL, ADD_SUPPLIER, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, NEW_UNIT_TITLE, NO_RECORDS_FOUND, SEARCH, SUPPLIER_API, SUPPLIER_NAME_LABAL, SUPPLIER_NAME_PLACEHOLDER, SUPPLIER_SEARCH_PLACEHOLDER, SUPPLIER_TABLE_FIELDS, SUPPLIERS_PAGE_NAME, UNIT_CATEGORIES_SEARCH_PLACEHOLDER, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
 import { Badge, Button, Modal, Table } from 'react-bootstrap';
 import TextInput from '@/app/components/Forms/text_input';
 import SupplierInterface from '@/app/interfaces/supplier_interface';
+import ExtraContactNos from '@/app/components/Forms/suppliers/extra_contactnos';
+import ExtraAddresses from '@/app/components/Forms/suppliers/extra_addresses';
 
 const SuppliersPage = () => {
   const [Suppliers, setSuppliers] = useState<SupplierInterface[]>([]);
   const [filteredSuppliers, setFilteredSuppliers] = useState<SupplierInterface[]>([]);
   const [selectedSupplierId, setSelectedSupplierId] = useState<string | null>(null);
-  const [selectedSupplierForAdd, setSelectedSupplierForAdd] = useState<SupplierInterface | null>(null);
+  const [selectedSupplierForAdd, setSelectedSupplierForAdd] = useState<SupplierInterface | null>({ addresses: [] } as unknown as SupplierInterface);;
   const [selectedSupplierForUpdate, setSelectedSupplierForUpdate] = useState<SupplierInterface | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isIdSelected, setIsIdSelected] = useState<boolean>(false);
@@ -24,6 +26,55 @@ const SuppliersPage = () => {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
+  const handleAddressChange = (index: number, newValue: string) => {
+    setSelectedSupplierForAdd((prevItem) => {
+      if (!prevItem) return prevItem;
+  
+      const updatedAddresses = [...(prevItem.addresses || [])];
+      updatedAddresses[index] = newValue;
+  
+      return { ...prevItem, addresses: updatedAddresses };
+    });
+  };
+  
+  const addNewAddress = () => {
+    setSelectedSupplierForAdd((prevItem) => ({
+      ...prevItem,
+      addresses: [...(prevItem?.addresses || []), { value: '' }],
+    }));
+  };
+  
+  const removeAddress = (index: number) => {
+    setSelectedSupplierForAdd((prevItem) => ({
+      ...prevItem,
+      addresses: prevItem?.addresses?.filter((_, i) => i !== index) || [],
+    }));
+  };
+
+  const handleContactChange = (index: number, newNumber: number) => {
+    setSelectedSupplierForAdd((prevItem) => {
+      if (!prevItem) return prevItem;
+  
+      const updatedContactNos = [...(prevItem.contactnos || [])];
+      updatedContactNos[index] = newNumber;
+  
+      return { ...prevItem, contactnos: updatedContactNos };
+    });
+  };
+  
+  const addNewContact = () => {
+    setSelectedSupplierForAdd((prevItem) => ({
+      ...prevItem,
+      contactnos: [...(prevItem?.contactnos || []), { number: 0 }], // Default value set to 0
+    }));
+  };
+  
+  const removeContact = (index: number) => {
+    setSelectedSupplierForAdd((prevItem) => ({
+      ...prevItem,
+      contactnos: prevItem?.contactos?.filter((_, i) => i !== index) || [],
+    }));
+  };
   const fetchSuppliers = async () => {
       try {
         const response = await fetch(`${SUPPLIER_API}fetch_all_suppliers`);
@@ -178,7 +229,7 @@ const SuppliersPage = () => {
     <>
      <div className='row'>
       <div className='col-md-8'>
-        <h3 className='text-primary'>{UNIT_CATEGORY_PAGE_NAME}</h3>
+        <h3 className='text-primary'>{SUPPLIERS_PAGE_NAME}</h3>
         <TextInput 
           label={SEARCH} 
           onChangeText={(e) => setSearchQuery(e.target.value)} 
@@ -206,7 +257,7 @@ const SuppliersPage = () => {
                   <td>
                     {supplier.contactnos.map((contactno, index) => (
                       <span key={index} id={contactno}>
-                        <a href={`tel:${contactno}`}>
+                        <a href={`tel:+94${contactno}`}>
                           <Badge bg="info" className='me-1' id = {contactno}>
                             {supplier.contactnos[index]}
                           </Badge>
@@ -267,7 +318,7 @@ const SuppliersPage = () => {
         </div>
         </div>
         <div className='col-md-4'>
-          <h3 className='text-primary'>{NEW_UNIT_TITLE}</h3>
+          <h3 className='text-primary'>{ADD_SUPPLIER}</h3>
 
           <TextInput
             form_id="supplier_name"
@@ -285,6 +336,24 @@ const SuppliersPage = () => {
             placeholder_text={UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER}
             label={UNIT_CATEGORY_DESCRIPTION_LABAL}
             value={selectedSupplierForAdd?.description}
+          />
+
+          <label className='text-primary mt-2'>{SUPPLIER_TABLE_FIELDS[4]}</label>
+
+          <ExtraAddresses
+            addresses={selectedSupplierForAdd?.addresses || []}
+            onAddressChange={handleAddressChange}
+            onAddRow={addNewAddress}
+            onRemoveRow={removeAddress}
+          />
+
+          <label className='text-primary mt-2'>{SUPPLIER_TABLE_FIELDS[3]}</label>
+
+          <ExtraContactNos
+            contactNos={selectedSupplierForAdd?.contactnos || []}
+            onContactChange={handleContactChange}
+            onAddContact={addNewContact}
+            onRemoveContact={removeContact}
           />
 
           <Button variant='success' className='mt-3' onClick={addSupplier}>

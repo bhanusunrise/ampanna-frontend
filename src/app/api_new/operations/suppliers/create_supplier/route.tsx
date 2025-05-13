@@ -28,9 +28,14 @@ export async function POST(request: Request) {
             );
         }
 
-        // Get the maximum `_id` from the existing documents
-        const lastSupplier = await Supplier.findOne().sort({ _id: -1 }); // Sort by `_id` in descending order
-        const newId = lastSupplier ? parseInt(lastSupplier._id) + 1 : 1; // Increment `_id` or start from 1
+         // Get all documents to calculate the max numeric _id
+        const allItems = await Supplier.find({});
+        const maxId = allItems.reduce((max, doc) => {
+            const idNum = parseInt(doc._id);
+            return idNum > max ? idNum : max; 
+        }, 0);
+        const newId = (maxId + 1).toString();
+        console.log('New ID:', newId); // Debug log
 
         // Create a new Supplier object
         const newSupplier = new Supplier({
