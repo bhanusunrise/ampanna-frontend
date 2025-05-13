@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ADD_BUTTON_LABAL, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, NEW_UNIT_TITLE, NO_RECORDS_FOUND, SEARCH, SUPPLIER_API, SUPPLIER_NAME_LABAL, SUPPLIER_NAME_PLACEHOLDER, UNIT_CATEGORIES_SEARCH_PLACEHOLDER, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
-import UnitCategoryInterface from '@/app/interfaces/unit_category_interface';
-import { Button, Modal, Table } from 'react-bootstrap';
+import { ADD_BUTTON_LABAL, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, NEW_UNIT_TITLE, NO_RECORDS_FOUND, SEARCH, SUPPLIER_API, SUPPLIER_NAME_LABAL, SUPPLIER_NAME_PLACEHOLDER, SUPPLIER_SEARCH_PLACEHOLDER, SUPPLIER_TABLE_FIELDS, UNIT_CATEGORIES_SEARCH_PLACEHOLDER, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
+import { Badge, Button, Modal, Table } from 'react-bootstrap';
 import TextInput from '@/app/components/Forms/text_input';
 import SupplierInterface from '@/app/interfaces/supplier_interface';
 
@@ -166,7 +165,8 @@ const SuppliersPage = () => {
             supplier.contactnos.some(contact => contact.toLowerCase().includes(searchLower)) ||
             supplier.emails.some(email => email.toLowerCase().includes(searchLower)) ||
             supplier.websites.some(website => website.toLowerCase().includes(searchLower)) ||
-            supplier.other_parameters.some(param => param.parameter_name.toLowerCase().includes(searchLower)) 
+            supplier.other_parameters.some(param => param.parameter_name.toLowerCase().includes(searchLower)) ||
+            supplier.other_parameters.some(param => param.value.toLowerCase().includes(searchLower))
           ))
         );
       });
@@ -184,14 +184,14 @@ const SuppliersPage = () => {
           onChangeText={(e) => setSearchQuery(e.target.value)} 
           form_id="search" 
           form_message="" 
-          placeholder_text={UNIT_CATEGORIES_SEARCH_PLACEHOLDER} 
+          placeholder_text={SUPPLIER_SEARCH_PLACEHOLDER} 
           value={searchQuery}
         />
         <div className="scrollable-table">
         <Table striped bordered hover className='mt-3' size='sm'>
           <thead>
             <tr>
-              {UNIT_CATEGORY_TABLE_FIELDS.map((field, index) => (
+              {SUPPLIER_TABLE_FIELDS.map((field, index) => (
                 <th key={index} className='text-primary'>{field}</th>
               ))}
             </tr>
@@ -203,6 +203,54 @@ const SuppliersPage = () => {
                   <td>{supplier._id}</td>
                   <td>{supplier.name}</td>
                   <td>{supplier.description}</td>
+                  <td>
+                    {supplier.contactnos.map((contactno, index) => (
+                      <span key={index} id={contactno}>
+                        <a href={`tel:${contactno}`}>
+                          <Badge bg="info" className='me-1' id = {contactno}>
+                            {supplier.contactnos[index]}
+                          </Badge>
+                        </a>
+                      </span>
+                    ))}
+                  </td>
+                  <td>
+                    {supplier.addresses.map((address, index) => (
+                      <span key={index} id={address}>
+                    
+                          <Badge bg="success" className='me-1' id = {address}>
+                            {supplier.addresses[index]}
+                          </Badge>
+
+                      </span>
+                    ))}
+                  </td>
+                  <td>
+                    {supplier.emails.map((email, index) => (
+                      <span key={index} id={email}>
+                          <a href={`mailto:${email}`}>
+                          <Badge bg="warning" className='me-1' id = {email}>
+                            {supplier.emails[index]}
+                          </Badge>
+                          </a>
+                      </span>
+                    ))}
+                  </td>
+                  <td>{supplier.websites.map((website, index) => (
+                      <span key={index} id={website}>
+                          <a href={website} target="_blank">
+                          <Badge bg="primary" className='me-1' id = {website}>
+                            {supplier.websites[index]}
+                          </Badge>
+                          </a>
+                      </span>
+                    ))}</td>
+                  <td>
+                  {supplier.other_parameters.map((parameter, index) => (
+                    <Badge key={index} bg="secondary" className="me-1">
+                      {parameter.parameter_name}: {parameter.value}
+                    </Badge>
+                  ))}</td>
                   <td>
                     <button className="btn btn-primary btn-sm" >{UPDATE_BUTTON_LABAL}</button>
                     <button className="btn btn-danger btn-sm ms-2" onClick={() => {setShowDeleteModal(true); setSelectedSupplierId(supplier._id)}}>{DELETE_BUTTON_LABAL}</button>

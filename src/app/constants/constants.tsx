@@ -14,13 +14,15 @@ export const CALCULATOR_TABLE_FIELDS = [
 
 /** customer Table */
 export const SUPPLIER_TABLE_FIELDS = [
-    "සැපයුම්කරුගේ නම",
-    "දුරකතන අංකය",
-    "පදිංචි ලිපිනය",
-    "විද්‍යුත් තැපල් ලිපිනය",
-    "එකතු කිරීම",
-    "වෙනස් කිරීම",
-   /* "තත්වය"*/
+    "#",
+    "නම",
+    "විස්තරය",
+    "දුරකතන අංක",
+    "ලිපින",
+    "ඊ මේල්",
+    "වෙබ් අඩවි",
+    "වෙනත් පරාමිතීන්",
+    "සැකසීම්"
 ]
 
 export const ITEMS_TABLE_FIELDS = [
@@ -229,7 +231,7 @@ export const ADD_5_ROWS = "පේලි 5ක් එකතු කරන්න"
 
 export const SUPPLIERS_PAGE_NAME = "සැපයුම්කරුවන්"
 export const ADD_SUPPLIER = NEW + " සැපයුම්කරු"
-
+export const SUPPLIER_SEARCH_PLACEHOLDER = "වගීෂ පේන්ට්ස්, චිරන්ත බ්ලොක් ගල් ..."
 export const SUPPLIER_NAME_LABAL = "සැපයුම්කරු නම"
 export const SUPPLIER_NAME_PLACEHOLDER = "සැපයුම්කරුයේ නම ඇතුලත් කරන්න"
 export const SUPPLIER_ADDRESS_LABAL = "සැපයුම්කරු ලිපිනය"
