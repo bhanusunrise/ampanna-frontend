@@ -166,7 +166,7 @@ const SuppliersPage = () => {
             supplier.contactnos.some(contact => contact.toLowerCase().includes(searchLower)) ||
             supplier.emails.some(email => email.toLowerCase().includes(searchLower)) ||
             supplier.websites.some(website => website.toLowerCase().includes(searchLower)) ||
-            supplier.other_parameters.some(param => param.parameter_name.toLowerCase().includes(searchLower))
+            supplier.other_parameters.some(param => param.parameter_name.toLowerCase().includes(searchLower)) 
           ))
         );
       });
