@@ -8,6 +8,7 @@ import SupplierInterface from '@/app/interfaces/supplier_interface';
 import ExtraContactNos from '@/app/components/Forms/suppliers/extra_contactnos';
 import ExtraAddresses from '@/app/components/Forms/suppliers/extra_addresses';
 import ExtraEmails from '@/app/components/Forms/suppliers/extra_emails';
+import ExtraWebsites from '@/app/components/Forms/suppliers/extra_websites';
 
 const SuppliersPage = () => {
   const [Suppliers, setSuppliers] = useState<SupplierInterface[]>([]);
@@ -102,6 +103,31 @@ const SuppliersPage = () => {
     }));
   };
 
+  const handleWebsiteChange = (index: number, newUrl: string) => {
+    setSelectedSupplierForAdd((prevItem) => {
+      if (!prevItem) return prevItem;
+  
+      const updatedWebsites = [...(prevItem.websites || [])];
+      updatedWebsites[index] = newUrl ; // Ensuring object structure is maintained
+  
+      return { ...prevItem, websites: updatedWebsites };
+    });
+  };
+  
+  const addNewWebsite = () => {
+    setSelectedSupplierForAdd((prevItem) => ({
+      ...prevItem,
+      websites: [...(prevItem?.websites || []), { url: '' }], // Default empty URL
+    }));
+  };
+  
+  const removeWebsite = (index: number) => {
+    setSelectedSupplierForAdd((prevItem) => ({
+      ...prevItem,
+      websites: prevItem?.websites?.filter((_, i) => i !== index) || [],
+    }));
+  };
+
   const fetchSuppliers = async () => {
       try {
         const response = await fetch(`${SUPPLIER_API}fetch_all_suppliers`);
@@ -181,6 +207,16 @@ const SuppliersPage = () => {
       if (success && data) {
         console.log('Added Supplier:', data);
         fetchSuppliers();
+        setSelectedSupplierForAdd({
+          _id: '', // Default value for _id
+          addresses: [],
+          contactnos: [],
+          emails: [],
+          websites: [],
+          other_parameters: [],
+          name: '',
+          description: ''
+        });
       } else {
         throw new Error('Invalid API response format');
       }
@@ -316,7 +352,7 @@ const SuppliersPage = () => {
                   </td>
                   <td>{supplier.websites.map((website, index) => (
                       <span key={index} id={website}>
-                          <a href={website} target="_blank">
+                          <a href={`http://${website}`} target="_blank" rel="noopener noreferrer">
                           <Badge bg="primary" className='me-1' id = {website}>
                             {supplier.websites[index]}
                           </Badge>
@@ -394,6 +430,13 @@ const SuppliersPage = () => {
             onRemoveEmail={removeEmail}
           />
 
+          <label className='text-primary mt-2'>{SUPPLIER_TABLE_FIELDS[6]}</label>
+          <ExtraWebsites
+            websites={selectedSupplierForAdd?.websites || []}
+            onWebsiteChange={handleWebsiteChange}
+            onAddWebsite={addNewWebsite}
+            onRemoveWebsite={removeWebsite}
+          />
           
 
           <Button variant='success' className='mt-3' onClick={addSupplier}>
