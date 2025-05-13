@@ -15,13 +15,7 @@ const SupplierSchema: Schema = new Schema(
         contactnos: { type: [Number], required: false }, // List of contact numbers
         emails: { type: [String], required: false }, // List of email addresses
         websites: { type: [String], required: false }, // List of website URLs
-        description: { type: String, required: false },
-        other_parameters: [
-            {
-                parameter_name: { type: String, required: true }, // Parameter name
-                value: { type: String, required: true }, // Parameter value
-            },
-        ], // Array of other parameters (key-value pairs)
+        description: { type: String, required: false }
         
     },
     { collection: 'suppliers' } // Explicitly set collection name

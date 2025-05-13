@@ -14,7 +14,7 @@ const SuppliersPage = () => {
   const [Suppliers, setSuppliers] = useState<SupplierInterface[]>([]);
   const [filteredSuppliers, setFilteredSuppliers] = useState<SupplierInterface[]>([]);
   const [selectedSupplierId, setSelectedSupplierId] = useState<string | null>(null);
-  const [selectedSupplierForAdd, setSelectedSupplierForAdd] = useState<SupplierInterface | null>({ addresses: [], contactnos: [], emails: [], websites: [], other_parameters: [] } as unknown as SupplierInterface);;
+  const [selectedSupplierForAdd, setSelectedSupplierForAdd] = useState<SupplierInterface | null>({ addresses: [], contactnos: [], emails: [], websites: [] } as unknown as SupplierInterface);;
   const [selectedSupplierForUpdate, setSelectedSupplierForUpdate] = useState<SupplierInterface | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isIdSelected, setIsIdSelected] = useState<boolean>(false);
@@ -163,7 +163,6 @@ const SuppliersPage = () => {
           emails: selectedSupplierForUpdate?.emails,
           websites: selectedSupplierForUpdate?.websites,
           description: selectedSupplierForUpdate?.description,
-          other_parameters: selectedSupplierForUpdate?.other_parameters,
 
         }),
       });
@@ -197,7 +196,6 @@ const SuppliersPage = () => {
           emails: selectedSupplierForAdd?.emails,
           websites: selectedSupplierForAdd?.websites,
           description: selectedSupplierForAdd?.description,
-          other_parameters: selectedSupplierForAdd?.other_parameters,
         }),
       });
       if (!response.ok) {
@@ -213,7 +211,6 @@ const SuppliersPage = () => {
           contactnos: [],
           emails: [],
           websites: [],
-          other_parameters: [],
           name: '',
           description: ''
         });
@@ -265,10 +262,10 @@ const SuppliersPage = () => {
           (isNameSelected && supplier.name.toLowerCase().includes(searchLower)) ||
           (isDescriptionSelected && supplier.description.toLowerCase().includes(searchLower)) ||
           (isAddressesSelected && supplier.addresses.some(address => address.toLowerCase().includes(searchLower))) ||
-          (isContactnosSelected && supplier.contactnos.some(contact => contact.toLowerCase().includes(searchLower))) ||
+          (isContactnosSelected && supplier.contactnos.some(contact => contact.toString().toLowerCase().includes(searchLower))) ||
           (isEmailsSelected && supplier.emails.some(email => email.toLowerCase().includes(searchLower))) ||
           (isWebsitesSelected && supplier.websites.some(website => website.toLowerCase().includes(searchLower))) ||
-          (isOtherParametersSelected && supplier.other_parameters.some(param => param.parameter_name.toLowerCase().includes(searchLower))) ||
+          
 
           // If no checkboxes are selected, search in all fields
           (!isIdSelected && !isNameSelected && !isDescriptionSelected && (
@@ -276,11 +273,9 @@ const SuppliersPage = () => {
             supplier.name.toLowerCase().includes(searchLower) ||
             supplier.description.toLowerCase().includes(searchLower) ||
             supplier.addresses.some(address => address.toLowerCase().includes(searchLower)) ||
-            supplier.contactnos.some(contact => contact.toLowerCase().includes(searchLower)) ||
+            supplier.contactnos.some(contact => contact.toString().includes(searchLower)) ||
             supplier.emails.some(email => email.toLowerCase().includes(searchLower)) ||
-            supplier.websites.some(website => website.toLowerCase().includes(searchLower)) ||
-            supplier.other_parameters.some(param => param.parameter_name.toLowerCase().includes(searchLower)) ||
-            supplier.other_parameters.some(param => param.value.toLowerCase().includes(searchLower))
+            supplier.websites.some(website => website.toLowerCase().includes(searchLower))
           ))
         );
       });
@@ -319,9 +314,9 @@ const SuppliersPage = () => {
                   <td>{supplier.description}</td>
                   <td>
                     {supplier.contactnos.map((contactno, index) => (
-                      <span key={index} id={contactno}>
+                      <span key={index} id={contactno.toString()}>
                         <a href={`tel:+94${contactno}`}>
-                          <Badge bg="info" className='me-1' id = {contactno}>
+                          <Badge bg="info" className='me-1' id = {contactno.toString()}>
                             {supplier.contactnos[index]}
                           </Badge>
                         </a>
@@ -359,12 +354,6 @@ const SuppliersPage = () => {
                           </a>
                       </span>
                     ))}</td>
-                  <td>
-                  {supplier.other_parameters.map((parameter, index) => (
-                    <Badge key={index} bg="secondary" className="me-1">
-                      {parameter.parameter_name}: {parameter.value}
-                    </Badge>
-                  ))}</td>
                   <td>
                     <button className="btn btn-primary btn-sm" >{UPDATE_BUTTON_LABAL}</button>
                     <button className="btn btn-danger btn-sm ms-2" onClick={() => {setShowDeleteModal(true); setSelectedSupplierId(supplier._id)}}>{DELETE_BUTTON_LABAL}</button>

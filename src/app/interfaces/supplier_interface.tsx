@@ -8,5 +8,4 @@ export default interface SupplierInterface {
     emails: string[]; // Array of email addresses
     websites: string[]; // Array of website URLs
     description: string;
-    other_parameters: { parameter_name: string; value: string }[]; // Array of key-value pairs
 }

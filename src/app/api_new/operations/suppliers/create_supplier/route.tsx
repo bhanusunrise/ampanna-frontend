@@ -17,7 +17,6 @@ export async function POST(request: Request) {
             emails,
             websites,
             description,
-            other_parameters,
         } = body;
 
         // Validate required fields except `_id`
@@ -46,7 +45,6 @@ export async function POST(request: Request) {
             emails,
             websites,
             description,
-            other_parameters,
         });
 
         // Save the object to the database
