@@ -7,12 +7,13 @@ import TextInput from '@/app/components/Forms/text_input';
 import SupplierInterface from '@/app/interfaces/supplier_interface';
 import ExtraContactNos from '@/app/components/Forms/suppliers/extra_contactnos';
 import ExtraAddresses from '@/app/components/Forms/suppliers/extra_addresses';
+import ExtraEmails from '@/app/components/Forms/suppliers/extra_emails';
 
 const SuppliersPage = () => {
   const [Suppliers, setSuppliers] = useState<SupplierInterface[]>([]);
   const [filteredSuppliers, setFilteredSuppliers] = useState<SupplierInterface[]>([]);
   const [selectedSupplierId, setSelectedSupplierId] = useState<string | null>(null);
-  const [selectedSupplierForAdd, setSelectedSupplierForAdd] = useState<SupplierInterface | null>({ addresses: [] } as unknown as SupplierInterface);;
+  const [selectedSupplierForAdd, setSelectedSupplierForAdd] = useState<SupplierInterface | null>({ addresses: [], contactnos: [], emails: [], websites: [], other_parameters: [] } as unknown as SupplierInterface);;
   const [selectedSupplierForUpdate, setSelectedSupplierForUpdate] = useState<SupplierInterface | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isIdSelected, setIsIdSelected] = useState<boolean>(false);
@@ -75,6 +76,32 @@ const SuppliersPage = () => {
       contactnos: prevItem?.contactos?.filter((_, i) => i !== index) || [],
     }));
   };
+
+  const handleEmailChange = (index: number, newEmail: string) => {
+    setSelectedSupplierForAdd((prevItem) => {
+      if (!prevItem) return prevItem;
+  
+      const updatedEmails = [...(prevItem.emails || [])];
+      updatedEmails[index] = newEmail ; // Ensure object structure is preserved
+  
+      return { ...prevItem, emails: updatedEmails };
+    });
+  };
+  
+  const addNewEmail = () => {
+    setSelectedSupplierForAdd((prevItem) => ({
+      ...prevItem,
+      emails: [...(prevItem?.emails || []), { address: '' }], // Initialize with an empty string
+    }));
+  };
+  
+  const removeEmail = (index: number) => {
+    setSelectedSupplierForAdd((prevItem) => ({
+      ...prevItem,
+      emails: prevItem?.emails?.filter((_, i) => i !== index) || [],
+    }));
+  };
+
   const fetchSuppliers = async () => {
       try {
         const response = await fetch(`${SUPPLIER_API}fetch_all_suppliers`);
@@ -338,14 +365,7 @@ const SuppliersPage = () => {
             value={selectedSupplierForAdd?.description}
           />
 
-          <label className='text-primary mt-2'>{SUPPLIER_TABLE_FIELDS[4]}</label>
-
-          <ExtraAddresses
-            addresses={selectedSupplierForAdd?.addresses || []}
-            onAddressChange={handleAddressChange}
-            onAddRow={addNewAddress}
-            onRemoveRow={removeAddress}
-          />
+          
 
           <label className='text-primary mt-2'>{SUPPLIER_TABLE_FIELDS[3]}</label>
 
@@ -355,6 +375,26 @@ const SuppliersPage = () => {
             onAddContact={addNewContact}
             onRemoveContact={removeContact}
           />
+
+          <label className='text-primary mt-2'>{SUPPLIER_TABLE_FIELDS[4]}</label>
+
+          <ExtraAddresses
+            addresses={selectedSupplierForAdd?.addresses || []}
+            onAddressChange={handleAddressChange}
+            onAddRow={addNewAddress}
+            onRemoveRow={removeAddress}
+          />
+
+          <label className='text-primary mt-2'>{SUPPLIER_TABLE_FIELDS[5]}</label>
+
+          <ExtraEmails
+            emails={selectedSupplierForAdd?.emails || []}
+            onEmailChange={handleEmailChange}
+            onAddEmail={addNewEmail}
+            onRemoveEmail={removeEmail}
+          />
+
+          
 
           <Button variant='success' className='mt-3' onClick={addSupplier}>
             {ADD_BUTTON_LABAL}

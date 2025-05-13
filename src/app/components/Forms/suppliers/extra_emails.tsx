@@ -26,11 +26,10 @@ const ExtraEmails: React.FC<ExtraEmailsProps> = ({ emails, onEmailChange, onAddE
               <td>
                 <EmailInput
                   form_id={`email-${index}`}
-                  label="Email"
+
                   placeholder_text="example@mail.com"
                   value={email.address}
                   onChangeText={(e) => onEmailChange(index, e.target.value)}
-                  form_message="Enter a valid email address"
                 />
               </td>
               <td>
