@@ -18,7 +18,6 @@ export async function PATCH(request: NextRequest) {
       websites,
       description,
       other_parameters,
-      item_ids,
     } = body;
 
     // Validate required fields
@@ -40,7 +39,6 @@ export async function PATCH(request: NextRequest) {
         ...(websites && { websites }), // Update only if provided
         ...(description !== undefined && { description }), // Update even if null or empty string
         ...(other_parameters && { other_parameters }), // Update only if provided
-        ...(item_ids && { item_ids }), // Update only if provided
       },
       { new: true } // Return the updated document
     );

@@ -22,7 +22,7 @@ const SupplierSchema: Schema = new Schema(
                 value: { type: String, required: true }, // Parameter value
             },
         ], // Array of other parameters (key-value pairs)
-        item_ids: { type: [String], required: false }, // List of item IDs associated with the supplier
+        
     },
     { collection: 'suppliers' } // Explicitly set collection name
 );
