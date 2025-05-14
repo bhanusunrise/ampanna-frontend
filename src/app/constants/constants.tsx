@@ -60,6 +60,22 @@ export const UNIT_CONVERSION_TABLE_FIELDS = [
     "සැකසීම්"
 ]
 
+export const STOCK_TABLE_FIELDS = [
+    "#",
+    "තොගය",
+    "විස්තරය",
+    "සැපයුම්කරු",
+    "භාණ්ඩය",
+    "ලැබුණු දිනය",
+    "මුලු එකතුව",
+    "විකුණුම්",
+    "අබලන්",
+    "ගැනුම් මිළ",
+    "විකුණුම් මිළ",
+    "වට්ටම්",
+    "සැකසීම්"
+]
+
 
 /** Not found records */
 export const NO_RECORDS_FOUND = "සොයාගත නොහැකිය"

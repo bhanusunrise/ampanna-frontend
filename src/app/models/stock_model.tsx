@@ -28,6 +28,8 @@ const StockSchema: Schema = new Schema(
                 percentage: { type: Number, required: false }, // Discount percentage
             },
         ],
+        supplier_name: { type: String, required: false }, // Name of the supplier
+        item_name: { type: String, required: false }, // Name of the item
     },
     { collection: 'stocks' } // Explicitly set collection name
 );

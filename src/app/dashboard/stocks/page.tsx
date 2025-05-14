@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ADD_BUTTON_LABAL, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, NEW_UNIT_TITLE, NO_RECORDS_FOUND, SEARCH, STOCKS_API, UNIT_CATEGORIES_SEARCH_PLACEHOLDER, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
-import UnitCategoryInterface from '@/app/interfaces/unit_category_interface';
+import { ADD_BUTTON_LABAL, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, NEW_UNIT_TITLE, NO_RECORDS_FOUND, SEARCH, STOCK_SEARCH_PLACEHOLDER, STOCK_TABLE_FIELDS, STOCKS_API, STOCKS_PAGE_NAME, UNIT_CATEGORIES_SEARCH_PLACEHOLDER, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
 import { Button, Modal, Table } from 'react-bootstrap';
 import TextInput from '@/app/components/Forms/text_input';
 import StockInterface from '@/app/interfaces/stock_interface';
@@ -21,6 +20,14 @@ const StocksPage = () => {
   const [isSupplierNameSelected, setIsSupplierNameSelected] = useState<boolean>(false);
   const [isItemNameSelected, setIsItemNameSelected] = useState<boolean>(false);
   const [isDateSelected, setIsDateSelected] = useState<boolean>(false);
+  const [isTotalQuantitySelected, setIsTotalQuantitySelected] = useState<boolean>(false);
+  const [isSoldQuantitySelected, setIsSoldQuantitySelected] = useState<boolean>(false);
+  const [isDamagedQuantitySelected, setIsDamagedQuantitySelected] = useState<boolean>(false);
+  const [isBuyingPriceSelected, setIsBuyingPriceSelected] = useState<boolean>(false);
+  const [isSellingPriceSelected, setIsSellingPriceSelected] = useState<boolean>(false);
+  const [isDiscountSelected, setIsDiscountSelected] = useState<boolean>(false);
+  const [isSupplierIdSelected, setIsSupplierIdSelected] = useState<boolean>(false);
+  const [isItemIdSelected, setIsItemIdSelected] = useState<boolean>(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -185,6 +192,17 @@ const StocksPage = () => {
           (isSupplierNameSelected && stock.supplier_id.toLowerCase().includes(searchLower)) ||
           (isItemNameSelected && stock.item_id.toLowerCase().includes(searchLower)) ||
           (isDateSelected && new Date(stock.date).toLocaleDateString().includes(searchLower)) ||
+          (isTotalQuantitySelected && stock.total_quantity.toString().includes(searchLower)) ||
+          (isSoldQuantitySelected && stock.sold_quantity.toString().includes(searchLower)) ||
+          (isDamagedQuantitySelected && stock.damaged_quantity.toString().includes(searchLower)) ||
+          (isBuyingPriceSelected && stock.buying_price.toString().includes(searchLower)) ||
+          (isSellingPriceSelected && stock.selling_price.toString().includes(searchLower)) ||
+          (isDiscountSelected && stock.discount.map((d) => `${d._id} (${d.start_date} - ${d.end_date})`).join(', ').toLowerCase().includes(searchLower)) ||
+          (isSupplierIdSelected && stock.supplier_id.toLowerCase().includes(searchLower)) ||
+          (isItemIdSelected && stock.item_id.toLowerCase().includes(searchLower)) ||
+
+
+          
           // If no checkboxes are selected, search in all fields
           (!isIdSelected && !isNameSelected && !isDescriptionSelected && !isSupplierNameSelected && !isItemNameSelected && !isDateSelected && (
             stock._id.toLowerCase().includes(searchLower) ||
@@ -192,7 +210,13 @@ const StocksPage = () => {
             stock.description.toLowerCase().includes(searchLower) ||
             stock.supplier_id.toLowerCase().includes(searchLower) ||
             stock.item_id.toLowerCase().includes(searchLower) ||
-            new Date(stock.date).toLocaleDateString().includes(searchLower)
+            new Date(stock.date).toLocaleDateString().includes(searchLower) ||
+            stock.total_quantity.toString().includes(searchLower) ||
+            stock.sold_quantity.toString().includes(searchLower) ||
+            stock.damaged_quantity.toString().includes(searchLower) ||
+            stock.buying_price.toString().includes(searchLower) ||
+            stock.selling_price.toString().includes(searchLower) ||
+            stock.discount.map((d) => `${d._id} (${d.start_date} - ${d.end_date})`).join(', ').toLowerCase().includes(searchLower)
           ))
         );
       });
@@ -204,33 +228,33 @@ const StocksPage = () => {
     <>
      <div className='row'>
       <div className='col-md-8'>
-        <h3 className='text-primary'>{UNIT_CATEGORY_PAGE_NAME}</h3>
+        <h3 className='text-primary'>{STOCKS_PAGE_NAME}</h3>
         <TextInput 
           label={SEARCH} 
           onChangeText={(e) => setSearchQuery(e.target.value)} 
           form_id="search" 
           form_message="" 
-          placeholder_text={UNIT_CATEGORIES_SEARCH_PLACEHOLDER} 
+          placeholder_text={STOCK_SEARCH_PLACEHOLDER} 
           value={searchQuery}
         />
         <div className="scrollable-table">
         <Table striped bordered hover className='mt-3' size='sm'>
           <thead>
             <tr>
-              {UNIT_CATEGORY_TABLE_FIELDS.map((field, index) => (
+              {STOCK_TABLE_FIELDS.map((field, index) => (
                 <th key={index} className='text-primary'>{field}</th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {stocks.length > 0 ? (
+            {filteredStocks.length > 0 ? (
               stocks.map((stock, index) => (
                 <tr key={index}>
                   <td>{stock._id}</td>
                   <td>{stock.name}</td>
                   <td>{stock.description}</td>
-                  <td>{stock.supplier_id}</td>
-                  <td>{stock.item_id}</td>
+                  <td id={stock.supplier_id}>{stock.supplier_name}</td>
+                  <td id={stock.item_id}>{stock.item_name}</td>
                   <td>{new Date(stock.date).toLocaleDateString()}</td>
                   <td>{stock.total_quantity}</td>
                   <td>{stock.sold_quantity}</td>
