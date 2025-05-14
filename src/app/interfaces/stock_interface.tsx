@@ -6,7 +6,7 @@ export default interface StockInterface {
     description: string;
     supplier_id: string; // Reference to supplier
     item_id: string; // Reference to item
-    date: Date; // Date for stock entry
+    date: string; // Date for stock entry
     total_quantity: number;
     sold_quantity: number;
     damaged_quantity: number;

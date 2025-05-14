@@ -1,15 +1,18 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ADD_BUTTON_LABAL, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, NEW_UNIT_TITLE, NO_RECORDS_FOUND, SEARCH, STOCK_SEARCH_PLACEHOLDER, STOCK_TABLE_FIELDS, STOCKS_API, STOCKS_PAGE_NAME, UNIT_CATEGORIES_SEARCH_PLACEHOLDER, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
+import { ADD_BUTTON_LABAL, ADD_STOCK, ADD_SUPPLIER, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, NEW_UNIT_TITLE, NO_RECORDS_FOUND, SEARCH, STOCK_BUYING_PRICE_LABAL, STOCK_BUYING_PRICE_PLACEHOLDER, STOCK_DESCRIPTION_LABAL, STOCK_DESCRIPTION_PLACEHOLDER, STOCK_DISCOUNT_LABAL, STOCK_ITEM_LABAL, STOCK_NAME_LABAL, STOCK_NAME_PLACEHOLDER, STOCK_PURCHASE_DATE_LABAL, STOCK_SEARCH_PLACEHOLDER, STOCK_SELLING_PRICE_LABAL, STOCK_SELLING_PRICE_PLACEHOLDER, STOCK_SUPPLIER_LABAL, STOCK_SUPPLIER_PLACEHOLDER, STOCK_TABLE_FIELDS, STOCK_TOTAL_AMOUNT_LABAL, STOCK_TOTAL_AMOUNT_PLACEHOLDER, STOCKS_API, STOCKS_PAGE_NAME, SUPPLIER_API, UNIT_CATEGORIES_SEARCH_PLACEHOLDER, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
 import { Button, Modal, Table } from 'react-bootstrap';
 import TextInput from '@/app/components/Forms/text_input';
 import StockInterface from '@/app/interfaces/stock_interface';
 import { set } from 'mongoose';
+import SupplierInterface from '@/app/interfaces/supplier_interface';
+import NumberInput from '@/app/components/Forms/number_input';
 
 const StocksPage = () => {
   const [stocks, setStocks] = useState<StockInterface[]>([]);
   const [filteredStocks, setFilteredStocks] = useState<StockInterface[]>([]);
+  const [suppliers, setSuppliers] = useState<SupplierInterface[]>([]);
   const [selectedStockId, setSelectedStockId] = useState<string | null>(null);
   const [selectedStockForAdd , setSelectedStockForAdd] = useState<StockInterface | null>(null);
   const [selectedStockForUpdate , setSelectedStockForUpdate] = useState<StockInterface | null>(null);
@@ -49,6 +52,23 @@ const StocksPage = () => {
         console.error('Error fetching stocks:', error);
       }
     };
+
+  const fetchSuppliers = async () => {
+    try {
+      const response = await fetch(`${SUPPLIER_API}fetch_all_suppliers`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch suppliers');
+      }
+      const { success, data } = await response.json();
+      if (success && Array.isArray(data)) {
+        setSuppliers(data);
+      } else {
+        throw new Error('Invalid API response format');
+      }
+    } catch (error) {
+      console.error('Error fetching suppliers:', error);
+    }
+  };
 
   const fetchSelectedStock = async (id: string) => {
     try {
@@ -115,6 +135,7 @@ const StocksPage = () => {
 
   const addStock = async () => {
     try {
+      console.log('Selected Stock for Add:', selectedStockForAdd);
       const response = await fetch(`${STOCKS_API}create_stock`, {
         method: 'POST',
         headers: {
@@ -122,21 +143,21 @@ const StocksPage = () => {
         },
         body: JSON.stringify({
   
-          name: selectedStockForUpdate?.name,
-          description: selectedStockForUpdate?.description,
-          supplier_id: selectedStockForUpdate?.supplier_id,
-          item_id: selectedStockForUpdate?.item_id,
-          date: selectedStockForUpdate?.date,
-          total_quantity: selectedStockForUpdate?.total_quantity,
-          sold_quantity: selectedStockForUpdate?.sold_quantity,
-          damaged_quantity: selectedStockForUpdate?.damaged_quantity,
-          buying_price: selectedStockForUpdate?.buying_price,
-          selling_price: selectedStockForUpdate?.selling_price,
-          discount: selectedStockForUpdate?.discount,
+          name: selectedStockForAdd?.name,
+          description: selectedStockForAdd?.description,
+          supplier_id: selectedStockForAdd?.supplier_id,
+          item_id: selectedStockForAdd?.item_id,
+          date: selectedStockForAdd?.date,
+          total_quantity: selectedStockForAdd?.total_quantity,
+          sold_quantity: selectedStockForAdd?.sold_quantity,
+          damaged_quantity: selectedStockForAdd?.damaged_quantity,
+          buying_price: selectedStockForAdd?.buying_price,
+          selling_price: selectedStockForAdd?.selling_price,
+          discount: selectedStockForAdd?.discount,
         }),
       });
       if (!response.ok) {
-        throw new Error('Failed to add stock');
+        throw new Error('Failed to add stock' + response.status + response.text());
       }
       const { success, data } = await response.json();
       if (success && data) {
@@ -176,6 +197,7 @@ const StocksPage = () => {
         
   useEffect(() => {
     fetchStocks();
+    fetchSuppliers();
   }, []);
 
   // Handle search functionality
@@ -279,14 +301,14 @@ const StocksPage = () => {
         </div>
         </div>
         <div className='col-md-4'>
-          <h3 className='text-primary'>{NEW_UNIT_TITLE}</h3>
+          <h3 className='text-primary'>{ADD_STOCK}</h3>
 
           <TextInput
-            form_id="unit_category_name"
+            form_id="supplier_name"
             onChangeText={(e) => setSelectedStockForAdd({ ...selectedStockForAdd, name: e.target.value })}
             form_message=""
-            placeholder_text={UNIT_CATEGORY_NAME_PLACEHOLDER}
-            label={UNIT_CATEGORY_NAME_LABAL}
+            placeholder_text={STOCK_NAME_PLACEHOLDER}
+            label={STOCK_NAME_LABAL}
             value={selectedStockForAdd?.name}
           />
 
@@ -294,10 +316,67 @@ const StocksPage = () => {
             form_id="description"
             onChangeText={(e) => setSelectedStockForAdd({ ...selectedStockForAdd, description: e.target.value })}
             form_message=""
-            placeholder_text={UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER}
-            label={UNIT_CATEGORY_DESCRIPTION_LABAL}
+            placeholder_text={STOCK_DESCRIPTION_PLACEHOLDER}
+            label={STOCK_DESCRIPTION_LABAL}
             value={selectedStockForAdd?.description}
           />
+
+          <label className='text-primary'>{STOCK_SUPPLIER_LABAL}</label>
+          <select className='form-select' onChange={(e) => setSelectedStockForAdd({ ...selectedStockForAdd, supplier_id: e.target.value })}>
+          <option value="" disabled selected hidden>{STOCK_SUPPLIER_PLACEHOLDER}</option>
+            {suppliers.map((supplier) => (
+              <option key={supplier._id} value={supplier._id}>{supplier.name}</option>
+            ))}
+          </select>
+
+          <label className='text-primary'>{STOCK_ITEM_LABAL}</label>
+          <select className='form-select' onChange={(e) => setSelectedStockForAdd({ ...selectedStockForAdd, item_id: e.target.value })}>
+          <option value="" disabled selected hidden>{STOCK_ITEM_LABAL}</option>
+            {suppliers.map((supplier) => (
+              <option key={supplier._id} value={supplier._id}>{supplier.name}</option>
+            ))}
+          </select>
+
+            <input 
+            type="date" 
+            className='form-control' 
+            title="Select purchase date"
+            placeholder="YYYY-MM-DD"
+            onChange={(e) => setSelectedStockForAdd({ 
+            ...(selectedStockForAdd || {}), 
+            date: e.target.value // Store date in YYYY-MM-DD format
+            })} 
+            value={selectedStockForAdd?.date || ''} 
+            />
+
+            <NumberInput
+            label={STOCK_TOTAL_AMOUNT_LABAL}
+            form_id="total_quantity"
+            onChangeText={(e) => setSelectedStockForAdd({ ...selectedStockForAdd, total_quantity: e.target.value })}
+            form_message=""
+            placeholder_text={STOCK_TOTAL_AMOUNT_PLACEHOLDER}
+            value={selectedStockForAdd?.total_quantity}
+            />
+
+            <NumberInput
+            label={STOCK_BUYING_PRICE_LABAL}
+            form_id="buying_price"
+            onChangeText={(e) => setSelectedStockForAdd({ ...selectedStockForAdd, buying_price: e.target.value })}
+            form_message=""
+            placeholder_text={STOCK_BUYING_PRICE_PLACEHOLDER}
+            value={selectedStockForAdd?.buying_price}
+            />
+
+            <NumberInput
+            label={STOCK_SELLING_PRICE_LABAL}
+            form_id="selling_price"
+            onChangeText={(e) => setSelectedStockForAdd({ ...selectedStockForAdd, selling_price: e.target.value })}
+            form_message=""
+            placeholder_text={STOCK_SELLING_PRICE_PLACEHOLDER}
+            value={selectedStockForAdd?.selling_price}
+            />
+
+            <label className='text-primary'>{STOCK_DISCOUNT_LABAL}</label>
 
           <Button variant='success' className='mt-3' onClick={addStock}>
             {ADD_BUTTON_LABAL}

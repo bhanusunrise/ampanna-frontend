@@ -14,7 +14,7 @@ const StockSchema: Schema = new Schema(
         description: { type: String, required: false },
         supplier_id: { type: String, required: true }, // Reference to supplier
         item_id: { type: String, required: true }, // Reference to item
-        date: { type: Date, required: true }, // Date for stock entry
+        date: { type: String, required: true }, // Date for stock entry
         total_quantity: { type: Number, required: true },
         sold_quantity: { type: Number, required: false, default: 0 }, // Default to 0
         damaged_quantity: { type: Number, required: false, default: 0 }, // Default to 0

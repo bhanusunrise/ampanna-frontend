@@ -3,8 +3,8 @@ import { Nav } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css'; 
 import { BiCoin } from 'react-icons/bi';
 import { CgCalculator, CgProfile, CgToolbarTop } from 'react-icons/cg';
-import { Md10K, MdBackpack, MdCarCrash, MdNumbers, MdRecycling } from 'react-icons/md';
-import { ITEM_CATEGORIES_PAGE_NAME, ITEMS_PAGE_NAME, LOGO_WHITE_PATH, SUPPLIERS_PAGE_NAME, UNIT_CATEGORY_PAGE_NAME, UNIT_CONVERSION_PAGE_NAME, UNIT_PAGE_NAME } from '@/app/constants/constants';
+import { Md10K, MdCarCrash, MdNumbers, MdRecycling } from 'react-icons/md';
+import {ITEMS_PAGE_NAME, LOGO_WHITE_PATH, STOCKS_PAGE_NAME, SUPPLIERS_PAGE_NAME, UNIT_CATEGORY_PAGE_NAME, UNIT_CONVERSION_PAGE_NAME, UNIT_PAGE_NAME } from '@/app/constants/constants';
 
 const SideNav = () => {
   return (
@@ -31,7 +31,7 @@ const SideNav = () => {
       </Nav.Item>
       <Nav.Item>
         <Nav.Link href="/dashboard/stocks" className="text-white">
-          <BiCoin size={20} className="m-2" />Stocks
+          <BiCoin size={20} className="m-2" />{STOCKS_PAGE_NAME}
         </Nav.Link>
       </Nav.Item>
       <Nav.Item>

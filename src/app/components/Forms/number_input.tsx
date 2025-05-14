@@ -27,7 +27,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
 }) => {
   return (
     <>
-      {label && <Form.Label htmlFor={form_id}>{label}</Form.Label>} {/* Conditionally render label */}
+      {label && <Form.Label htmlFor={form_id} className={'text-primary'}>{label}</Form.Label>} {/* Conditionally render label */}
       <Form.Control
         type="number"
         id={form_id}
@@ -38,6 +38,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
         max={max_value}
         size="sm"
         value={value}
+        
       />
       {form_message && (
         <Form.Text id="passwordHelpBlock" muted>
