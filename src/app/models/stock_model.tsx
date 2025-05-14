@@ -23,8 +23,9 @@ const StockSchema: Schema = new Schema(
         discount: [
             {
                 _id: { type: String, required: false }, // ID for the discount
-                start_date: { type: Date, required: true }, // Discount start date
-                end_date: { type: Date, required: true }, // Discount end date
+                start_date: { type: Date, required: false }, // Discount start date
+                end_date: { type: Date, required: false }, // Discount end date
+                percentage: { type: Number, required: false }, // Discount percentage
             },
         ],
     },

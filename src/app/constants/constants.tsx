@@ -75,6 +75,7 @@ export const UNIT_CATEGORY_API = "/api_new/operations/unit_categories/"
 export const ITEM_CATEGORY_API = "/api_new/operations/item_categories/"
 export const ITEMS_API = "/api_new/operations/items/"
 export const SUPPLIER_API = "/api_new/operations/suppliers/"
+export const STOCKS_API = "/api_new/operations/stocks/"
 
 
 /** Default DB values */

@@ -1,125 +1,151 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ADD_BUTTON_LABAL, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, NEW_UNIT_TITLE, NO_RECORDS_FOUND, SEARCH, UNIT_CATEGORIES_SEARCH_PLACEHOLDER, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
+import { ADD_BUTTON_LABAL, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, NEW_UNIT_TITLE, NO_RECORDS_FOUND, SEARCH, STOCKS_API, UNIT_CATEGORIES_SEARCH_PLACEHOLDER, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
 import UnitCategoryInterface from '@/app/interfaces/unit_category_interface';
 import { Button, Modal, Table } from 'react-bootstrap';
 import TextInput from '@/app/components/Forms/text_input';
+import StockInterface from '@/app/interfaces/stock_interface';
+import { set } from 'mongoose';
 
 const StocksPage = () => {
-  const [unitCategories, setUnitCategories] = useState<UnitCategoryInterface[]>([]);
-  const [filteredCategories, setFilteredCategories] = useState<UnitCategoryInterface[]>([]);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<UnitCategoryInterface | null>(null);
+  const [stocks, setStocks] = useState<StockInterface[]>([]);
+  const [filteredStocks, setFilteredStocks] = useState<StockInterface[]>([]);
+  const [selectedStockId, setSelectedStockId] = useState<string | null>(null);
+  const [selectedStockForAdd , setSelectedStockForAdd] = useState<StockInterface | null>(null);
+  const [selectedStockForUpdate , setSelectedStockForUpdate] = useState<StockInterface | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isIdSelected, setIsIdSelected] = useState<boolean>(false);
   const [isDescriptionSelected, setIsDescriptionSelected] = useState<boolean>(false);
   const [isNameSelected, setIsNameSelected] = useState<boolean>(false);
+  const [isSupplierNameSelected, setIsSupplierNameSelected] = useState<boolean>(false);
+  const [isItemNameSelected, setIsItemNameSelected] = useState<boolean>(false);
+  const [isDateSelected, setIsDateSelected] = useState<boolean>(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const fetchUnitCategories = async () => {
+  const fetchStocks = async () => {
       try {
-        const response = await fetch(`${UNIT_CATEGORY_API}fetch_all_unit_categories`);
+        const response = await fetch(`${STOCKS_API}fetch_all_stocks`);
         if (!response.ok) {
-          throw new Error('Failed to fetch unit categories');
+          throw new Error('Failed to fetch stocks');
         }
 
         const { success, data } = await response.json();
         if (success && Array.isArray(data)) {
-          setUnitCategories(data);
-          setFilteredCategories(data);
+          setStocks(data);
+          setFilteredStocks(data);
         } else {
           throw new Error('Invalid API response format');
         }
       } catch (error) {
-        console.error('Error fetching unit categories:', error);
+        console.error('Error fetching stocks:', error);
       }
     };
 
-  const fetchSelectedCategory = async (id: string) => {
+  const fetchSelectedStock = async (id: string) => {
     try {
-      const response = await fetch(`${UNIT_CATEGORY_API}fetch_all_unit_categories?_id=${id}`);
+      const response = await fetch(`${STOCKS_API}fetch_all_stocks?_id=${id}`);
       if (!response.ok) {
-        throw new Error('Failed to fetch unit category');
+        throw new Error('Failed to fetch stock');
       }
       // Since the api returns an array of categories, update the type to UnitCategoryInterface[]
       const { success, data } = await response.json() as {
         success: boolean;
-        data: UnitCategoryInterface[];  // Note the array here
+        data: StockInterface[];  // Note the array here
       };
 
       if (success && data && data.length > 0) {
-        setSelectedCategory(data[0]);
-        console.log('Selected Category:', data[0]);
+        setSelectedStockForUpdate(data[0]);
+        console.log('Selected Stock:', data[0]);
         setShowUpdateModal(true);
       } else {
         throw new Error('Invalid API response format');
       }
     } catch (error) {
-      console.error('Error fetching unit category:', error);
+      console.error('Error fetching stock:', error);
     }
   };
 
   const callUpdateCategoryAPI = async (id: string) => {
     try {
-      const response = await fetch(`${UNIT_CATEGORY_API}update_unit_category`, {
+      const response = await fetch(`${STOCKS_API}update_stock`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           id: id,
-          unit_category_name: selectedCategory?.unit_category_name,
-          description: selectedCategory?.description,
+          name: selectedStockForUpdate?.name,
+          description: selectedStockForUpdate?.description,
+          supplier_id: selectedStockForUpdate?.supplier_id,
+          item_id: selectedStockForUpdate?.item_id,
+          date: selectedStockForUpdate?.date,
+          total_quantity: selectedStockForUpdate?.total_quantity,
+          sold_quantity: selectedStockForUpdate?.sold_quantity,
+          damaged_quantity: selectedStockForUpdate?.damaged_quantity,
+          buying_price: selectedStockForUpdate?.buying_price,
+          selling_price: selectedStockForUpdate?.selling_price,
+          discount: selectedStockForUpdate?.discount,
+
         }),
       });
       if (!response.ok) {
-        throw new Error('Failed to update unit category');
+        throw new Error('Failed to update stock');
       }
       const { success, data } = await response.json();
       if (success && data) {
-        console.log('Updated Category:', data);
+        console.log('Updated Stock:', data);
         setShowUpdateModal(false);
-        fetchUnitCategories();
+        fetchStocks();
       } else {
         throw new Error('Invalid API response format');
       }
     } catch (error) {
-      console.error('Error updating unit category:', error);
+      console.error('Error updating stocks:', error);
     }
   }
 
-  const addUnitCategory = async () => {
+  const addStock = async () => {
     try {
-      const response = await fetch(`${UNIT_CATEGORY_API}create_unit_category`, {
+      const response = await fetch(`${STOCKS_API}create_stock`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          unit_category_name: selectedCategory?.unit_category_name,
-          description: selectedCategory?.description,
+  
+          name: selectedStockForUpdate?.name,
+          description: selectedStockForUpdate?.description,
+          supplier_id: selectedStockForUpdate?.supplier_id,
+          item_id: selectedStockForUpdate?.item_id,
+          date: selectedStockForUpdate?.date,
+          total_quantity: selectedStockForUpdate?.total_quantity,
+          sold_quantity: selectedStockForUpdate?.sold_quantity,
+          damaged_quantity: selectedStockForUpdate?.damaged_quantity,
+          buying_price: selectedStockForUpdate?.buying_price,
+          selling_price: selectedStockForUpdate?.selling_price,
+          discount: selectedStockForUpdate?.discount,
         }),
       });
       if (!response.ok) {
-        throw new Error('Failed to add unit category');
+        throw new Error('Failed to add stock');
       }
       const { success, data } = await response.json();
       if (success && data) {
-        console.log('Added Category:', data);
-        fetchUnitCategories();
+        console.log('Added Stock:', data);
+        fetchStocks();
       } else {
         throw new Error('Invalid API response format');
       }
     } catch (error) {
-      console.error('Error adding unit category:', error);
+      console.error('Error adding stock:', error);
     }
   }
 
-  const deleteUnitCategory = async (id: string) => {
+  const deleteStock = async (id: string) => {
     try {
-      const response = await fetch(`${UNIT_CATEGORY_API}delete_unit_category?id=${id}`, {
+      const response = await fetch(`${STOCKS_API}delete_stock?id=${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -127,46 +153,52 @@ const StocksPage = () => {
         body: JSON.stringify({ id }),
       });
       if (!response.ok) {
-        throw new Error('Failed to delete unit category');
+        throw new Error('Failed to delete stock');
       }
       const { success, data } = await response.json();
-      fetchUnitCategories();
+      fetchStocks();
       if (success && data) {
-        console.log('Deleted Category:', data);
+        console.log('Deleted Stock:', data);
       } else {
         throw new Error('Invalid API response format');
       }
     } catch (error) {
-      console.error('Error deleting unit category:', error);
+      console.error('Error deleting stock:', error);
     }
   }
         
   useEffect(() => {
-    fetchUnitCategories();
+    fetchStocks();
   }, []);
 
   // Handle search functionality
   useEffect(() => {
     if (searchQuery.trim() === '') {
-      setFilteredCategories(unitCategories);
+      setFilteredStocks(stocks);
     } else {
-      const filtered = unitCategories.filter(category => {
+      const filtered = stocks.filter(stock => {
         const searchLower = searchQuery.toLowerCase();
         return (
-          (isIdSelected && category._id.toLowerCase().includes(searchLower)) ||
-          (isNameSelected && category.unit_category_name.toLowerCase().includes(searchLower)) ||
-          (isDescriptionSelected && category.description.toLowerCase().includes(searchLower)) ||
+          (isIdSelected && stock._id.toLowerCase().includes(searchLower)) ||
+          (isNameSelected && stock.name.toLowerCase().includes(searchLower)) ||
+          (isDescriptionSelected && stock.description.toLowerCase().includes(searchLower)) ||
+          (isSupplierNameSelected && stock.supplier_id.toLowerCase().includes(searchLower)) ||
+          (isItemNameSelected && stock.item_id.toLowerCase().includes(searchLower)) ||
+          (isDateSelected && new Date(stock.date).toLocaleDateString().includes(searchLower)) ||
           // If no checkboxes are selected, search in all fields
-          (!isIdSelected && !isNameSelected && !isDescriptionSelected && (
-            category._id.toLowerCase().includes(searchLower) ||
-            category.unit_category_name.toLowerCase().includes(searchLower) ||
-            category.description.toLowerCase().includes(searchLower)
+          (!isIdSelected && !isNameSelected && !isDescriptionSelected && !isSupplierNameSelected && !isItemNameSelected && !isDateSelected && (
+            stock._id.toLowerCase().includes(searchLower) ||
+            stock.name.toLowerCase().includes(searchLower) ||
+            stock.description.toLowerCase().includes(searchLower) ||
+            stock.supplier_id.toLowerCase().includes(searchLower) ||
+            stock.item_id.toLowerCase().includes(searchLower) ||
+            new Date(stock.date).toLocaleDateString().includes(searchLower)
           ))
         );
       });
-      setFilteredCategories(filtered);
+      setFilteredStocks(filtered);
     }
-  }, [searchQuery, unitCategories, isIdSelected, isNameSelected, isDescriptionSelected]);
+  }, [searchQuery, stocks, isIdSelected, isNameSelected, isDescriptionSelected, isSupplierNameSelected, isItemNameSelected, isDateSelected]);
 
   return (
     <>
@@ -191,15 +223,25 @@ const StocksPage = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredCategories.length > 0 ? (
-              filteredCategories.map((category, index) => (
+            {stocks.length > 0 ? (
+              stocks.map((stock, index) => (
                 <tr key={index}>
-                  <td>{category._id}</td>
-                  <td>{category.unit_category_name}</td>
-                  <td>{category.description}</td>
+                  <td>{stock._id}</td>
+                  <td>{stock.name}</td>
+                  <td>{stock.description}</td>
+                  <td>{stock.supplier_id}</td>
+                  <td>{stock.item_id}</td>
+                  <td>{new Date(stock.date).toLocaleDateString()}</td>
+                  <td>{stock.total_quantity}</td>
+                  <td>{stock.sold_quantity}</td>
+                  <td>{stock.damaged_quantity}</td>
+                  <td>{stock.buying_price}</td>
+                  <td>{stock.selling_price}</td>
+                  <td>{stock.discount.map((d) => `${d._id} (${d.start_date} - ${d.end_date})`).join(', ')}</td>
+
                   <td>
-                    <button className="btn btn-primary btn-sm" onClick={() => fetchSelectedCategory(category._id)}>{UPDATE_BUTTON_LABAL}</button>
-                    <button className="btn btn-danger btn-sm ms-2" onClick={() => {setShowDeleteModal(true); setSelectedCategoryId(category._id)}}>{DELETE_BUTTON_LABAL}</button>
+                    <button className="btn btn-primary btn-sm" onClick={() => fetchSelectedStock(stock._id)}>{UPDATE_BUTTON_LABAL}</button>
+                    <button className="btn btn-danger btn-sm ms-2" onClick={() => {setShowDeleteModal(true); setSelectedStockId(stock._id)}}>{DELETE_BUTTON_LABAL}</button>
                   </td>
                 </tr>
               ))
@@ -217,30 +259,30 @@ const StocksPage = () => {
 
           <TextInput
             form_id="unit_category_name"
-            onChangeText={(e) => setSelectedCategory({ ...selectedCategory, unit_category_name: e.target.value })}
+            onChangeText={(e) => setSelectedStockForAdd({ ...selectedStockForAdd, name: e.target.value })}
             form_message=""
             placeholder_text={UNIT_CATEGORY_NAME_PLACEHOLDER}
             label={UNIT_CATEGORY_NAME_LABAL}
-            value={selectedCategory?.unit_category_name}
+            value={selectedStockForAdd?.name}
           />
 
            <TextInput
             form_id="description"
-            onChangeText={(e) => setSelectedCategory({ ...selectedCategory, description: e.target.value })}
+            onChangeText={(e) => setSelectedStockForAdd({ ...selectedStockForAdd, description: e.target.value })}
             form_message=""
             placeholder_text={UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER}
             label={UNIT_CATEGORY_DESCRIPTION_LABAL}
-            value={selectedCategory?.description}
+            value={selectedStockForAdd?.description}
           />
 
-          <Button variant='success' className='mt-3' onClick={addUnitCategory}>
+          <Button variant='success' className='mt-3' onClick={addStock}>
             {ADD_BUTTON_LABAL}
           </Button>
 
         </div>
       </div>
 
-      {showUpdateModal && selectedCategory && (
+      {showUpdateModal && selectedStockForUpdate && (
 
       <Modal show={showUpdateModal}>
         <Modal.Header closeButton onClick={() => setShowUpdateModal(false)}>
@@ -250,19 +292,19 @@ const StocksPage = () => {
 
           <TextInput
             form_id="unit_category_name"
-            onChangeText={(e) => setSelectedCategory({ ...selectedCategory, unit_category_name: e.target.value })}
+            onChangeText={(e) => setSelectedStockForUpdate({ ...selectedStockForUpdate, name: e.target.value })}
             form_message=""
             placeholder_text={UNIT_CATEGORY_NAME_PLACEHOLDER}
             label={UNIT_CATEGORY_NAME_LABAL}
-            value={selectedCategory.unit_category_name}
+            value={selectedStockForUpdate.name}
           />
           <TextInput
             form_id="description"
-            onChangeText={(e) => setSelectedCategory({ ...selectedCategory, description: e.target.value })}
+            onChangeText={(e) => set({ ...selectedStockForUpdate, description: e.target.value })}
             form_message=""
             placeholder_text={UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER}
             label={UNIT_CATEGORY_DESCRIPTION_LABAL}
-            value={selectedCategory.description}
+            value={setSelectedStockForUpdate.description}
           />
 
         </Modal.Body>
@@ -270,25 +312,25 @@ const StocksPage = () => {
           <Button variant="secondary" onClick={() => setShowUpdateModal(false)}>
             {BACK}
           </Button>
-          <Button variant="primary" onClick={() => {console.log(selectedCategory._id); callUpdateCategoryAPI(selectedCategory._id); setShowUpdateModal(false); }}>
+          <Button variant="primary" onClick={() => {console.log(selectedStockForUpdate._id); callUpdateCategoryAPI(selectedStockForUpdate._id); setShowUpdateModal(false); }}>
             {UPDATE}
           </Button>
         </Modal.Footer>
       </Modal>
       )}
 
-      {showDeleteModal && selectedCategoryId && (
+      {showDeleteModal && selectedStockId && (
         
         <Modal show={showDeleteModal}>
           <Modal.Header closeButton onClick={() => setShowDeleteModal(false)}>
             <Modal.Title className='text-danger'>{DELETE_CONFIRM}</Modal.Title>
           </Modal.Header>
-          <Modal.Body>{`${DELETE_CONFIRM_MESSEGE} ID = ${selectedCategoryId}`}</Modal.Body>
+          <Modal.Body>{`${DELETE_CONFIRM_MESSEGE} ID = ${selectedStockId}`}</Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
               {BACK}
             </Button>
-            <Button variant="danger" onClick={() => {deleteUnitCategory(selectedCategoryId); setShowDeleteModal(false); }}>
+            <Button variant="danger" onClick={() => {deleteStock(selectedStockId); setShowDeleteModal(false); }}>
               {DELETE_BUTTON_DELETE_MODAL}
             </Button>
           </Modal.Footer>
