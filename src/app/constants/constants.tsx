@@ -281,8 +281,10 @@ export const STOCK_SELLING_PRICE_LABAL = "විකිණුම් මිළ"
 export const STOCK_SELLING_PRICE_PLACEHOLDER = "විකිණුම් මිළ ඇතුලත් කරන්න"
 export const STOCK_DISCOUNT_LABAL = "වට්ටම්"
 export const STOCK_DISCOUNT_PLACEHOLDER = "වට්ටම් ඇතුලත් කරන්න"
-export const STOCK_START_DATE_LABAL = "වට්ටම් ආරම්භක දිනය"
-export const STOCK_END_DATE_LABAL = "වට්ටම් අවසන් දිනය"
+export const STOCK_DISCOUNT_START_DATE_LABAL = "ආරම්භක දිනය"
+export const STOCK_DISCOUNT_END_DATE_LABAL = "අවසන් දිනය"
+export const STOCK_DISCOUNT_PERCENTAGE_LABAL = "ප්‍රතිශතය"
+
 
 
 

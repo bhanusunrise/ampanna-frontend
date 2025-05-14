@@ -8,13 +8,14 @@ import StockInterface from '@/app/interfaces/stock_interface';
 import { set } from 'mongoose';
 import SupplierInterface from '@/app/interfaces/supplier_interface';
 import NumberInput from '@/app/components/Forms/number_input';
+import ExtraDiscounts from '@/app/components/Forms/stocks/discount_input';
 
 const StocksPage = () => {
   const [stocks, setStocks] = useState<StockInterface[]>([]);
   const [filteredStocks, setFilteredStocks] = useState<StockInterface[]>([]);
   const [suppliers, setSuppliers] = useState<SupplierInterface[]>([]);
   const [selectedStockId, setSelectedStockId] = useState<string | null>(null);
-  const [selectedStockForAdd , setSelectedStockForAdd] = useState<StockInterface | null>(null);
+  const [selectedStockForAdd , setSelectedStockForAdd] = useState<StockInterface | null>({ discounts: [] } as unknown as StockInterface);
   const [selectedStockForUpdate , setSelectedStockForUpdate] = useState<StockInterface | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isIdSelected, setIsIdSelected] = useState<boolean>(false);
@@ -33,6 +34,43 @@ const StocksPage = () => {
   const [isItemIdSelected, setIsItemIdSelected] = useState<boolean>(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const handleDiscountChange = (index: number, field: 'start_date' | 'end_date' | 'percentage', newValue: string | number) => {
+    if (!selectedStockForAdd) return;
+
+    const updatedDiscounts = [...selectedStockForAdd.discount];
+    updatedDiscounts[index] = { ...updatedDiscounts[index], [field]: newValue };
+
+    setSelectedStockForAdd({
+        ...selectedStockForAdd,
+        discount: updatedDiscounts, // Update the discount array
+    });
+};
+
+const handleAddDiscountRow = () => {
+    if (!selectedStockForAdd) return;
+
+    setSelectedStockForAdd((prevStock) => ({
+      ...prevStock!,
+      discount: [...(prevStock?.discount || []), { 
+          _id: `${(prevStock?.discount?.length ?? 0) + 1}`, 
+          start_date: new Date(), 
+          end_date: new Date(), 
+          percentage: 0 
+      }],
+  }));
+};
+
+const handleRemoveDiscountRow = (index: number) => {
+    if (!selectedStockForAdd) return;
+
+    const updatedDiscounts = selectedStockForAdd.discount.filter((_, i) => i !== index);
+
+    setSelectedStockForAdd({
+        ...selectedStockForAdd,
+        discount: updatedDiscounts,
+    });
+};
 
   const fetchStocks = async () => {
       try {
@@ -283,7 +321,7 @@ const StocksPage = () => {
                   <td>{stock.damaged_quantity}</td>
                   <td>{stock.buying_price}</td>
                   <td>{stock.selling_price}</td>
-                  <td>{stock.discount.map((d) => `${d._id} (${d.start_date} - ${d.end_date})`).join(', ')}</td>
+                  <td>{stock.discount.map((d) => `${d._id} (${d.start_date} - ${d.end_date}) ${d.percentage}`).join(', ')}</td>
 
                   <td>
                     <button className="btn btn-primary btn-sm" onClick={() => fetchSelectedStock(stock._id)}>{UPDATE_BUTTON_LABAL}</button>
@@ -337,6 +375,7 @@ const StocksPage = () => {
             ))}
           </select>
 
+          <label className='text-primary'>{STOCK_PURCHASE_DATE_LABAL}</label>
             <input 
             type="date" 
             className='form-control' 
@@ -377,6 +416,13 @@ const StocksPage = () => {
             />
 
             <label className='text-primary'>{STOCK_DISCOUNT_LABAL}</label>
+
+            <ExtraDiscounts
+    discounts={selectedStockForAdd?.discount ?? []}
+    onDiscountChange={handleDiscountChange} // Ensure this is correctly passed
+    onAddRow={handleAddDiscountRow}
+    onRemoveRow={handleRemoveDiscountRow}
+/>
 
           <Button variant='success' className='mt-3' onClick={addStock}>
             {ADD_BUTTON_LABAL}
