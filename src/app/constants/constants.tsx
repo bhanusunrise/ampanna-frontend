@@ -242,6 +242,12 @@ export const SUPPLIER_EMAIL_PLACEHOLDER = "ඊමේල් ලිපිනය �
 export const UPDATE_SUPPLIER_MODEL_TITLE = SUPPLIERS_PAGE_NAME + UPDATE
 
 
+/** Stocks */
+export const STOCKS_PAGE_NAME = "තොග"
+export const ADD_STOCK = NEW + " තොගය"
+export const STOCK_SEARCH_PLACEHOLDER = "2025-පෙබරවාරි, 2025-මාර්තු ..."
+
+
 
 
 /*** Buttons */
