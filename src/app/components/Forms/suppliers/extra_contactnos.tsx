@@ -16,10 +16,10 @@ interface ExtraContactNosProps {
 const ExtraContactNos: React.FC<ExtraContactNosProps> = ({ contactNos, onContactChange, onAddContact, onRemoveContact }) => {
   return (
     <div>
-      <Table bordered>
+      <Table>
         <tbody>
           {contactNos.map((contact, index) => (
-            <tr key={index}>
+            <tr key={index} className='pt-4'>
               <td>
                 <NumberInput
                   form_id={`contact-no-${index}`}
@@ -32,7 +32,7 @@ const ExtraContactNos: React.FC<ExtraContactNosProps> = ({ contactNos, onContact
                 />
               </td>
               <td>
-                <Button variant="danger" onClick={() => onRemoveContact(index)} className="btn-sm">
+                <Button variant="danger" onClick={() => onRemoveContact(index)} className="btn-sm mb-2">
                   🗑️
                 </Button>
               </td>
@@ -40,7 +40,7 @@ const ExtraContactNos: React.FC<ExtraContactNosProps> = ({ contactNos, onContact
           ))}
         </tbody>
       </Table>
-      <Button onClick={onAddContact} variant="primary" className="mt-2">
+      <Button onClick={onAddContact} variant="primary" className="mb-2">
         +
       </Button>
     </div>

@@ -14,10 +14,10 @@ interface ExtraWebsitesProps {
 const ExtraWebsites: React.FC<ExtraWebsitesProps> = ({ websites, onWebsiteChange, onAddWebsite, onRemoveWebsite }) => {
   return (
     <div>
-      <Table bordered>
+      <Table>
         <tbody>
           {websites.map((website, index) => (
-            <tr key={index}>
+            <tr key={index} className='pt-4'>
               <td>
                 <TextInput
                   form_id={`website-url-${index}`}
@@ -35,7 +35,7 @@ const ExtraWebsites: React.FC<ExtraWebsitesProps> = ({ websites, onWebsiteChange
           ))}
         </tbody>
       </Table>
-      <Button onClick={onAddWebsite} variant="primary" className="mt-2">
+      <Button onClick={onAddWebsite} variant="primary" className="mb-2">
         +
       </Button>
     </div>

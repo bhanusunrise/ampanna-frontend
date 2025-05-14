@@ -17,10 +17,10 @@ interface ExtraEmailsProps {
 const ExtraEmails: React.FC<ExtraEmailsProps> = ({ emails, onEmailChange, onAddEmail, onRemoveEmail }) => {
   return (
     <div>
-      <Table bordered>
+      <Table>
         <tbody>
           {emails.map((email, index) => (
-            <tr key={index}>
+            <tr key={index} className='pt-4'>
               <td>
                 <EmailInput
                   form_id={`email-${index}`}
@@ -39,7 +39,7 @@ const ExtraEmails: React.FC<ExtraEmailsProps> = ({ emails, onEmailChange, onAddE
           ))}
         </tbody>
       </Table>
-      <Button onClick={onAddEmail} variant="primary" className="mt-2">
+      <Button onClick={onAddEmail} variant="primary" className="mb-2">
         +
       </Button>
     </div>

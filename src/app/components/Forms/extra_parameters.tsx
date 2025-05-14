@@ -19,10 +19,10 @@ interface ExtraParametersProps {
 const ExtraParameters: React.FC<ExtraParametersProps> = ({ other_parameters, onParameterChange, onAddRow, onRemoveRow }) => {
   return (
     <div>
-      <Table bordered>
+      <Table>
         <tbody>
           {other_parameters.map((param, index) => (
-            <tr key={index}>
+            <tr key={index} className='pt-4'>
               <td>
                 <TextInput
                   form_id={`param-name-${index}`}
@@ -48,7 +48,7 @@ const ExtraParameters: React.FC<ExtraParametersProps> = ({ other_parameters, onP
           ))}
         </tbody>
       </Table>
-      <Button onClick={onAddRow} variant="primary" className="mt-2">
+      <Button onClick={onAddRow} variant="primary" className="mb-2">
         +
       </Button>
     </div>

@@ -14,11 +14,12 @@ interface ExtraAddressesProps {
 const ExtraAddresses: React.FC<ExtraAddressesProps> = ({ addresses, onAddressChange, onAddRow, onRemoveRow }) => {
   return (
     <div>
-      <Table bordered>
+      <Table>
         <tbody>
           {addresses.map((address, index) => (
-            <tr key={index}>
+            <tr key={index} className='pt-4'>
               <td>
+
                 <TextInput
                   form_id={`address-${index}`}
                   placeholder_text="ලිපිනයක් ඇතුළත් කරන්න"
@@ -35,7 +36,7 @@ const ExtraAddresses: React.FC<ExtraAddressesProps> = ({ addresses, onAddressCha
           ))}
         </tbody>
       </Table>
-      <Button onClick={onAddRow} variant="primary" className="mt-2">
+      <Button onClick={onAddRow} variant="primary" className="mb-2">
         +
       </Button>
     </div>
