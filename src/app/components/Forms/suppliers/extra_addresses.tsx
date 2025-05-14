@@ -4,12 +4,8 @@ import React from 'react';
 import { Table, Button } from 'react-bootstrap';
 import TextInput from '../text_input'; // Assuming TextInput is in the same directory
 
-interface Address {
-  value: string;
-}
-
 interface ExtraAddressesProps {
-  addresses: Address[];
+  addresses: string[];
   onAddressChange: (index: number, newValue: string) => void;
   onAddRow: () => void;
   onRemoveRow: (index: number) => void;
@@ -26,7 +22,7 @@ const ExtraAddresses: React.FC<ExtraAddressesProps> = ({ addresses, onAddressCha
                 <TextInput
                   form_id={`address-${index}`}
                   placeholder_text="ලිපිනයක් ඇතුළත් කරන්න"
-                  value={address.value}
+                  value={address}
                   onChangeText={(e) => onAddressChange(index, e.target.value)}
                 />
               </td>

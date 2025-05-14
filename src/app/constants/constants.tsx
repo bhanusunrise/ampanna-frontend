@@ -239,6 +239,7 @@ export const SUPPLIER_PHONE_LABAL = "සැපයුම්කරු දුරක
 export const SUPPLIER_PHONE_PLACEHOLDER = "දුරකථන ඇතුලත් කරන්න"
 export const SUPPLIER_EMAIL_LABAL = "ඊමේල් ලිපිනය"
 export const SUPPLIER_EMAIL_PLACEHOLDER = "ඊමේල් ලිපිනය ඇතුලත් කරන්න"
+export const UPDATE_SUPPLIER_MODEL_TITLE = SUPPLIERS_PAGE_NAME + UPDATE
 
 
 

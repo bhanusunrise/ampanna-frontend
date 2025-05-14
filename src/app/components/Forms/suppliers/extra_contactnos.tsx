@@ -5,12 +5,9 @@ import { Table, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import NumberInput from '../number_input'; // Assuming NumberInput is in the same directory
 
-interface ContactNo {
-  number: number;
-}
 
 interface ExtraContactNosProps {
-  contactNos: ContactNo[];
+  contactNos: number[];
   onContactChange: (index: number, newNumber: number) => void;
   onAddContact: () => void;
   onRemoveContact: (index: number) => void;
@@ -27,7 +24,7 @@ const ExtraContactNos: React.FC<ExtraContactNosProps> = ({ contactNos, onContact
                 <NumberInput
                   form_id={`contact-no-${index}`}
                   placeholder_text="762018348"
-                  value={contact.number}
+                  value={contact}
                   min_value={100000000} // Example minimum length for a valid number
                   max_value={999999999} // Example maximum length for a valid number
                   onChangeText={(e) => onContactChange(index, Number(e.target.value))}

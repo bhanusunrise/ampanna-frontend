@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ADD_BUTTON_LABAL, ADD_SUPPLIER, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, NEW_UNIT_TITLE, NO_RECORDS_FOUND, SEARCH, SUPPLIER_API, SUPPLIER_NAME_LABAL, SUPPLIER_NAME_PLACEHOLDER, SUPPLIER_SEARCH_PLACEHOLDER, SUPPLIER_TABLE_FIELDS, SUPPLIERS_PAGE_NAME, UNIT_CATEGORIES_SEARCH_PLACEHOLDER, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
+import { ADD_BUTTON_LABAL, ADD_SUPPLIER, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, NEW_UNIT_TITLE, NO_RECORDS_FOUND, SEARCH, SUPPLIER_API, SUPPLIER_NAME_LABAL, SUPPLIER_NAME_PLACEHOLDER, SUPPLIER_SEARCH_PLACEHOLDER, SUPPLIER_TABLE_FIELDS, SUPPLIERS_PAGE_NAME, UNIT_CATEGORIES_SEARCH_PLACEHOLDER, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_SUPPLIER_MODEL_TITLE, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
 import { Badge, Button, Modal, Table } from 'react-bootstrap';
 import TextInput from '@/app/components/Forms/text_input';
 import SupplierInterface from '@/app/interfaces/supplier_interface';
@@ -15,7 +15,7 @@ const SuppliersPage = () => {
   const [filteredSuppliers, setFilteredSuppliers] = useState<SupplierInterface[]>([]);
   const [selectedSupplierId, setSelectedSupplierId] = useState<string | null>(null);
   const [selectedSupplierForAdd, setSelectedSupplierForAdd] = useState<SupplierInterface | null>({ addresses: [], contactnos: [], emails: [], websites: [] } as unknown as SupplierInterface);;
-  const [selectedSupplierForUpdate, setSelectedSupplierForUpdate] = useState<SupplierInterface | null>(null);
+  const [selectedSupplierForUpdate, setSelectedSupplierForUpdate] = useState<SupplierInterface | null>({ addresses: [], contactnos: [], emails: [], websites: [] } as unknown as SupplierInterface);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isIdSelected, setIsIdSelected] = useState<boolean>(false);
   const [isDescriptionSelected, setIsDescriptionSelected] = useState<boolean>(false);
@@ -33,24 +33,31 @@ const SuppliersPage = () => {
       if (!prevItem) return prevItem;
   
       const updatedAddresses = [...(prevItem.addresses || [])];
-      updatedAddresses[index] = newValue;
+      updatedAddresses[index] = newValue as string;
   
       return { ...prevItem, addresses: updatedAddresses };
     });
   };
   
   const addNewAddress = () => {
-    setSelectedSupplierForAdd((prevItem) => ({
-      ...prevItem,
-      addresses: [...(prevItem?.addresses || []), { value: '' }],
-    }));
+    setSelectedSupplierForAdd((prevItem) => {
+      if (!prevItem) return prevItem;
+      return {
+        ...prevItem,
+        addresses: [...(prevItem.addresses || []), ''],
+      };
+    });
   };
   
   const removeAddress = (index: number) => {
-    setSelectedSupplierForAdd((prevItem) => ({
-      ...prevItem,
-      addresses: prevItem?.addresses?.filter((_, i) => i !== index) || [],
-    }));
+    setSelectedSupplierForAdd((prevItem) => {
+      if (!prevItem) return prevItem;
+      return {
+        ...prevItem,
+        addresses: prevItem.addresses.filter((_, i) => i !== index),
+        _id: prevItem._id || '', // Ensure _id is always a valid string
+      };
+    });
   };
 
   const handleContactChange = (index: number, newNumber: number) => {
@@ -65,21 +72,161 @@ const SuppliersPage = () => {
   };
   
   const addNewContact = () => {
-    setSelectedSupplierForAdd((prevItem) => ({
-      ...prevItem,
-      contactnos: [...(prevItem?.contactnos || []), { number: 0 }], // Default value set to 0
-    }));
+    setSelectedSupplierForAdd((prevItem) => {
+      if (!prevItem) return prevItem;
+      return {
+        ...prevItem,
+        contactnos: [...(prevItem.contactnos || []), 0], // Default value set to 0
+        _id: prevItem._id || '', // Ensure _id is always a valid string
+      };
+    });
   };
   
   const removeContact = (index: number) => {
-    setSelectedSupplierForAdd((prevItem) => ({
-      ...prevItem,
-      contactnos: prevItem?.contactos?.filter((_, i) => i !== index) || [],
-    }));
+    setSelectedSupplierForAdd((prevItem) => {
+      if (!prevItem) return prevItem;
+      return {
+        ...prevItem,
+        contactnos: prevItem.contactnos.filter((_, i) => i !== index),
+        _id: prevItem._id || '', // Ensure _id is always a valid string
+      };
+    });
   };
 
   const handleEmailChange = (index: number, newEmail: string) => {
     setSelectedSupplierForAdd((prevItem) => {
+      if (!prevItem) return prevItem;
+  
+      const updatedEmails = [...(prevItem.emails || [])];
+      updatedEmails[index] = newEmail; // Ensure it's a string
+  
+      return { ...prevItem, emails: updatedEmails };
+    });
+  };
+  
+  const addNewEmail = () => {
+    setSelectedSupplierForAdd((prevItem) => {
+      if (!prevItem) return prevItem;
+      return {
+        ...prevItem,
+        emails: [...(prevItem.emails || []), ''], // Initialize with an empty string
+        _id: prevItem._id || '', // Ensure _id is always a valid string
+      };
+    });
+  };
+  
+  const removeEmail = (index: number) => {
+    setSelectedSupplierForAdd((prevItem) => {
+      if (!prevItem) return prevItem;
+      return {
+        ...prevItem,
+        emails: prevItem.emails.filter((_, i) => i !== index) || [],
+        _id: prevItem._id || '', // Ensure _id is always a valid string
+      };
+    });
+  };
+
+  const handleWebsiteChange = (index: number, newUrl: string) => {
+    setSelectedSupplierForAdd((prevItem) => {
+      if (!prevItem) return prevItem;
+  
+      const updatedWebsites = [...(prevItem.websites || [])];
+      updatedWebsites[index] = newUrl; // Ensure it's a string
+  
+      return { ...prevItem, websites: updatedWebsites };
+    });
+  };
+  
+  const addNewWebsite = () => {
+    setSelectedSupplierForAdd((prevItem) => {
+      if (!prevItem) return prevItem;
+      return {
+        ...prevItem,
+        websites: [...(prevItem.websites || []), ''], // Default empty string
+        _id: prevItem._id || '', // Ensure _id is always a valid string
+      };
+    });
+  };
+  
+  const removeWebsite = (index: number) => {
+    setSelectedSupplierForAdd((prevItem) => {
+      if (!prevItem) return prevItem;
+      return {
+        ...prevItem,
+        websites: prevItem.websites.filter((_, i) => i !== index),
+        _id: prevItem._id || '', // Ensure _id is always a valid string
+      };
+    });
+  };
+
+  const handleAddressChangeForUpdate = (index: number, newValue: string) => {
+    setSelectedSupplierForUpdate((prevItem) => {
+      if (!prevItem) return prevItem;
+  
+      const updatedAddresses = [...(prevItem.addresses || [])];
+      updatedAddresses[index] = newValue;
+  
+      return { ...prevItem, addresses: updatedAddresses };
+    });
+  };
+
+  const addNewAddressForUpdate = () => {
+    setSelectedSupplierForUpdate((prevItem) => {
+      if (!prevItem) return prevItem;
+      return {
+        ...prevItem,
+        addresses: [...(prevItem.addresses || []), ''], // Ensure addresses are strings
+        _id: prevItem._id || '', // Ensure _id is always a valid string
+      };
+    });
+  };
+  
+  const removeAddressForUpdate = (index: number) => {
+    setSelectedSupplierForUpdate((prevItem) => {
+      if (!prevItem) return prevItem;
+      return {
+        ...prevItem,
+        addresses: prevItem.addresses.filter((_, i) => i !== index),
+        _id: prevItem._id || '', // Ensure _id is always a valid string
+      };
+    });
+  };
+
+  const handleContactChangeForUpdate = (index: number, newNumber: number) => {
+    setSelectedSupplierForUpdate((prevItem) => {
+      if (!prevItem) return prevItem;
+  
+      const updatedContactNos = [...(prevItem.contactnos || [])];
+      updatedContactNos[index] = newNumber;
+  
+      return { ...prevItem, contactnos: updatedContactNos };
+    });
+  };
+  
+  const addNewContactForUpdate = () => {
+    setSelectedSupplierForUpdate((prevItem) => {
+      if (!prevItem) return prevItem;
+      return {
+        ...prevItem,
+        contactnos: [...(prevItem.contactnos || []), 0], // Default value set to 0
+        _id: prevItem._id || '', // Ensure _id is always a valid string
+      };
+    });
+  };
+  
+  const removeContactForUpdate = (index: number) => {
+    setSelectedSupplierForUpdate((prevItem) => {
+      if (!prevItem) return prevItem;
+      return {
+        ...prevItem,
+        contactnos: prevItem.contactnos.filter((_, i) => i !== index),
+        _id: prevItem._id || '', // Ensure _id is always a valid string
+      };
+    });
+  };
+
+  const handleEmailChangeForUpdate = (index: number, newEmail: string) => {
+    setSelectedSupplierForUpdate((prevItem) => {
       if (!prevItem) return prevItem;
   
       const updatedEmails = [...(prevItem.emails || [])];
@@ -89,22 +236,30 @@ const SuppliersPage = () => {
     });
   };
   
-  const addNewEmail = () => {
-    setSelectedSupplierForAdd((prevItem) => ({
-      ...prevItem,
-      emails: [...(prevItem?.emails || []), { address: '' }], // Initialize with an empty string
-    }));
+  const addNewEmailForUpdate = () => {
+    setSelectedSupplierForUpdate((prevItem) => {
+      if (!prevItem) return prevItem;
+      return {
+        ...prevItem,
+        emails: [...(prevItem.emails || []), ''], // Ensure emails are strings
+        _id: prevItem._id || '', // Ensure _id is always a valid string
+      };
+    });
   };
   
-  const removeEmail = (index: number) => {
-    setSelectedSupplierForAdd((prevItem) => ({
-      ...prevItem,
-      emails: prevItem?.emails?.filter((_, i) => i !== index) || [],
-    }));
+  const removeEmailForUpdate = (index: number) => {
+    setSelectedSupplierForUpdate((prevItem) => {
+      if (!prevItem) return prevItem;
+      return {
+        ...prevItem,
+        emails: prevItem.emails.filter((_, i) => i !== index),
+        _id: prevItem._id || '', // Ensure _id is always a valid string
+      };
+    });
   };
 
-  const handleWebsiteChange = (index: number, newUrl: string) => {
-    setSelectedSupplierForAdd((prevItem) => {
+  const handleWebsiteChangeForUpdate = (index: number, newUrl: string) => {
+    setSelectedSupplierForUpdate((prevItem) => {
       if (!prevItem) return prevItem;
   
       const updatedWebsites = [...(prevItem.websites || [])];
@@ -114,18 +269,26 @@ const SuppliersPage = () => {
     });
   };
   
-  const addNewWebsite = () => {
-    setSelectedSupplierForAdd((prevItem) => ({
-      ...prevItem,
-      websites: [...(prevItem?.websites || []), { url: '' }], // Default empty URL
-    }));
+  const addNewWebsiteForUpdate = () => {
+    setSelectedSupplierForUpdate((prevItem) => {
+      if (!prevItem) return prevItem;
+      return {
+        ...prevItem,
+        websites: [...(prevItem.websites || []), ''], // Default empty string for websites
+        _id: prevItem._id || '', // Ensure _id is always a valid string
+      };
+    });
   };
   
-  const removeWebsite = (index: number) => {
-    setSelectedSupplierForAdd((prevItem) => ({
-      ...prevItem,
-      websites: prevItem?.websites?.filter((_, i) => i !== index) || [],
-    }));
+  const removeWebsiteForUpdate = (index: number) => {
+    setSelectedSupplierForUpdate((prevItem) => {
+      if (!prevItem) return prevItem;
+      return {
+        ...prevItem,
+        websites: prevItem.websites.filter((_, i) => i !== index),
+        _id: prevItem._id || '', // Ensure _id is always a valid string
+      };
+    });
   };
 
   const fetchSuppliers = async () => {
@@ -355,7 +518,7 @@ const SuppliersPage = () => {
                       </span>
                     ))}</td>
                   <td>
-                    <button className="btn btn-primary btn-sm" >{UPDATE_BUTTON_LABAL}</button>
+                    <button className="btn btn-primary btn-sm" onClick={() => {setSelectedSupplierForUpdate(supplier); setShowUpdateModal(true);  console.log(selectedSupplierForUpdate)}}>{UPDATE_BUTTON_LABAL}</button>
                     <button className="btn btn-danger btn-sm ms-2" onClick={() => {setShowDeleteModal(true); setSelectedSupplierId(supplier._id)}}>{DELETE_BUTTON_LABAL}</button>
                   </td>
                 </tr>
@@ -435,29 +598,67 @@ const SuppliersPage = () => {
         </div>
       </div>
 
-      {/*showUpdateModal && selectedCategory && (
+      {showUpdateModal && selectedSupplierForUpdate && (
 
       <Modal show={showUpdateModal}>
         <Modal.Header closeButton onClick={() => setShowUpdateModal(false)}>
-          <Modal.Title className='text-primary'>{UPDATE_UNIT_CATEGORY_MODEL_TITLE}</Modal.Title>
+          <Modal.Title className='text-primary'>{UPDATE_SUPPLIER_MODEL_TITLE}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
 
-          <TextInput
-            form_id="unit_category_name"
-            onChangeText={(e) => setSelectedCategory({ ...selectedCategory, unit_category_name: e.target.value })}
+        <TextInput
+            form_id="supplier_name"
+            onChangeText={(e) => setSelectedSupplierForUpdate({ ...selectedSupplierForUpdate, name: e.target.value })}
             form_message=""
-            placeholder_text={UNIT_CATEGORY_NAME_PLACEHOLDER}
-            label={UNIT_CATEGORY_NAME_LABAL}
-            value={selectedCategory.unit_category_name}
+            placeholder_text={SUPPLIER_NAME_PLACEHOLDER}
+            label={SUPPLIER_NAME_LABAL}
+            value={selectedSupplierForUpdate?.name}
           />
-          <TextInput
+
+           <TextInput
             form_id="description"
-            onChangeText={(e) => setSelectedCategory({ ...selectedCategory, description: e.target.value })}
+            onChangeText={(e) => setSelectedSupplierForUpdate({ ...selectedSupplierForUpdate, description: e.target.value })}
             form_message=""
             placeholder_text={UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER}
             label={UNIT_CATEGORY_DESCRIPTION_LABAL}
-            value={selectedCategory.description}
+            value={selectedSupplierForUpdate?.description}
+          />
+
+          
+
+          <label className='text-primary mt-2'>{SUPPLIER_TABLE_FIELDS[3]}</label>
+
+          <ExtraContactNos
+            contactNos={selectedSupplierForUpdate?.contactnos || []}
+            onContactChange={handleContactChangeForUpdate}
+            onAddContact={addNewContactForUpdate}
+            onRemoveContact={removeContactForUpdate}
+          />
+
+          <label className='text-primary mt-2'>{SUPPLIER_TABLE_FIELDS[4]}</label>
+
+          <ExtraAddresses
+            addresses={selectedSupplierForUpdate?.addresses || []}
+            onAddressChange={handleAddressChangeForUpdate}
+            onAddRow={addNewAddressForUpdate}
+            onRemoveRow={removeAddressForUpdate}
+          />
+
+          <label className='text-primary mt-2'>{SUPPLIER_TABLE_FIELDS[5]}</label>
+
+          <ExtraEmails
+            emails={selectedSupplierForUpdate?.emails || []}
+            onEmailChange={handleEmailChangeForUpdate}
+            onAddEmail={addNewEmailForUpdate}
+            onRemoveEmail={removeEmailForUpdate}
+          />
+
+          <label className='text-primary mt-2'>{SUPPLIER_TABLE_FIELDS[6]}</label>
+          <ExtraWebsites
+            websites={selectedSupplierForUpdate?.websites || []}
+            onWebsiteChange={handleWebsiteChangeForUpdate}
+            onAddWebsite={addNewWebsiteForUpdate}
+            onRemoveWebsite={removeWebsiteForUpdate}
           />
 
         </Modal.Body>
@@ -465,12 +666,12 @@ const SuppliersPage = () => {
           <Button variant="secondary" onClick={() => setShowUpdateModal(false)}>
             {BACK}
           </Button>
-          <Button variant="primary" onClick={() => {console.log(selectedCategory._id); callUpdateCategoryAPI(selectedCategory._id); setShowUpdateModal(false); }}>
+          <Button variant="primary" onClick={() => {console.log(selectedSupplierForUpdate._id); callUpdateCategoryAPI(selectedSupplierForUpdate._id); setShowUpdateModal(false); }}>
             {UPDATE}
           </Button>
         </Modal.Footer>
       </Modal>
-      )*/}
+      )}
 
       {showDeleteModal && selectedSupplierId && (
         

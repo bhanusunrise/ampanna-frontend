@@ -3,12 +3,9 @@
 import React from 'react';
 import { Table, Button } from 'react-bootstrap';
 import TextInput from '../text_input'; 
-interface Website {
-  url: string;
-}
 
 interface ExtraWebsitesProps {
-  websites: Website[];
+  websites: string[];
   onWebsiteChange: (index: number, newUrl: string) => void;
   onAddWebsite: () => void;
   onRemoveWebsite: (index: number) => void;
@@ -25,7 +22,7 @@ const ExtraWebsites: React.FC<ExtraWebsitesProps> = ({ websites, onWebsiteChange
                 <TextInput
                   form_id={`website-url-${index}`}
                   placeholder_text="https://example.com"
-                  value={website.url}
+                  value={website}
                   onChangeText={(e) => onWebsiteChange(index, e.target.value)}
                 />
               </td>

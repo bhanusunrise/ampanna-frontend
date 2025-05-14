@@ -5,12 +5,10 @@ import { Table, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import EmailInput from '../email_input'; // Assuming EmailInput is in the same directory
 
-interface Email {
-  address: string;
-}
+
 
 interface ExtraEmailsProps {
-  emails: Email[];
+  emails: string[];
   onEmailChange: (index: number, newEmail: string) => void;
   onAddEmail: () => void;
   onRemoveEmail: (index: number) => void;
@@ -28,7 +26,7 @@ const ExtraEmails: React.FC<ExtraEmailsProps> = ({ emails, onEmailChange, onAddE
                   form_id={`email-${index}`}
 
                   placeholder_text="example@mail.com"
-                  value={email.address}
+                  value={email}
                   onChangeText={(e) => onEmailChange(index, e.target.value)}
                 />
               </td>
