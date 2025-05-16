@@ -12,11 +12,13 @@ const UnitCategoryPage = () => {
   const [units, setUnits] = useState<UnitInterface[]>([]);
   const [filteredUnits, setFilteredUnits] = useState<UnitInterface[]>([]);
   const [selectedUnitId, setSelectedUnitId] = useState<string | null>(null);
-  const [selectedUnit, setSelectedUnit] = useState<UnitInterface | null>(null);
+  const [selectedUnitForAdd, setSelectedUnitForAdd] = useState<UnitInterface | null>(null);
+  const [selectedUnitForUpdate, setSelectedUnitForUpdate] = useState<UnitInterface | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isIdSelected, setIsIdSelected] = useState<boolean>(false);
   const [isDescriptionSelected, setIsDescriptionSelected] = useState<boolean>(false);
   const [isNameSelected, setIsNameSelected] = useState<boolean>(false);
+  const [isCategoryNnameSelected, setIsCategoryNameSelected] = useState<boolean>(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [unitCategories, setUnitCategories] = useState<UnitCategoryInterface[]>([]);
@@ -72,7 +74,7 @@ const UnitCategoryPage = () => {
       };
 
       if (success && data && data.length > 0) {
-        setSelectedUnit(data[0]);
+        setSelectedUnitForUpdate(data[0]);
         console.log('Selected Unit:', data[0]);
         setShowUpdateModal(true);
       } else {
@@ -92,9 +94,9 @@ const UnitCategoryPage = () => {
         },
         body: JSON.stringify({
           id: id,
-          unit_name: selectedUnit?.unit_name,
-          description: selectedUnit?.description,
-          unit_category_id: selectedUnit?.unit_category_id,
+          unit_name: selectedUnitForUpdate?.unit_name,
+          description: selectedUnitForUpdate?.description,
+          unit_category_id: selectedUnitForUpdate?.unit_category_id,
       
         }),
       });
@@ -122,9 +124,9 @@ const UnitCategoryPage = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          unit_name: selectedUnit?.unit_name,
-          description: selectedUnit?.description,
-          unit_category_id: selectedUnit?.unit_category_id,
+          unit_name: selectedUnitForAdd?.unit_name,
+          description: selectedUnitForAdd?.description,
+          unit_category_id: selectedUnitForAdd?.unit_category_id,
         }),
       });
       if (!response.ok) {
@@ -182,17 +184,19 @@ const UnitCategoryPage = () => {
           (isIdSelected && unit._id.toLowerCase().includes(searchLower)) ||
           (isNameSelected && unit.unit_name.toLowerCase().includes(searchLower)) ||
           (isDescriptionSelected && unit.description.toLowerCase().includes(searchLower)) ||
+          (isCategoryNnameSelected && unit.unit_category_name.toLowerCase().includes(searchLower)) ||
           // If no checkboxes are selected, search in all fields
-          (!isIdSelected && !isNameSelected && !isDescriptionSelected && (
+          (!isIdSelected && !isNameSelected && !isDescriptionSelected && !isCategoryNnameSelected && (
             unit._id.toLowerCase().includes(searchLower) ||
             unit.unit_name.toLowerCase().includes(searchLower) ||
-            unit.description.toLowerCase().includes(searchLower)
+            unit.description.toLowerCase().includes(searchLower) ||
+            unit.unit_category_name.toLowerCase().includes(searchLower)
           ))
         );
       });
       setFilteredUnits(filtered);
     }
-  }, [searchQuery, units, isIdSelected, isNameSelected, isDescriptionSelected]);
+  }, [searchQuery, units, isIdSelected, isNameSelected, isDescriptionSelected, isCategoryNnameSelected]);
 
   return (
     <>
@@ -207,6 +211,43 @@ const UnitCategoryPage = () => {
           placeholder_text={UNITS_SEARCH_PLACEHOLDER} 
           value={searchQuery}
         />
+        <br />
+        <div className='d-flex'>
+          {/* Checkboxes for filtering */}
+        <Checkbox                                                        
+          label={UNIT_TABLE_FIELDS[0]}
+          checked={isIdSelected}
+          onChange={() => setIsIdSelected(!isIdSelected)}
+          form_id="id_checkbox"
+          form_message=""
+          className='me-4 text-primary'
+        />
+        <Checkbox                                                                                   
+          label={UNIT_TABLE_FIELDS[1]}
+          checked={isNameSelected}
+          onChange={() => setIsNameSelected(!isNameSelected)}
+          form_id="name_checkbox"
+          form_message=""
+          className='me-4 text-primary'
+        />
+        <Checkbox                                                                           
+          label={UNIT_TABLE_FIELDS[3]}
+          checked={isDescriptionSelected}
+          onChange={() => setIsDescriptionSelected(!isDescriptionSelected)}
+          form_id="description_checkbox"
+          form_message=""
+          className='me-4 text-primary'
+        />
+        <Checkbox                                                                                 
+          label={UNIT_TABLE_FIELDS[2]}
+          checked={isCategoryNnameSelected}
+          onChange={() => setIsCategoryNameSelected(!isCategoryNnameSelected)}
+          form_id="category_name_checkbox"
+          form_message=""
+          className='me-4 text-primary'
+        />
+
+        </div>
         <div className="scrollable-table">
         <Table striped bordered hover className='mt-3' size='sm'>
           <thead>
@@ -244,16 +285,16 @@ const UnitCategoryPage = () => {
 
           <TextInput
             form_id="unit_name"
-            onChangeText={(e) => setSelectedUnit({ ...selectedUnit, unit_name: e.target.value })}
+            onChangeText={(e) => setSelectedUnitForAdd({ ...selectedUnitForAdd, unit_name: e.target.value })}
             form_message=""
             placeholder_text={UNIT_NAME_PLACEHOLDER}
             label={UNIT_NAME_LABAL}
-            value={selectedUnit?.unit_name}
+            value={selectedUnitForAdd?.unit_name}
           />
 
           <label className="form-label mt-2 text-primary">{UNIT_CATEGORY_NAME_LABAL}</label>
 
-          <select className="form-select mb-2" onChange={(e) => setSelectedUnit({ ...selectedUnit, unit_category_id: e.target.value })}>
+          <select className="form-select mb-2" onChange={(e) => setSelectedUnitForAdd({ ...selectedUnitForAdd, unit_category_id: e.target.value })}>
            
             {unitCategories.map((category) => (
               <option key={category._id} value={category._id}>
@@ -264,11 +305,11 @@ const UnitCategoryPage = () => {
 
            <TextInput
             form_id="description"
-            onChangeText={(e) => setSelectedUnit({ ...selectedUnit, description: e.target.value })}
+            onChangeText={(e) => setSelectedUnitForAdd({ ...selectedUnitForAdd, description: e.target.value })}
             form_message=""
             placeholder_text={UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER}
             label={UNIT_CATEGORY_DESCRIPTION_LABAL}
-            value={selectedUnit?.description}
+            value={selectedUnitForAdd?.description}
           />
 
           <Button variant='success' className='mt-3' onClick={addUnit}>
@@ -278,7 +319,7 @@ const UnitCategoryPage = () => {
         </div>
       </div>
 
-      {showUpdateModal && selectedUnit && (
+      {showUpdateModal && selectedUnitForUpdate && (
 
       <Modal show={showUpdateModal}>
         <Modal.Header closeButton onClick={() => setShowUpdateModal(false)}>
@@ -288,16 +329,16 @@ const UnitCategoryPage = () => {
 
           <TextInput
             form_id="unit_category_name"
-            onChangeText={(e) => setSelectedUnit({ ...selectedUnit, unit_name: e.target.value })}
+            onChangeText={(e) => setSelectedUnitForUpdate({ ...selectedUnitForUpdate, unit_name: e.target.value })}
             form_message=""
             placeholder_text={UNIT_CATEGORY_NAME_PLACEHOLDER}
             label={UNIT_CATEGORY_NAME_LABAL}
-            value={selectedUnit.unit_name}
+            value={selectedUnitForUpdate.unit_name}
           />
 
           <label className="form-label mt-2 text-primary">{UNIT_CATEGORY_NAME_LABAL}</label>
 
-          <select className="form-select mb-2" onChange={(e) => setSelectedUnit({ ...selectedUnit, unit_category_id: e.target.value })} value={selectedUnit.unit_category_id}>
+          <select className="form-select mb-2" onChange={(e) => setSelectedUnitForUpdate({ ...selectedUnitForUpdate, unit_category_id: e.target.value })} value={selectedUnitForUpdate.unit_category_id}>
             
             {unitCategories.map((category) => (
               <option key={category._id} value={category._id}>
@@ -307,11 +348,11 @@ const UnitCategoryPage = () => {
           </select>
           <TextInput
             form_id="description"
-            onChangeText={(e) => setSelectedUnit({ ...selectedUnit, description: e.target.value })}
+            onChangeText={(e) => setSelectedUnitForUpdate({ ...selectedUnitForUpdate, description: e.target.value })}
             form_message=""
             placeholder_text={UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER}
             label={UNIT_CATEGORY_DESCRIPTION_LABAL}
-            value={selectedUnit.description}
+            value={selectedUnitForUpdate.description}
           />
 
         </Modal.Body>
@@ -319,7 +360,7 @@ const UnitCategoryPage = () => {
           <Button variant="secondary" onClick={() => setShowUpdateModal(false)}>
             {BACK}
           </Button>
-          <Button variant="primary" onClick={() => {console.log(selectedUnit._id); callUpdateUnitAPI(selectedUnit._id); setShowUpdateModal(false); }}>
+          <Button variant="primary" onClick={() => {console.log(selectedUnitForUpdate._id); callUpdateUnitAPI(selectedUnitForUpdate._id); setShowUpdateModal(false); }}>
             {UPDATE}
           </Button>
         </Modal.Footer>
