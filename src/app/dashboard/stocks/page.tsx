@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ADD_BUTTON_LABAL, ADD_STOCK, ADD_SUPPLIER, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, NEW_UNIT_TITLE, NO_RECORDS_FOUND, SEARCH, STOCK_BUYING_PRICE_LABAL, STOCK_BUYING_PRICE_PLACEHOLDER, STOCK_DESCRIPTION_LABAL, STOCK_DESCRIPTION_PLACEHOLDER, STOCK_DISCOUNT_LABAL, STOCK_ITEM_LABAL, STOCK_NAME_LABAL, STOCK_NAME_PLACEHOLDER, STOCK_PURCHASE_DATE_LABAL, STOCK_SEARCH_PLACEHOLDER, STOCK_SELLING_PRICE_LABAL, STOCK_SELLING_PRICE_PLACEHOLDER, STOCK_SUPPLIER_LABAL, STOCK_SUPPLIER_PLACEHOLDER, STOCK_TABLE_FIELDS, STOCK_TOTAL_AMOUNT_LABAL, STOCK_TOTAL_AMOUNT_PLACEHOLDER, STOCKS_API, STOCKS_PAGE_NAME, SUPPLIER_API, UNIT_CATEGORIES_SEARCH_PLACEHOLDER, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_STOCK_MODEL_TITLE, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
+import { ADD_BUTTON_LABAL, ADD_STOCK, ADD_SUPPLIER, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, ITEMS_API, NEW_UNIT_TITLE, NO_RECORDS_FOUND, SEARCH, STOCK_BUYING_PRICE_LABAL, STOCK_BUYING_PRICE_PLACEHOLDER, STOCK_DAMAGED_AMOUNT_LABAL, STOCK_DAMAGED_AMOUNT_PLACEHOLDER, STOCK_DESCRIPTION_LABAL, STOCK_DESCRIPTION_PLACEHOLDER, STOCK_DISCOUNT_LABAL, STOCK_ITEM_LABAL, STOCK_NAME_LABAL, STOCK_NAME_PLACEHOLDER, STOCK_PURCHASE_DATE_LABAL, STOCK_SEARCH_PLACEHOLDER, STOCK_SELLING_PRICE_LABAL, STOCK_SELLING_PRICE_PLACEHOLDER, STOCK_SOLD_AMOUNT_LABAL, STOCK_SOLD_AMOUNT_PLACEHOLDER, STOCK_SUPPLIER_LABAL, STOCK_SUPPLIER_PLACEHOLDER, STOCK_TABLE_FIELDS, STOCK_TOTAL_AMOUNT_LABAL, STOCK_TOTAL_AMOUNT_PLACEHOLDER, STOCKS_API, STOCKS_PAGE_NAME, SUPPLIER_API, UNIT_CATEGORIES_SEARCH_PLACEHOLDER, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_STOCK_MODEL_TITLE, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
 import { Button, Modal, Table } from 'react-bootstrap';
 import TextInput from '@/app/components/Forms/text_input';
 import StockInterface from '@/app/interfaces/stock_interface';
@@ -9,14 +9,16 @@ import { set } from 'mongoose';
 import SupplierInterface from '@/app/interfaces/supplier_interface';
 import NumberInput from '@/app/components/Forms/number_input';
 import ExtraDiscounts from '@/app/components/Forms/stocks/discount_input';
+import ItemInterface from '@/app/interfaces/item_interface';
 
 const StocksPage = () => {
   const [stocks, setStocks] = useState<StockInterface[]>([]);
   const [filteredStocks, setFilteredStocks] = useState<StockInterface[]>([]);
   const [suppliers, setSuppliers] = useState<SupplierInterface[]>([]);
+  const [items, setItems] = useState<ItemInterface[]>([]);
   const [selectedStockId, setSelectedStockId] = useState<string | null>(null);
   const [selectedStockForAdd , setSelectedStockForAdd] = useState<StockInterface | null>({ discounts: [] } as unknown as StockInterface);
-  const [selectedStockForUpdate , setSelectedStockForUpdate] = useState<StockInterface | null>({ discounts: [] } as unknown as StockInterface);
+  const [selectedStockForUpdate , setSelectedStockForUpdate] = useState<StockInterface | null>();
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isIdSelected, setIsIdSelected] = useState<boolean>(false);
   const [isDescriptionSelected, setIsDescriptionSelected] = useState<boolean>(false);
@@ -66,7 +68,7 @@ const handleRemoveDiscountRowforUpdate = (index: number) => {
 
     const updatedDiscounts = selectedStockForUpdate.discount.filter((_, i) => i !== index);
 
-    setSelectedStockForAdd({
+    setSelectedStockForUpdate({
         ...selectedStockForUpdate,
         discount: updatedDiscounts,
     });
@@ -147,6 +149,23 @@ const handleRemoveDiscountRowForAdd = (index: number) => {
       console.error('Error fetching suppliers:', error);
     }
   };
+
+  const fetchItems = async () => {
+    try {
+      const response = await fetch(`${ITEMS_API}fetch_all_items`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch items');
+      }
+      const { success, data } = await response.json();
+      if (success && Array.isArray(data)) {
+        setItems(data);
+      } else {
+        throw new Error('Invalid API response format');
+      }
+    } catch (error) {
+      console.error('Error fetching items:', error);
+    }
+  }
 
   const fetchSelectedStock = async (id: string) => {
     try {
@@ -274,6 +293,7 @@ const handleRemoveDiscountRowForAdd = (index: number) => {
   }
         
   useEffect(() => {
+    fetchItems();
     fetchStocks();
     fetchSuppliers();
   }, []);
@@ -361,11 +381,11 @@ const handleRemoveDiscountRowForAdd = (index: number) => {
                   <td>{stock.damaged_quantity}</td>
                   <td>{stock.buying_price}</td>
                   <td>{stock.selling_price}</td>
-                  <td>{stock.discount.map((d) => `${d._id} (${d.start_date} - ${d.end_date}) ${d.percentage}`).join(', ')}</td>
+                  <td>{stock.discount.map((d) => `${d._id} (${new Date(d.start_date).toLocaleDateString()} - ${new Date(d.end_date).toLocaleDateString()}) ${d.percentage}`).join(', ')}</td>
 
                   <td>
-                    <button className="btn btn-primary btn-sm" onClick={() => fetchSelectedStock(stock._id)}>{UPDATE_BUTTON_LABAL}</button>
-                    <button className="btn btn-danger btn-sm ms-2" onClick={() => {setShowDeleteModal(true); setSelectedStockId(stock._id)}}>{DELETE_BUTTON_LABAL}</button>
+                    <button className="btn btn-primary btn-sm" onClick={() => {setSelectedStockForUpdate(stock); setShowUpdateModal(true); console.log(stock)}}>{UPDATE_BUTTON_LABAL}</button>
+                    <button className="btn btn-danger btn-sm ms-2" onClick={() => {setShowDeleteModal(true); setSelectedStockId(stock._id); }}>{DELETE_BUTTON_LABAL}</button>
                   </td>
                 </tr>
               ))
@@ -410,8 +430,8 @@ const handleRemoveDiscountRowForAdd = (index: number) => {
           <label className='text-primary'>{STOCK_ITEM_LABAL}</label>
           <select className='form-select' onChange={(e) => setSelectedStockForAdd({ ...selectedStockForAdd, item_id: e.target.value })}>
           <option value="" disabled selected hidden>{STOCK_ITEM_LABAL}</option>
-            {suppliers.map((supplier) => (
-              <option key={supplier._id} value={supplier._id}>{supplier.name}</option>
+            {items.map((item) => (
+              <option key={item._id} value={item._id}>{item.name}</option>
             ))}
           </select>
 
@@ -480,22 +500,90 @@ const handleRemoveDiscountRowForAdd = (index: number) => {
         <Modal.Body>
 
           <TextInput
-            form_id="unit_category_name"
+            form_id="stock_name"
             onChangeText={(e) => setSelectedStockForUpdate({ ...selectedStockForUpdate, name: e.target.value })}
             form_message=""
-            placeholder_text={UNIT_CATEGORY_NAME_PLACEHOLDER}
-            label={UNIT_CATEGORY_NAME_LABAL}
+            placeholder_text={STOCK_NAME_PLACEHOLDER}
+            label={STOCK_NAME_LABAL}
             value={selectedStockForUpdate.name}
           />
           <TextInput
             form_id="description"
             onChangeText={(e) => set({ ...selectedStockForUpdate, description: e.target.value })}
             form_message=""
-            placeholder_text={UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER}
-            label={UNIT_CATEGORY_DESCRIPTION_LABAL}
-            value={setSelectedStockForUpdate.description}
+            placeholder_text={STOCK_DESCRIPTION_LABAL}
+            label={STOCK_DESCRIPTION_PLACEHOLDER}
+            value={selectedStockForUpdate?.description}
           />
 
+        <label className='text-primary'>{STOCK_SUPPLIER_LABAL}</label>
+          <select className='form-select' onChange={(e) => setSelectedStockForUpdate({ ...selectedStockForUpdate, supplier_id: e.target.value })}>
+          
+            {suppliers.map((supplier) => (
+              <option
+                key={supplier._id}
+                value={supplier._id}
+                selected={supplier._id === selectedStockForUpdate.supplier_id}
+              >
+                {supplier.name}
+              </option>
+            ))}
+          </select>
+
+          <label className='text-primary'>{STOCK_ITEM_LABAL}</label>
+          <select className='form-select' onChange={(e) => setSelectedStockForUpdate({ ...selectedStockForUpdate, item_id: e.target.value })}>
+          <option value="" disabled selected hidden>{STOCK_ITEM_LABAL}</option>
+            {items.map((item) => (
+               <option
+               key={item._id}
+               value={item._id}
+               selected={item._id === selectedStockForUpdate.item_id}
+             >
+               {item.name}
+             </option>
+            ))}
+          </select>
+
+          <NumberInput
+              label={STOCK_TOTAL_AMOUNT_LABAL}
+              form_id="total_quantity"
+              onChangeText={(e) => setSelectedStockForUpdate({ ...selectedStockForUpdate, total_quantity: e.target.value })}
+              form_message=""
+              placeholder_text={STOCK_TOTAL_AMOUNT_PLACEHOLDER}
+              value={selectedStockForUpdate?.total_quantity} min_value={0} max_value={0}/>
+
+          <NumberInput
+              label={STOCK_SOLD_AMOUNT_LABAL}
+              form_id="sold_quantity"
+              onChangeText={(e) => setSelectedStockForUpdate({ ...selectedStockForUpdate, sold_quantity: e.target.value })}
+              form_message=""
+              placeholder_text={STOCK_SOLD_AMOUNT_PLACEHOLDER}
+              value={selectedStockForUpdate?.sold_quantity} min_value={0} max_value={0}/>
+
+          <NumberInput
+              label={STOCK_DAMAGED_AMOUNT_LABAL}
+              form_id="damaged_quantity"
+              onChangeText={(e) => setSelectedStockForUpdate({ ...selectedStockForUpdate, damaged_quantity: e.target.value })}
+              form_message=""
+              placeholder_text={STOCK_DAMAGED_AMOUNT_PLACEHOLDER}
+              value={selectedStockForUpdate?.damaged_quantity} min_value={0} max_value={0}/>
+
+          <NumberInput
+              label={STOCK_BUYING_PRICE_LABAL}
+              form_id="buying_price"
+              onChangeText={(e) => setSelectedStockForUpdate({ ...selectedStockForUpdate, buying_price: e.target.value })}
+              form_message=""
+              placeholder_text={STOCK_BUYING_PRICE_PLACEHOLDER}
+              value={selectedStockForUpdate?.buying_price} min_value={0} max_value={0}/>
+
+          <NumberInput
+              label={STOCK_SELLING_PRICE_LABAL}
+              form_id="selling_price"
+              onChangeText={(e) => setSelectedStockForUpdate({ ...selectedStockForUpdate, selling_price: e.target.value })}
+              form_message=""
+              placeholder_text={STOCK_SELLING_PRICE_PLACEHOLDER}
+              value={selectedStockForUpdate?.selling_price} min_value={0} max_value={0}/>
+              
             <ExtraDiscounts
               discounts={selectedStockForUpdate?.discount ?? []}
               onDiscountChange={handleDiscountChangeForUpdate} // Ensure this is correctly passed

@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server';
 import { dbConnect } from '@/app/lib/db';
 import Stock from '@/app/models/stock_model';
 
+const formatDate = (isoString: string) => {
+    return isoString.split("T")[0]; // Extracts "2025-05-31"
+  };
+
 export async function POST(request: Request) {
     try {
         // Connect to the database
@@ -44,13 +48,8 @@ export async function POST(request: Request) {
 
 
         if (discount && discount.startdate && discount.enddate) {
-            const formatDate = (dateStr: string) => {
-                const dateObj = new Date(dateStr);
-                const yyyy = dateObj.getFullYear();
-                const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
-                const dd = String(dateObj.getDate()).padStart(2, '0');
-                return `${yyyy}/${mm}/${dd}`;
-            };
+        
+            
             discount.startdate = formatDate(discount.startdate);
             discount.enddate = formatDate(discount.enddate);
         }
