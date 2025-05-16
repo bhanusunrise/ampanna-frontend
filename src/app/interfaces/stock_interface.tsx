@@ -12,7 +12,7 @@ export default interface StockInterface {
     damaged_quantity: number;
     buying_price: number; // Price per unit
     selling_price: number; // Price per unit
-    discount: { _id: string; start_date: Date; end_date: Date; percentage: number }[]; // Array of discount objects
+    discount: { _id: string; start_date: string; end_date: string; percentage: number }[]; // Array of discount objects
     supplier_name: string; // Name of the supplier
     item_name: string; // Name of the item
 }

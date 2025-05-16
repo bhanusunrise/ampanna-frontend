@@ -32,9 +32,28 @@ export async function POST(request: Request) {
             );
         }
 
-        // Get the maximum `_id` from the existing documents
-        const lastStock = await Stock.findOne().sort({ _id: -1 }); // Sort by `_id` in descending order
-        const newId = lastStock ? parseInt(lastStock._id) + 1 : 1; // Increment `_id` or start from 1
+        // Get all documents to calculate the max numeric _id
+                        const allStocks = await Stock.find({});
+                        const maxId = allStocks.reduce((max, doc) => {
+                            const idNum = parseInt(doc._id);
+                            return idNum > max ? idNum : max;
+                        }, 0);
+                        const newId = (maxId + 1).toString();
+                
+                        console.log('New ID:', newId); // Debug log
+
+
+        if (discount && discount.startdate && discount.enddate) {
+            const formatDate = (dateStr: string) => {
+                const dateObj = new Date(dateStr);
+                const yyyy = dateObj.getFullYear();
+                const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+                const dd = String(dateObj.getDate()).padStart(2, '0');
+                return `${yyyy}/${mm}/${dd}`;
+            };
+            discount.startdate = formatDate(discount.startdate);
+            discount.enddate = formatDate(discount.enddate);
+        }
 
         // Create a new Stock object
         const newStock = new Stock({

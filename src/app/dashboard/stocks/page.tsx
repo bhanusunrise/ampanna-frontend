@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ADD_BUTTON_LABAL, ADD_STOCK, ADD_SUPPLIER, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, NEW_UNIT_TITLE, NO_RECORDS_FOUND, SEARCH, STOCK_BUYING_PRICE_LABAL, STOCK_BUYING_PRICE_PLACEHOLDER, STOCK_DESCRIPTION_LABAL, STOCK_DESCRIPTION_PLACEHOLDER, STOCK_DISCOUNT_LABAL, STOCK_ITEM_LABAL, STOCK_NAME_LABAL, STOCK_NAME_PLACEHOLDER, STOCK_PURCHASE_DATE_LABAL, STOCK_SEARCH_PLACEHOLDER, STOCK_SELLING_PRICE_LABAL, STOCK_SELLING_PRICE_PLACEHOLDER, STOCK_SUPPLIER_LABAL, STOCK_SUPPLIER_PLACEHOLDER, STOCK_TABLE_FIELDS, STOCK_TOTAL_AMOUNT_LABAL, STOCK_TOTAL_AMOUNT_PLACEHOLDER, STOCKS_API, STOCKS_PAGE_NAME, SUPPLIER_API, UNIT_CATEGORIES_SEARCH_PLACEHOLDER, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
+import { ADD_BUTTON_LABAL, ADD_STOCK, ADD_SUPPLIER, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, NEW_UNIT_TITLE, NO_RECORDS_FOUND, SEARCH, STOCK_BUYING_PRICE_LABAL, STOCK_BUYING_PRICE_PLACEHOLDER, STOCK_DESCRIPTION_LABAL, STOCK_DESCRIPTION_PLACEHOLDER, STOCK_DISCOUNT_LABAL, STOCK_ITEM_LABAL, STOCK_NAME_LABAL, STOCK_NAME_PLACEHOLDER, STOCK_PURCHASE_DATE_LABAL, STOCK_SEARCH_PLACEHOLDER, STOCK_SELLING_PRICE_LABAL, STOCK_SELLING_PRICE_PLACEHOLDER, STOCK_SUPPLIER_LABAL, STOCK_SUPPLIER_PLACEHOLDER, STOCK_TABLE_FIELDS, STOCK_TOTAL_AMOUNT_LABAL, STOCK_TOTAL_AMOUNT_PLACEHOLDER, STOCKS_API, STOCKS_PAGE_NAME, SUPPLIER_API, UNIT_CATEGORIES_SEARCH_PLACEHOLDER, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_STOCK_MODEL_TITLE, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
 import { Button, Modal, Table } from 'react-bootstrap';
 import TextInput from '@/app/components/Forms/text_input';
 import StockInterface from '@/app/interfaces/stock_interface';
@@ -16,7 +16,7 @@ const StocksPage = () => {
   const [suppliers, setSuppliers] = useState<SupplierInterface[]>([]);
   const [selectedStockId, setSelectedStockId] = useState<string | null>(null);
   const [selectedStockForAdd , setSelectedStockForAdd] = useState<StockInterface | null>({ discounts: [] } as unknown as StockInterface);
-  const [selectedStockForUpdate , setSelectedStockForUpdate] = useState<StockInterface | null>(null);
+  const [selectedStockForUpdate , setSelectedStockForUpdate] = useState<StockInterface | null>({ discounts: [] } as unknown as StockInterface);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isIdSelected, setIsIdSelected] = useState<boolean>(false);
   const [isDescriptionSelected, setIsDescriptionSelected] = useState<boolean>(false);
@@ -35,7 +35,7 @@ const StocksPage = () => {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const handleDiscountChange = (index: number, field: 'start_date' | 'end_date' | 'percentage', newValue: string | number) => {
+  const handleDiscountChangeForAdd = (index: number, field: 'start_date' | 'end_date' | 'percentage', newValue: string | number) => {
     if (!selectedStockForAdd) return;
 
     const updatedDiscounts = [...selectedStockForAdd.discount];
@@ -47,7 +47,7 @@ const StocksPage = () => {
     });
 };
 
-const handleAddDiscountRow = () => {
+const handleAddDiscountRowForAdd = () => {
     if (!selectedStockForAdd) return;
 
     setSelectedStockForAdd((prevStock) => ({
@@ -61,16 +61,56 @@ const handleAddDiscountRow = () => {
   }));
 };
 
-const handleRemoveDiscountRow = (index: number) => {
-    if (!selectedStockForAdd) return;
+const handleRemoveDiscountRowforUpdate = (index: number) => {
+    if (!selectedStockForUpdate) return;
 
-    const updatedDiscounts = selectedStockForAdd.discount.filter((_, i) => i !== index);
+    const updatedDiscounts = selectedStockForUpdate.discount.filter((_, i) => i !== index);
 
     setSelectedStockForAdd({
-        ...selectedStockForAdd,
+        ...selectedStockForUpdate,
         discount: updatedDiscounts,
     });
 };
+
+
+const handleDiscountChangeForUpdate = (index: number, field: 'start_date' | 'end_date' | 'percentage', newValue: string | number) => {
+  if (!selectedStockForUpdate) return;
+
+  const updatedDiscounts = [...selectedStockForUpdate.discount];
+  updatedDiscounts[index] = { ...updatedDiscounts[index], [field]: newValue };
+
+  setSelectedStockForAdd({
+      ...selectedStockForUpdate,
+      discount: updatedDiscounts, // Update the discount array
+  });
+};
+
+const handleAddDiscountRowForUpdate = () => {
+  if (!selectedStockForUpdate) return;
+
+  setSelectedStockForUpdate((prevStock) => ({
+    ...prevStock!,
+    discount: [...(prevStock?.discount || []), { 
+        _id: `${(prevStock?.discount?.length ?? 0) + 1}`, 
+        start_date: new Date(), 
+        end_date: new Date(), 
+        percentage: 0 
+    }],
+}));
+};
+
+const handleRemoveDiscountRowForAdd = (index: number) => {
+  if (!selectedStockForAdd) return;
+
+  const updatedDiscounts = selectedStockForAdd.discount.filter((_, i) => i !== index);
+
+  setSelectedStockForAdd({
+      ...selectedStockForAdd,
+      discount: updatedDiscounts,
+  });
+};
+
+
 
   const fetchStocks = async () => {
       try {
@@ -418,11 +458,11 @@ const handleRemoveDiscountRow = (index: number) => {
             <label className='text-primary'>{STOCK_DISCOUNT_LABAL}</label>
 
             <ExtraDiscounts
-    discounts={selectedStockForAdd?.discount ?? []}
-    onDiscountChange={handleDiscountChange} // Ensure this is correctly passed
-    onAddRow={handleAddDiscountRow}
-    onRemoveRow={handleRemoveDiscountRow}
-/>
+              discounts={selectedStockForAdd?.discount ?? []}
+              onDiscountChange={handleDiscountChangeForAdd} // Ensure this is correctly passed
+              onAddRow={handleAddDiscountRowForAdd}
+              onRemoveRow={handleRemoveDiscountRowForAdd}
+            />
 
           <Button variant='success' className='mt-3' onClick={addStock}>
             {ADD_BUTTON_LABAL}
@@ -435,7 +475,7 @@ const handleRemoveDiscountRow = (index: number) => {
 
       <Modal show={showUpdateModal}>
         <Modal.Header closeButton onClick={() => setShowUpdateModal(false)}>
-          <Modal.Title className='text-primary'>{UPDATE_UNIT_CATEGORY_MODEL_TITLE}</Modal.Title>
+          <Modal.Title className='text-primary'>{UPDATE_STOCK_MODEL_TITLE}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
 
@@ -455,6 +495,13 @@ const handleRemoveDiscountRow = (index: number) => {
             label={UNIT_CATEGORY_DESCRIPTION_LABAL}
             value={setSelectedStockForUpdate.description}
           />
+
+            <ExtraDiscounts
+              discounts={selectedStockForUpdate?.discount ?? []}
+              onDiscountChange={handleDiscountChangeForUpdate} // Ensure this is correctly passed
+              onAddRow={handleAddDiscountRowForUpdate}
+              onRemoveRow={handleRemoveDiscountRowforUpdate}
+            />
 
         </Modal.Body>
         <Modal.Footer>

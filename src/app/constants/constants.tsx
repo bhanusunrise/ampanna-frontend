@@ -284,7 +284,7 @@ export const STOCK_DISCOUNT_PLACEHOLDER = "වට්ටම් ඇතුලත්
 export const STOCK_DISCOUNT_START_DATE_LABAL = "ආරම්භක දිනය"
 export const STOCK_DISCOUNT_END_DATE_LABAL = "අවසන් දිනය"
 export const STOCK_DISCOUNT_PERCENTAGE_LABAL = "ප්‍රතිශතය"
-
+export const UPDATE_STOCK_MODEL_TITLE = STOCKS_PAGE_NAME + UPDATE
 
 
 
