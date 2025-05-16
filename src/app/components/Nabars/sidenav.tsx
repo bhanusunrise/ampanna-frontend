@@ -30,7 +30,7 @@ const SideNav = () => {
     }
   }, []);
   
-  const renderNavItem = (href, Icon, label) => {
+  const renderNavItem = (href: string | undefined, Icon: React.JSX.IntrinsicAttributes, label: string) => {
     const isActive = pathname === href;
   
     return (

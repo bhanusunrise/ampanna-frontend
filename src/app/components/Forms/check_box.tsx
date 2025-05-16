@@ -10,6 +10,7 @@ interface CheckboxProps {
   form_id: string;
   form_message: string;
   checked: boolean; // Add checked state
+  className?: string;
 }
 
 const Checkbox: React.FC<CheckboxProps> = ({
@@ -18,6 +19,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
   form_id,
   form_message,
   checked, // Destructure checked prop
+  className, // Add className to destructure
 }) => {
   return (
     <>
@@ -27,6 +29,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
         label={label}
         onChange={onChange}
         checked={checked} // Set checked value
+        className={className}
       />
       <Form.Text id={`${form_id}-help`} muted>
         {form_message}

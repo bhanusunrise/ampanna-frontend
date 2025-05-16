@@ -6,6 +6,7 @@ import { Button, Modal, Table } from 'react-bootstrap';
 import TextInput from '@/app/components/Forms/text_input';
 import UnitInterface from '@/app/interfaces/unit_interface';
 import UnitCategoryInterface from '@/app/interfaces/unit_category_interface';
+import Checkbox from '@/app/components/Forms/check_box';
 
 const UnitCategoryPage = () => {
   const [units, setUnits] = useState<UnitInterface[]>([]);

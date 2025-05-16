@@ -9,9 +9,9 @@
 }
 
 .nav-item-hover:hover {
-  border: 2px solid #BBBBBB !important; 
+  border: 2px solid #FFFFFE !important; 
   color:  #3B71CA !important; 
-  background-color: #BBBBBB !important; 
+  background-color: #FFFFFE !important; 
 }
 
 .active-nav {

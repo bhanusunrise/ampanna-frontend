@@ -1,24 +1,26 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ADD_BUTTON_LABAL, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, NEW_UNIT_TITLE, NO_RECORDS_FOUND, SEARCH, UNIT_CATEGORIES_SEARCH_PLACEHOLDER, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
+import { ADD_BUTTON_LABAL, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, NEW_UNIT_CATEGORY_TITLE, NO_RECORDS_FOUND, SEARCH, UNIT_CATEGORIES_SEARCH_PLACEHOLDER, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
 import UnitCategoryInterface from '@/app/interfaces/unit_category_interface';
 import { Button, Modal, Table } from 'react-bootstrap';
 import TextInput from '@/app/components/Forms/text_input';
+import Checkbox from '@/app/components/Forms/check_box';
 
 const UnitCategoryPage = () => {
-  const [unitCategories, setUnitCategories] = useState<UnitCategoryInterface[]>([]);
-  const [filteredCategories, setFilteredCategories] = useState<UnitCategoryInterface[]>([]);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<UnitCategoryInterface | null>(null);
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [isIdSelected, setIsIdSelected] = useState<boolean>(false);
-  const [isDescriptionSelected, setIsDescriptionSelected] = useState<boolean>(false);
-  const [isNameSelected, setIsNameSelected] = useState<boolean>(false);
-  const [showUpdateModal, setShowUpdateModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [unitCategories, setUnitCategories] = useState<UnitCategoryInterface[]>([]);                                // State to hold the fetched unit categories
+  const [filteredCategories, setFilteredCategories] = useState<UnitCategoryInterface[]>([]);                        // State to hold the filtered unit categories
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);                                // State to hold the selected category ID for deletion
+  const [selectedCategoryForAdd, setSelectedCategoryForAdd] = useState<UnitCategoryInterface | null>(null);         // State to hold the selected category for addition
+  const [selectedCategoryForUpdate, setSelectedCategoryForUpdate] = useState<UnitCategoryInterface | null>(null);   // State to hold the selected category for update
+  const [searchQuery, setSearchQuery] = useState<string>('');                                                       // State to hold the search query
+  const [isIdSelected, setIsIdSelected] = useState<boolean>(false);                                                 // State to hold the checkbox state for ID
+  const [isDescriptionSelected, setIsDescriptionSelected] = useState<boolean>(false);                               // State to hold the checkbox state for description
+  const [isNameSelected, setIsNameSelected] = useState<boolean>(false);                                             // State to hold the checkbox state for name
+  const [showUpdateModal, setShowUpdateModal] = useState(false);                                                    // State to control the update modal
+  const [showDeleteModal, setShowDeleteModal] = useState(false);                                                    // State to control the delete modal
 
-  const fetchUnitCategories = async () => {
+  const fetchUnitCategories = async () => {                                                          // Function to fetch unit categories from the API and update the state
       try {
         const response = await fetch(`${UNIT_CATEGORY_API}fetch_all_unit_categories`);
         if (!response.ok) {
@@ -37,31 +39,7 @@ const UnitCategoryPage = () => {
       }
     };
 
-  const fetchSelectedCategory = async (id: string) => {
-    try {
-      const response = await fetch(`${UNIT_CATEGORY_API}fetch_all_unit_categories?_id=${id}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch unit category');
-      }
-      // Since the api returns an array of categories, update the type to UnitCategoryInterface[]
-      const { success, data } = await response.json() as {
-        success: boolean;
-        data: UnitCategoryInterface[];  // Note the array here
-      };
-
-      if (success && data && data.length > 0) {
-        setSelectedCategory(data[0]);
-        console.log('Selected Category:', data[0]);
-        setShowUpdateModal(true);
-      } else {
-        throw new Error('Invalid API response format');
-      }
-    } catch (error) {
-      console.error('Error fetching unit category:', error);
-    }
-  };
-
-  const callUpdateCategoryAPI = async (id: string) => {
+  const callUpdateCategoryAPI = async () => {                                                         // Function to call the update category API  
     try {
       const response = await fetch(`${UNIT_CATEGORY_API}update_unit_category`, {
         method: 'PATCH',
@@ -69,9 +47,9 @@ const UnitCategoryPage = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          id: id,
-          unit_category_name: selectedCategory?.unit_category_name,
-          description: selectedCategory?.description,
+          id: selectedCategoryForUpdate?._id,
+          unit_category_name: selectedCategoryForUpdate?.unit_category_name,
+          description: selectedCategoryForUpdate?.description,
         }),
       });
       if (!response.ok) {
@@ -90,7 +68,7 @@ const UnitCategoryPage = () => {
     }
   }
 
-  const addUnitCategory = async () => {
+  const addUnitCategory = async () => {                                                               // Function to call the add category API
     try {
       const response = await fetch(`${UNIT_CATEGORY_API}create_unit_category`, {
         method: 'POST',
@@ -98,8 +76,8 @@ const UnitCategoryPage = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          unit_category_name: selectedCategory?.unit_category_name,
-          description: selectedCategory?.description,
+          unit_category_name: selectedCategoryForAdd?.unit_category_name,
+          description: selectedCategoryForAdd?.description,
         }),
       });
       if (!response.ok) {
@@ -117,7 +95,7 @@ const UnitCategoryPage = () => {
     }
   }
 
-  const deleteUnitCategory = async (id: string) => {
+  const deleteUnitCategory = async (id: string) => {                                                  // Function to call the delete category API
     try {
       const response = await fetch(`${UNIT_CATEGORY_API}delete_unit_category?id=${id}`, {
         method: 'DELETE',
@@ -142,12 +120,12 @@ const UnitCategoryPage = () => {
   }
         
   useEffect(() => {
-    fetchUnitCategories();
+    fetchUnitCategories();                                                  // Fetch unit categories when the component mounts
   }, []);
 
-  // Handle search functionality
+  
   useEffect(() => {
-    if (searchQuery.trim() === '') {
+    if (searchQuery.trim() === '') {                                    // Filter categories based on the search query    
       setFilteredCategories(unitCategories);
     } else {
       const filtered = unitCategories.filter(category => {
@@ -156,7 +134,6 @@ const UnitCategoryPage = () => {
           (isIdSelected && category._id.toLowerCase().includes(searchLower)) ||
           (isNameSelected && category.unit_category_name.toLowerCase().includes(searchLower)) ||
           (isDescriptionSelected && category.description.toLowerCase().includes(searchLower)) ||
-          // If no checkboxes are selected, search in all fields
           (!isIdSelected && !isNameSelected && !isDescriptionSelected && (
             category._id.toLowerCase().includes(searchLower) ||
             category.unit_category_name.toLowerCase().includes(searchLower) ||
@@ -172,8 +149,10 @@ const UnitCategoryPage = () => {
     <>
      <div className='row'>
       <div className='col-md-8'>
-        <h3 className='text-primary'>{UNIT_CATEGORY_PAGE_NAME}</h3>
-        <TextInput 
+        <h3 className='text-primary'>{UNIT_CATEGORY_PAGE_NAME}</h3>    {/* Page Name */}  
+        
+        {/* Search Input */}
+        <TextInput                                                      
           label={SEARCH} 
           onChangeText={(e) => setSearchQuery(e.target.value)} 
           form_id="search" 
@@ -181,8 +160,39 @@ const UnitCategoryPage = () => {
           placeholder_text={UNIT_CATEGORIES_SEARCH_PLACEHOLDER} 
           value={searchQuery}
         />
+       
+        <br />
+        <div className='d-flex'>
+          {/* Checkboxes for filtering */}
+        <Checkbox                                                        
+          label={UNIT_CATEGORY_TABLE_FIELDS[0]}
+          checked={isIdSelected}
+          onChange={() => setIsIdSelected(!isIdSelected)}
+          form_id="id_checkbox"
+          form_message=""
+          className='me-4 text-primary'
+        />
+        <Checkbox                                                                                   
+          label={UNIT_CATEGORY_TABLE_FIELDS[1]}
+          checked={isNameSelected}
+          onChange={() => setIsNameSelected(!isNameSelected)}
+          form_id="name_checkbox"
+          form_message=""
+          className='me-4 text-primary'
+        />
+        <Checkbox                                                                           
+          label={UNIT_CATEGORY_TABLE_FIELDS[2]}
+          checked={isDescriptionSelected}
+          onChange={() => setIsDescriptionSelected(!isDescriptionSelected)}
+          form_id="description_checkbox"
+          form_message=""
+          className='me-4 text-primary'
+        />
+        </div>
+
         <div className="scrollable-table">
-        <Table striped bordered hover className='mt-3' size='sm'>
+        {/* Table to display unit categories */}
+        <Table striped bordered hover className='mt-3' size='sm'>     
           <thead>
             <tr>
               {UNIT_CATEGORY_TABLE_FIELDS.map((field, index) => (
@@ -198,8 +208,10 @@ const UnitCategoryPage = () => {
                   <td>{category.unit_category_name}</td>
                   <td>{category.description}</td>
                   <td>
-                    <button className="btn btn-primary btn-sm" onClick={() => fetchSelectedCategory(category._id)}>{UPDATE_BUTTON_LABAL}</button>
-                    <button className="btn btn-danger btn-sm ms-2" onClick={() => {setShowDeleteModal(true); setSelectedCategoryId(category._id)}}>{DELETE_BUTTON_LABAL}</button>
+                    <div className='d-flex flex-column flex-sm-row gap-2'>
+                    <button className="btn btn-primary btn-sm" onClick={() => {setSelectedCategoryForUpdate(category); setShowUpdateModal(true); }}>{UPDATE_BUTTON_LABAL}</button>
+                    <button className="btn btn-danger btn-sm" onClick={() => {setShowDeleteModal(true); setSelectedCategoryId(category._id)}}>{DELETE_BUTTON_LABAL}</button>
+                    </div>
                   </td>
                 </tr>
               ))
@@ -213,24 +225,24 @@ const UnitCategoryPage = () => {
         </div>
         </div>
         <div className='col-md-4'>
-          <h3 className='text-primary'>{NEW_UNIT_TITLE}</h3>
-
-          <TextInput
+          <h3 className='text-primary'>{NEW_UNIT_CATEGORY_TITLE}</h3>     {/* New Unit Category Title */} 
+          {/* Form to add a new unit category */}
+          <TextInput                                                               
             form_id="unit_category_name"
-            onChangeText={(e) => setSelectedCategory({ ...selectedCategory, unit_category_name: e.target.value })}
+            onChangeText={(e) => setSelectedCategoryForAdd({ ...selectedCategoryForAdd, unit_category_name: e.target.value })}
             form_message=""
             placeholder_text={UNIT_CATEGORY_NAME_PLACEHOLDER}
             label={UNIT_CATEGORY_NAME_LABAL}
-            value={selectedCategory?.unit_category_name}
+            value={selectedCategoryForAdd?.unit_category_name}
           />
 
-           <TextInput
+           <TextInput                                                         
             form_id="description"
-            onChangeText={(e) => setSelectedCategory({ ...selectedCategory, description: e.target.value })}
+            onChangeText={(e) => setSelectedCategoryForAdd({ ...selectedCategoryForAdd, description: e.target.value })}
             form_message=""
             placeholder_text={UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER}
             label={UNIT_CATEGORY_DESCRIPTION_LABAL}
-            value={selectedCategory?.description}
+            value={selectedCategoryForAdd?.description}
           />
 
           <Button variant='success' className='mt-3' onClick={addUnitCategory}>
@@ -240,7 +252,9 @@ const UnitCategoryPage = () => {
         </div>
       </div>
 
-      {showUpdateModal && selectedCategory && (
+      {/* Update Modal */}
+      {showUpdateModal && selectedCategoryForUpdate && (
+
 
       <Modal show={showUpdateModal}>
         <Modal.Header closeButton onClick={() => setShowUpdateModal(false)}>
@@ -250,19 +264,19 @@ const UnitCategoryPage = () => {
 
           <TextInput
             form_id="unit_category_name"
-            onChangeText={(e) => setSelectedCategory({ ...selectedCategory, unit_category_name: e.target.value })}
+            onChangeText={(e) => setSelectedCategoryForUpdate({ ...selectedCategoryForUpdate, unit_category_name: e.target.value })}
             form_message=""
             placeholder_text={UNIT_CATEGORY_NAME_PLACEHOLDER}
             label={UNIT_CATEGORY_NAME_LABAL}
-            value={selectedCategory.unit_category_name}
+            value={selectedCategoryForUpdate?.unit_category_name}
           />
           <TextInput
             form_id="description"
-            onChangeText={(e) => setSelectedCategory({ ...selectedCategory, description: e.target.value })}
+            onChangeText={(e) => setSelectedCategoryForUpdate({ ...selectedCategoryForUpdate, description: e.target.value })}
             form_message=""
             placeholder_text={UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER}
             label={UNIT_CATEGORY_DESCRIPTION_LABAL}
-            value={selectedCategory.description}
+            value={selectedCategoryForUpdate?.description}
           />
 
         </Modal.Body>
@@ -270,12 +284,14 @@ const UnitCategoryPage = () => {
           <Button variant="secondary" onClick={() => setShowUpdateModal(false)}>
             {BACK}
           </Button>
-          <Button variant="primary" onClick={() => {console.log(selectedCategory._id); callUpdateCategoryAPI(selectedCategory._id); setShowUpdateModal(false); }}>
+          <Button variant="primary" onClick={() => {console.log(selectedCategoryForUpdate?._id); callUpdateCategoryAPI(); setShowUpdateModal(false); }}>
             {UPDATE}
           </Button>
         </Modal.Footer>
       </Modal>
       )}
+
+      {/* Delete Modal */}
 
       {showDeleteModal && selectedCategoryId && (
         
