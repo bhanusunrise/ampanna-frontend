@@ -94,18 +94,17 @@ export const SUPPLIER_API = "/api_new/operations/suppliers/"
 export const STOCKS_API = "/api_new/operations/stocks/"
 
 
-/** Default DB values */
-export const COMPULSARY = "අත්‍යාවශ්‍ය"
-export const OPTIONAL = "අවශ්‍ය"
-export const UNIT_CATEGORY_TYPES = [COMPULSARY, OPTIONAL]
+/*** UI Routes */
+export const UNIT_CATEGORY_UI = "/dashboard/unit_categories"
+export const UNIT_UI = "/dashboard/units"
+export const UNIT_CONVERSION_UI = "/dashboard/unit_conversions"
+export const ITEMS_UI = "/dashboard/items"
+export const SUPPLIER_UI = "/dashboard/suppliers"
+export const STOCKS_UI = "/dashboard/stocks"
+export const CALCULATOR_UI = "/dashboard/calculator"
+export const PROFILE_UI = "/dashboard/profile"
+export const DASHBOARD_UI = "/dashboard"
 
-/** Default status values */
-export const ACTIVE_ITEM = "සක්‍රීය"
-export const DELETED_ITEM = "අක්‍රීය"
-
-/** Default null/ not null values */
-export const NULL_VALUE = "නැත"
-export const NOT_NULL_VALUE = "ඇත"
 
 
 /** Log messages */
@@ -289,6 +288,10 @@ export const STOCK_DISCOUNT_START_DATE_LABAL = "ආරම්භක දිනය"
 export const STOCK_DISCOUNT_END_DATE_LABAL = "අවසන් දිනය"
 export const STOCK_DISCOUNT_PERCENTAGE_LABAL = "ප්‍රතිශතය"
 export const UPDATE_STOCK_MODEL_TITLE = STOCKS_PAGE_NAME + UPDATE
+
+
+/** Calculator */
+export const CALCULATOR_PAGE_NAME = "කැල්කියුලේටරය"
 
 
 
