@@ -9,6 +9,7 @@ import UnitConversionInterface from '@/app/interfaces/unit_conversion_interface'
 import NumberInput from '@/app/components/Forms/number_input';
 import UnitInterface from '@/app/interfaces/unit_interface';
 import DisabledInput from '@/app/components/Forms/disabled_input';
+import Checkbox from '@/app/components/Forms/check_box';
 
 const UnitConversionPage = () => {
   const [unitConversions, setUnitConversions] = useState<UnitConversionInterface[]>([]);
@@ -16,15 +17,14 @@ const UnitConversionPage = () => {
   const [filteredConversions, setFilteredConversions] = useState<UnitConversionInterface[]>([]);
   const [filteredUnits, setFilteredUnits] = useState<UnitInterface[]>([]);
   const [selectedConversionId, setSelectedConversionId] = useState<string | null>(null);
-  const [selectedConversion, setSelectedConversion] = useState<UnitConversionInterface | null>(null);
+  const [selectedConversionForAdd, setSelectedConversionForAdd] = useState<UnitConversionInterface | null>(null);
+  const [selectedConversionForUpdate, setSelectedConversionForUpdate] = useState<UnitConversionInterface | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<UnitCategoryInterface | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isIdSelected, setIsIdSelected] = useState<boolean>(false);
   const [isDescriptionSelected, setIsDescriptionSelected] = useState<boolean>(false);
   const [isMultiplierSelected, setIsMultiplierSelected] = useState<boolean>(false);
-  const [isFirstUnitIdSelected, setIsFirstUnitIdSelected] = useState<boolean>(false);
   const [isFirstUnitNameSelected, setIsFirstUnitNameSelected] = useState<boolean>(false);
-  const [isSecondUnitIdSelected, setIsSecondUnitIdSelected] = useState<boolean>(false);
   const [isSecondUnitNameSelected, setIsSecondUnitNameSelected] = useState<boolean>(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -79,7 +79,7 @@ const UnitConversionPage = () => {
       };
 
       if (success && data && data.length > 0) {
-        setSelectedConversion(data[0]);
+        setSelectedConversionForUpdate(data[0]);
         console.log('Selected Conversion:', data[0]);
         setShowUpdateModal(true);
       } else {
@@ -122,10 +122,10 @@ const UnitConversionPage = () => {
         },
         body: JSON.stringify({
           id: id,
-          first_unit_id: selectedConversion?.first_unit_id,
-          second_unit_id: selectedConversion?.second_unit_id,
-          multiplier: selectedConversion?.multiplier,
-          description: selectedConversion?.description,
+          first_unit_id: selectedConversionForUpdate?.first_unit_id,
+          second_unit_id: selectedConversionForUpdate?.second_unit_id,
+          multiplier: selectedConversionForUpdate?.multiplier,
+          description: selectedConversionForUpdate?.description,
         }),
       });
       if (!response.ok) {
@@ -137,7 +137,7 @@ const UnitConversionPage = () => {
         setShowUpdateModal(false);
         fetchUnitCategories();
         fetchUnitConversions();
-        setSelectedConversion({ first_unit_id: '', second_unit_id: '', multiplier: 0, description: '', first_unit_name: '', second_unit_name: '' });
+        setSelectedConversionForUpdate({ first_unit_id: '', second_unit_id: '', multiplier: 0, description: '', first_unit_name: '', second_unit_name: '' });
       } else {
         throw new Error('Invalid API response format');
       }
@@ -148,17 +148,17 @@ const UnitConversionPage = () => {
 
   const addUnitConversion = async () => {
     try {
-      console.log('Selected Conversion:', selectedConversion);
+      console.log('Selected Conversion:', selectedConversionForAdd);
       const response = await fetch(`${UNIT_CONVERSION_API}create_unit_conversion`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          first_unit_id: selectedConversion?.first_unit_id,
-          second_unit_id: selectedConversion?.second_unit_id,
-          multiplier: selectedConversion?.multiplier,
-          description: selectedConversion?.description,
+          first_unit_id: selectedConversionForAdd?.first_unit_id,
+          second_unit_id: selectedConversionForAdd?.second_unit_id,
+          multiplier: selectedConversionForAdd?.multiplier,
+          description: selectedConversionForAdd?.description,
           
         }),
       });
@@ -170,7 +170,7 @@ const UnitConversionPage = () => {
         console.log('Added Conversion:', data);
         fetchUnitCategories();
         fetchUnitConversions();
-        setSelectedConversion({ first_unit_id: '', second_unit_id: '', multiplier: 0, description: '', first_unit_name: '', second_unit_name: '' });
+        setSelectedConversionForAdd({ first_unit_id: '', second_unit_id: '', multiplier: 0, description: '', first_unit_name: '', second_unit_name: '' });
       } else {
         throw new Error('Invalid API response format');
       }
@@ -219,27 +219,22 @@ const UnitConversionPage = () => {
         const searchLower = searchQuery.toLowerCase();
         return (
           (isIdSelected && conversion._id.toLowerCase().includes(searchLower)) ||
-          (isMultiplierSelected && conversion.description.toLowerCase().includes(searchLower)) ||
+          (isMultiplierSelected && conversion.multiplier.toString().toLowerCase().includes(searchLower)) ||
           (isDescriptionSelected && conversion.description.toLowerCase().includes(searchLower)) ||
           (isFirstUnitNameSelected && conversion.first_unit_name.toLowerCase().includes(searchLower)) ||
           (isSecondUnitNameSelected && conversion.second_unit_name.toLowerCase().includes(searchLower)) ||
-          (isFirstUnitIdSelected && conversion.first_unit_id.toLowerCase().includes(searchLower)) ||
-          (isSecondUnitIdSelected && conversion.second_unit_id.toLowerCase().includes(searchLower)) ||
-          // If no checkboxes are selected, search in all fields
-          (!isIdSelected && !isMultiplierSelected && !isDescriptionSelected && !isFirstUnitNameSelected && !isSecondUnitNameSelected && !isFirstUnitIdSelected && !isSecondUnitIdSelected && (
+          (!isIdSelected && !isMultiplierSelected && !isDescriptionSelected && !isFirstUnitNameSelected && !isSecondUnitNameSelected  && (
             conversion._id.toLowerCase().includes(searchLower) ||
             conversion.multiplier.toString().toLowerCase().includes(searchLower) ||
             conversion.description.toLowerCase().includes(searchLower) ||
             conversion.first_unit_name.toLowerCase().includes(searchLower) ||
-            conversion.second_unit_name.toLowerCase().includes(searchLower) ||
-            conversion.first_unit_id.toLowerCase().includes(searchLower) ||
-            conversion.second_unit_id.toLowerCase().includes(searchLower)
+            conversion.second_unit_name.toLowerCase().includes(searchLower)
           ))
         );
       });
       setFilteredConversions(filtered);
     }
-  }, [searchQuery, unitConversions, isIdSelected, isMultiplierSelected, isDescriptionSelected, isFirstUnitNameSelected, isSecondUnitNameSelected, isFirstUnitIdSelected, isSecondUnitIdSelected]);
+  }, [searchQuery, unitConversions, isIdSelected, isMultiplierSelected, isDescriptionSelected, isFirstUnitNameSelected, isSecondUnitNameSelected]);
 
   return (
     <>
@@ -254,6 +249,34 @@ const UnitConversionPage = () => {
           placeholder_text={UNIT_CATEGORIES_SEARCH_PLACEHOLDER} 
           value={searchQuery}
         />
+        <br />
+        <div className='d-flex'>
+          <Checkbox
+              label={UNIT_CONVERSION_TABLE_FIELDS[0]}
+              checked={isIdSelected}
+              onChange={(e) => setIsIdSelected(e.target.checked)} form_id={''} form_message={''} className='me-2 text-primary'
+          />
+          <Checkbox
+              label={UNIT_CONVERSION_TABLE_FIELDS[1]}
+              checked={isDescriptionSelected}
+              onChange={(e) => setIsDescriptionSelected(e.target.checked)} form_id={''} form_message={''} className='me-2 text-primary'
+          />
+          <Checkbox
+              label={UNIT_CONVERSION_TABLE_FIELDS[2]}
+              checked={isFirstUnitNameSelected}
+              onChange={(e) => setIsFirstUnitNameSelected(e.target.checked)} form_id={''} form_message={''} className='me-2 text-primary'
+          />
+          <Checkbox
+              label={UNIT_CONVERSION_TABLE_FIELDS[3]}
+              checked={isMultiplierSelected}
+              onChange={(e) => setIsMultiplierSelected(e.target.checked)} form_id={''} form_message={''} className='me-2 text-primary'
+          />
+          <Checkbox
+              label={UNIT_CONVERSION_TABLE_FIELDS[4]}
+              checked={isSecondUnitNameSelected}
+              onChange={(e) => setIsSecondUnitNameSelected(e.target.checked)} form_id={''} form_message={''} className='me-2 text-primary'
+          />
+        </div>
         <div className="scrollable-table">
         <Table striped bordered hover className='mt-3' size='sm'>
           <thead>
@@ -290,7 +313,7 @@ const UnitConversionPage = () => {
         <div className='col-md-4'>
           <h3 className='text-primary'>{ADD_UNIT_CONVERSION}</h3>
 
-          <label className="form-label">{UNIT_CATEGORY_NAME_LABAL}</label>
+          <label className="form-label text-primary">{UNIT_CATEGORY_NAME_LABAL}</label>
 
           <select className="form-select mb-2" onChange={(e) => {setSelectedCategory({ ...selectedCategory, _id: e.target.value }); fetchUnitsForSelectedCategory(e.target.value)}} value={selectedCategory?._id}>
             
@@ -303,16 +326,17 @@ const UnitConversionPage = () => {
 
           <TextInput 
             form_id="unit_category_name" 
-            onChangeText={(e) => setSelectedConversion({ ...selectedConversion, description: e.target.value })} 
+            onChangeText={(e) => setSelectedConversionForAdd({ ...selectedConversionForAdd, description: e.target.value })} 
             form_message="" 
             placeholder_text={UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER} 
             label={UNIT_CATEGORY_DESCRIPTION_LABAL} 
-            value={selectedConversion?.description}
+            value={selectedConversionForAdd?.description}
+            className="text-primary"
           />
 
-          <label className="form-label">{FIRST_UNIT_NAME_LABAL}</label>
+          <label className="form-label text-primary">{FIRST_UNIT_NAME_LABAL}</label>
 
-          <select className="form-select mb-2" onChange={(e) => setSelectedConversion(selectedConversion ? { ...selectedConversion, first_unit_id: e.target.value } : { first_unit_id: e.target.value, second_unit_id: '', multiplier: 0, description: '', first_unit_name: '', second_unit_name: '' })} value={selectedConversion?.first_unit_id}>
+          <select className="form-select mb-2" onChange={(e) => setSelectedConversionForAdd(selectedConversionForAdd ? { ...selectedConversionForAdd, first_unit_id: e.target.value } : { first_unit_id: e.target.value, second_unit_id: '', multiplier: 0, description: '', first_unit_name: '', second_unit_name: '' })} value={selectedConversionForAdd?.first_unit_id}>
             
             {filteredUnits.map((unit) => (
               <option key={unit._id} value={unit._id}>
@@ -321,9 +345,9 @@ const UnitConversionPage = () => {
             ))}
           </select>
 
-          <label className="form-label">{SECOND_UNIT_NAME_LABAL}</label>
+          <label className="form-label text-primary">{SECOND_UNIT_NAME_LABAL}</label>
 
-          <select className="form-select mb-2" onChange={(e) => setSelectedConversion(selectedConversion ? { ...selectedConversion, second_unit_id: e.target.value } : null)} value={selectedConversion?.second_unit_id}>
+          <select className="form-select mb-2" onChange={(e) => setSelectedConversionForAdd(selectedConversionForAdd ? { ...selectedConversionForAdd, second_unit_id: e.target.value } : null)} value={selectedConversionForAdd?.second_unit_id}>
             
             {filteredUnits.map((unit) => (
               <option key={unit._id} value={unit._id}>
@@ -337,11 +361,11 @@ const UnitConversionPage = () => {
 
           <NumberInput
             form_id="multiplier"
-            onChangeText={(e) => setSelectedConversion({ ...selectedConversion, multiplier: e.target.value })}
+            onChangeText={(e) => setSelectedConversionForAdd({ ...selectedConversionForAdd, multiplier: e.target.value })}
             form_message=""
             placeholder_text={MULTIPLIER_PLACEHOLDER}
             label={MULTIPLIER_LABAL}
-            value={selectedConversion?.multiplier} min_value={0} max_value={999999}          />
+            value={selectedConversionForAdd?.multiplier} min_value={0} max_value={999999}          />
 
           <Button variant='success' className='mt-3' onClick={addUnitConversion}>
             {ADD_BUTTON_LABAL}
@@ -350,7 +374,7 @@ const UnitConversionPage = () => {
         </div>
       </div>
 
-      {showUpdateModal && selectedConversion && (
+      {showUpdateModal && selectedConversionForUpdate && (
 
       <Modal show={showUpdateModal}>
         <Modal.Header closeButton onClick={() => setShowUpdateModal(false)}>
@@ -360,33 +384,33 @@ const UnitConversionPage = () => {
 
           <TextInput
             form_id="description"
-            onChangeText={(e) => setSelectedConversion({...selectedConversion, description: e.target.value })}
+            onChangeText={(e) => setSelectedConversionForUpdate({...selectedConversionForUpdate, description: e.target.value })}
             form_message=""
             placeholder_text={UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER}
             label={UNIT_CATEGORY_DESCRIPTION_LABAL}
-            value={selectedConversion.description}
+            value={selectedConversionForUpdate.description}
           />
 
           <DisabledInput
             form_id="first_unit_name"
             form_message=""
             label={FIRST_UNIT_NAME_LABAL}
-            value={selectedConversion.first_unit_name}
+            value={selectedConversionForUpdate.first_unit_name}
           />
 
           <NumberInput
             form_id="multiplier"
-            onChangeText={(e) => setSelectedConversion({...selectedConversion, multiplier: e.target.value })}
+            onChangeText={(e) => setSelectedConversionForUpdate({...selectedConversionForUpdate, multiplier: e.target.value })}
             form_message=""
             placeholder_text={MULTIPLIER_PLACEHOLDER}
             label={MULTIPLIER_LABAL}
-            value={selectedConversion.multiplier} min_value={0} max_value={999999}          />
+            value={selectedConversionForUpdate.multiplier} min_value={0} max_value={999999}          />
 
           <DisabledInput
             form_id="second_unit_name"
             form_message=""
             label={SECOND_UNIT_NAME_LABAL}
-            value={selectedConversion.second_unit_name}
+            value={selectedConversionForUpdate.second_unit_name}
           />
 
           
@@ -396,7 +420,7 @@ const UnitConversionPage = () => {
           <Button variant="secondary" onClick={() => setShowUpdateModal(false)}>
             {BACK}
           </Button>
-          <Button variant="primary" onClick={() => {callUpdateConversionAPI(selectedConversion._id); setShowUpdateModal(false); }}>
+          <Button variant="primary" onClick={() => {callUpdateConversionAPI(selectedConversionForUpdate._id); setShowUpdateModal(false); }}>
             {UPDATE}
           </Button>
         </Modal.Footer>
