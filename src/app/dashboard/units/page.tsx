@@ -9,21 +9,21 @@ import UnitCategoryInterface from '@/app/interfaces/unit_category_interface';
 import Checkbox from '@/app/components/Forms/check_box';
 
 const UnitCategoryPage = () => {
-  const [units, setUnits] = useState<UnitInterface[]>([]);
-  const [filteredUnits, setFilteredUnits] = useState<UnitInterface[]>([]);
-  const [selectedUnitId, setSelectedUnitId] = useState<string | null>(null);
-  const [selectedUnitForAdd, setSelectedUnitForAdd] = useState<UnitInterface | null>(null);
-  const [selectedUnitForUpdate, setSelectedUnitForUpdate] = useState<UnitInterface | null>(null);
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [isIdSelected, setIsIdSelected] = useState<boolean>(false);
-  const [isDescriptionSelected, setIsDescriptionSelected] = useState<boolean>(false);
-  const [isNameSelected, setIsNameSelected] = useState<boolean>(false);
-  const [isCategoryNnameSelected, setIsCategoryNameSelected] = useState<boolean>(false);
-  const [showUpdateModal, setShowUpdateModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [unitCategories, setUnitCategories] = useState<UnitCategoryInterface[]>([]);
+  const [units, setUnits] = useState<UnitInterface[]>([]);                                          // State to hold all units
+  const [filteredUnits, setFilteredUnits] = useState<UnitInterface[]>([]);                          // State to hold filtered units
+  const [selectedUnitId, setSelectedUnitId] = useState<string | null>(null);                        // State to hold selected unit ID for deletion
+  const [selectedUnitForAdd, setSelectedUnitForAdd] = useState<UnitInterface | null>(null);         // State to hold selected unit for addition
+  const [selectedUnitForUpdate, setSelectedUnitForUpdate] = useState<UnitInterface | null>(null);   // State to hold selected unit for update
+  const [searchQuery, setSearchQuery] = useState<string>('');                                       // State to hold search query
+  const [isIdSelected, setIsIdSelected] = useState<boolean>(false);                                 // State to hold checkbox for ID selection  
+  const [isDescriptionSelected, setIsDescriptionSelected] = useState<boolean>(false);               // State to hold checkbox for description selection
+  const [isNameSelected, setIsNameSelected] = useState<boolean>(false);                             // State to hold checkbox for name selection
+  const [isCategoryNnameSelected, setIsCategoryNameSelected] = useState<boolean>(false);            // State to hold checkbox for category name selection
+  const [showUpdateModal, setShowUpdateModal] = useState(false);                                    // State to control the visibility of the update modal
+  const [showDeleteModal, setShowDeleteModal] = useState(false);                                    // State to control the visibility of the delete modal
+  const [unitCategories, setUnitCategories] = useState<UnitCategoryInterface[]>([]);                // State to hold all unit categories
 
-  const fetchUnits = async () => {
+  const fetchUnits = async () => {                                                                // Function to fetch all units
       try {
         const response = await fetch(`${UNIT_API}fetch_all_units`);
         if (!response.ok) {
@@ -42,7 +42,7 @@ const UnitCategoryPage = () => {
       }
     };
 
-    const fetchUnitCategories = async () => {
+    const fetchUnitCategories = async () => {                                             // Function to fetch all unit categories
           try {
             const response = await fetch(`${UNIT_CATEGORY_API}fetch_all_unit_categories`);
             if (!response.ok) {
@@ -61,16 +61,16 @@ const UnitCategoryPage = () => {
         };
     
 
-  const fetchSelectedUnit = async (id: string) => {
+  const fetchSelectedUnit = async (id: string) => {                                     // Function to fetch selected unit for update
     try {
       const response = await fetch(`${UNIT_API}fetch_all_units?_id=${id}`);
       if (!response.ok) {
         throw new Error('Failed to fetch unit category');
       }
-      // Since the api returns an array of categories, update the type to UnitCategoryInterface[]
+      
       const { success, data } = await response.json() as {
         success: boolean;
-        data: UnitInterface[];  // Note the array here
+        data: UnitInterface[]; 
       };
 
       if (success && data && data.length > 0) {
@@ -85,7 +85,7 @@ const UnitCategoryPage = () => {
     }
   };
 
-  const callUpdateUnitAPI = async (id: string) => {
+  const callUpdateUnitAPI = async (id: string) => {                                     // Function to call update unit API
     try {
       const response = await fetch(`${UNIT_API}update_unit`, {
         method: 'PATCH',
@@ -116,7 +116,7 @@ const UnitCategoryPage = () => {
     }
   }
 
-  const addUnit = async () => {
+  const addUnit = async () => {                                                         // Function to add a new unit
     try {
       const response = await fetch(`${UNIT_API}create_unit`, {
         method: 'POST',
@@ -144,7 +144,7 @@ const UnitCategoryPage = () => {
     }
   }
 
-  const deleteUnit = async (id: string) => {
+  const deleteUnit = async (id: string) => {                                            // Function to delete a unit
     try {
       const response = await fetch(`${UNIT_API}delete_unit?id=${id}`, {
         method: 'DELETE',
@@ -169,11 +169,11 @@ const UnitCategoryPage = () => {
   }
         
   useEffect(() => {
-    fetchUnits();
-    fetchUnitCategories();
+    fetchUnits();                                                // Fetch all units on component mount  
+    fetchUnitCategories();                                       // Fetch all unit categories on component mount
   }, []);
 
-  // Handle search functionality
+                                                                  // Handle search functionality
   useEffect(() => {
     if (searchQuery.trim() === '') {
       setFilteredUnits(units);
@@ -185,7 +185,6 @@ const UnitCategoryPage = () => {
           (isNameSelected && unit.unit_name.toLowerCase().includes(searchLower)) ||
           (isDescriptionSelected && unit.description.toLowerCase().includes(searchLower)) ||
           (isCategoryNnameSelected && unit.unit_category_name.toLowerCase().includes(searchLower)) ||
-          // If no checkboxes are selected, search in all fields
           (!isIdSelected && !isNameSelected && !isDescriptionSelected && !isCategoryNnameSelected && (
             unit._id.toLowerCase().includes(searchLower) ||
             unit.unit_name.toLowerCase().includes(searchLower) ||
@@ -202,7 +201,9 @@ const UnitCategoryPage = () => {
     <>
      <div className='row'>
       <div className='col-md-8'>
+        {/* Header for the unit category page */}
         <h3 className='text-primary'>{UNIT_PAGE_NAME}</h3>
+        {/* Search input field */}
         <TextInput 
           label={SEARCH} 
           onChangeText={(e) => setSearchQuery(e.target.value)} 
@@ -249,6 +250,7 @@ const UnitCategoryPage = () => {
 
         </div>
         <div className="scrollable-table">
+        {/* Table to display the list of units */}
         <Table striped bordered hover className='mt-3' size='sm'>
           <thead>
             <tr>
@@ -282,6 +284,7 @@ const UnitCategoryPage = () => {
         </div>
         <div className='col-md-4'>
           <h3 className='text-primary'>{NEW_UNIT_TITLE}</h3>
+          {/* Form to add a new unit */}
 
           <TextInput
             form_id="unit_name"
@@ -318,6 +321,8 @@ const UnitCategoryPage = () => {
 
         </div>
       </div>
+
+      {/* Modal for updating unit */}
 
       {showUpdateModal && selectedUnitForUpdate && (
 
@@ -366,6 +371,8 @@ const UnitCategoryPage = () => {
         </Modal.Footer>
       </Modal>
       )}
+
+      {/* Modal for deleting unit */}
 
       {showDeleteModal && selectedUnitId && (
         
