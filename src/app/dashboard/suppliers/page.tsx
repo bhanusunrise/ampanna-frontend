@@ -431,7 +431,7 @@ const SuppliersPage = () => {
           
 
           // If no checkboxes are selected, search in all fields
-          (!isIdSelected && !isNameSelected && !isDescriptionSelected && (
+          (!isIdSelected && !isNameSelected && !isDescriptionSelected && !isAddressesSelected && !isContactnosSelected && !isEmailsSelected && !isWebsitesSelected && (
             supplier._id.toLowerCase().includes(searchLower) ||
             supplier.name.toLowerCase().includes(searchLower) ||
             supplier.description.toLowerCase().includes(searchLower) ||

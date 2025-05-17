@@ -10,6 +10,7 @@ import SupplierInterface from '@/app/interfaces/supplier_interface';
 import NumberInput from '@/app/components/Forms/number_input';
 import ExtraDiscounts from '@/app/components/Forms/stocks/discount_input';
 import ItemInterface from '@/app/interfaces/item_interface';
+import Checkbox from '@/app/components/Forms/check_box';
 
 const StocksPage = () => {
   const [stocks, setStocks] = useState<StockInterface[]>([]);
@@ -32,8 +33,6 @@ const StocksPage = () => {
   const [isBuyingPriceSelected, setIsBuyingPriceSelected] = useState<boolean>(false);
   const [isSellingPriceSelected, setIsSellingPriceSelected] = useState<boolean>(false);
   const [isDiscountSelected, setIsDiscountSelected] = useState<boolean>(false);
-  const [isSupplierIdSelected, setIsSupplierIdSelected] = useState<boolean>(false);
-  const [isItemIdSelected, setIsItemIdSelected] = useState<boolean>(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -167,30 +166,6 @@ const handleRemoveDiscountRowForAdd = (index: number) => {
     }
   }
 
-  const fetchSelectedStock = async (id: string) => {
-    try {
-      const response = await fetch(`${STOCKS_API}fetch_all_stocks?_id=${id}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch stock');
-      }
-      // Since the api returns an array of categories, update the type to UnitCategoryInterface[]
-      const { success, data } = await response.json() as {
-        success: boolean;
-        data: StockInterface[];  // Note the array here
-      };
-
-      if (success && data && data.length > 0) {
-        setSelectedStockForUpdate(data[0]);
-        console.log('Selected Stock:', data[0]);
-        setShowUpdateModal(true);
-      } else {
-        throw new Error('Invalid API response format');
-      }
-    } catch (error) {
-      console.error('Error fetching stock:', error);
-    }
-  };
-
   const callUpdateCategoryAPI = async (id: string) => {
     try {
       const response = await fetch(`${STOCKS_API}update_stock`, {
@@ -318,13 +293,9 @@ const handleRemoveDiscountRowForAdd = (index: number) => {
           (isBuyingPriceSelected && stock.buying_price.toString().includes(searchLower)) ||
           (isSellingPriceSelected && stock.selling_price.toString().includes(searchLower)) ||
           (isDiscountSelected && stock.discount.map((d) => `${d._id} (${d.start_date} - ${d.end_date})`).join(', ').toLowerCase().includes(searchLower)) ||
-          (isSupplierIdSelected && stock.supplier_id.toLowerCase().includes(searchLower)) ||
-          (isItemIdSelected && stock.item_id.toLowerCase().includes(searchLower)) ||
-
-
-          
+        
           // If no checkboxes are selected, search in all fields
-          (!isIdSelected && !isNameSelected && !isDescriptionSelected && !isSupplierNameSelected && !isItemNameSelected && !isDateSelected && (
+          (!isIdSelected && !isNameSelected && !isDescriptionSelected && !isSupplierNameSelected && !isItemNameSelected && !isDateSelected && !isTotalQuantitySelected && !isSoldQuantitySelected && !isDamagedQuantitySelected && !isBuyingPriceSelected && !isSellingPriceSelected && !isDiscountSelected && (
             stock._id.toLowerCase().includes(searchLower) ||
             stock.name.toLowerCase().includes(searchLower) ||
             stock.description.toLowerCase().includes(searchLower) ||
@@ -342,7 +313,7 @@ const handleRemoveDiscountRowForAdd = (index: number) => {
       });
       setFilteredStocks(filtered);
     }
-  }, [searchQuery, stocks, isIdSelected, isNameSelected, isDescriptionSelected, isSupplierNameSelected, isItemNameSelected, isDateSelected]);
+  }, [searchQuery, stocks, isIdSelected, isNameSelected, isDescriptionSelected, isSupplierNameSelected, isItemNameSelected, isDateSelected, isTotalQuantitySelected, isSoldQuantitySelected, isDamagedQuantitySelected, isBuyingPriceSelected, isSellingPriceSelected, isDiscountSelected]);
 
   return (
     <>
@@ -357,6 +328,59 @@ const handleRemoveDiscountRowForAdd = (index: number) => {
           placeholder_text={STOCK_SEARCH_PLACEHOLDER} 
           value={searchQuery}
         />
+
+        <div className='d-flex mt-3 flex-wrap'>
+          <Checkbox 
+              label={STOCK_TABLE_FIELDS[0]}
+              checked={isIdSelected}
+              onChange={(e) => setIsIdSelected(!isIdSelected)} form_id={''} form_message={''}   className={'me-2 text-primary'}       />
+          <Checkbox
+              label={STOCK_TABLE_FIELDS[1]}
+              checked={isNameSelected}
+              onChange={(e) => setIsNameSelected(!isNameSelected)} form_id={''} form_message={''}  className={'me-2 text-primary'}        />
+          <Checkbox
+              label={STOCK_TABLE_FIELDS[2]}
+              checked={isDescriptionSelected}
+              onChange={(e) => setIsDescriptionSelected(!isDescriptionSelected)} form_id={''} form_message={''}  className={'me-2 text-primary'}        />
+          <Checkbox
+              label={STOCK_TABLE_FIELDS[3]}
+              checked={isSupplierNameSelected}
+              onChange={(e) => setIsSupplierNameSelected(!isSupplierNameSelected)} form_id={''} form_message={''}  className={'me-2 text-primary'}        />
+          <Checkbox
+              label={STOCK_TABLE_FIELDS[4]}
+              checked={isItemNameSelected}
+              onChange={(e) => setIsItemNameSelected(!isItemNameSelected)} form_id={''} form_message={''}   className={'me-2 text-primary'}       />
+          <Checkbox
+              label={STOCK_TABLE_FIELDS[5]}
+              checked={isDateSelected}
+              onChange={(e) => setIsDateSelected(!isDateSelected)} form_id={''} form_message={''}  className={'me-2 text-primary'}        />
+          <Checkbox
+              label={STOCK_TABLE_FIELDS[6]}
+              checked={isTotalQuantitySelected}
+              onChange={(e) => setIsTotalQuantitySelected(!isTotalQuantitySelected)} form_id={''} form_message={''}  className={'me-2 text-primary'}        />
+          <Checkbox
+              label={STOCK_TABLE_FIELDS[7]}
+              checked={isSoldQuantitySelected}
+              onChange={(e) => setIsSoldQuantitySelected(!isSoldQuantitySelected)} form_id={''} form_message={''}   className={'me-2 text-primary'}       />
+          <Checkbox
+              label={STOCK_TABLE_FIELDS[8]}
+              checked={isDamagedQuantitySelected}
+              onChange={(e) => setIsDamagedQuantitySelected(!isDamagedQuantitySelected)} form_id={''} form_message={''}    className={'me-2 text-primary'}      />
+          <Checkbox
+              label={STOCK_TABLE_FIELDS[9]}
+              checked={isBuyingPriceSelected}
+              onChange={(e) => setIsBuyingPriceSelected(!isBuyingPriceSelected)} form_id={''} form_message={''}  className={'me-2 text-primary'}        />
+          <Checkbox
+              label={STOCK_TABLE_FIELDS[10]}
+              checked={isSellingPriceSelected}
+              onChange={(e) => setIsSellingPriceSelected(!isSellingPriceSelected)} form_id={''} form_message={''}   className={'me-2 text-primary'}       />
+          <Checkbox
+              label={STOCK_TABLE_FIELDS[11]}
+              checked={isDiscountSelected}
+              onChange={(e) => setIsDiscountSelected(!isDiscountSelected)} form_id={''} form_message={''}  className={'me-2 text-primary'}        />
+        
+          
+        </div>
         <div className="scrollable-table">
         <Table striped bordered hover className='mt-3' size='sm'>
           <thead>
@@ -368,7 +392,7 @@ const handleRemoveDiscountRowForAdd = (index: number) => {
           </thead>
           <tbody>
             {filteredStocks.length > 0 ? (
-              stocks.map((stock, index) => (
+              filteredStocks.map((stock, index) => (
                 <tr key={index}>
                   <td>{stock._id}</td>
                   <td>{stock.name}</td>
