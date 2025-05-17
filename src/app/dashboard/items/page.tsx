@@ -26,11 +26,9 @@ const ItemsPage = () => {
   const [isIdSelected, setIsIdSelected] = useState<boolean>(false);
   const [isNameSelected, setIsNameSelected] = useState<boolean>(false);
   const [isDescriptionSelected, setIsDescriptionSelected] = useState<boolean>(false);
-  const [isMainUnitIdSelected, setIsMainUnitIdSelected] = useState<boolean>(false);
-  const [isOtherUnitIdsSelected, setIsOtherUnitIdsSelected] = useState<boolean>(false);
   const [isOtherParametersSelected, setIsOtherParametersSelected] = useState<boolean>(false);
   const [isMainUnitNameSelected, setIsMainUnitNameSelected] = useState<boolean>(false);
-  const [isOtherUnitNameSelected, setIsOtherUnitNameSelected] = useState<boolean>(false);
+  const [isOtherUnitNamesSelected, setIsOtherUnitNamesSelected] = useState<boolean>(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const handleParameterChange = (index: number, field: 'parameter_name' | 'value', newValue: string) => {
@@ -272,18 +270,16 @@ const removeRowForUpdate = (index: number) => {
     (isIdSelected && item._id.toLowerCase().includes(searchLower)) ||
     (isNameSelected && item.name.toLowerCase().includes(searchLower)) ||
     (isDescriptionSelected && item.description?.toLowerCase().includes(searchLower)) ||
-    (isMainUnitIdSelected && item.main_unit_id.toLowerCase().includes(searchLower)) ||
-    (isOtherUnitIdsSelected && item.other_unit_ids.some(unitId => unitId.toLowerCase().includes(searchLower))) ||
     (isOtherParametersSelected && item.other_parameters.some(param => 
       param.parameter_name.toLowerCase().includes(searchLower) || 
       param.value.toLowerCase().includes(searchLower)
     )) ||
     (isMainUnitNameSelected && item.main_unit_name?.toLowerCase().includes(searchLower)) ||
-    (isOtherUnitNameSelected && item.other_unit_names.some(unitName => unitName.toLowerCase().includes(searchLower))) ||
+    (isOtherUnitNamesSelected && item.other_unit_names.some(unitName => unitName.toLowerCase().includes(searchLower))) ||
 
     // If no checkboxes are selected, search in all fields
-    (!isIdSelected && !isNameSelected && !isDescriptionSelected && !isMainUnitIdSelected && !isOtherUnitIdsSelected && 
-     !isOtherParametersSelected && !isMainUnitNameSelected && !isOtherUnitNameSelected &&
+    (!isIdSelected && !isNameSelected && !isDescriptionSelected &&
+     !isOtherParametersSelected && !isMainUnitNameSelected && !isOtherUnitNamesSelected &&
       (
         item._id.toLowerCase().includes(searchLower) ||
         item.name.toLowerCase().includes(searchLower) ||
@@ -303,7 +299,7 @@ const removeRowForUpdate = (index: number) => {
 
     setFilteredItems(filtered);
   }
-, [searchQuery, items, isIdSelected, isNameSelected, isDescriptionSelected, isMainUnitIdSelected, isOtherUnitIdsSelected, isOtherParametersSelected, isMainUnitNameSelected, isOtherUnitNameSelected]);
+, [searchQuery, items, isIdSelected, isNameSelected, isDescriptionSelected, isOtherParametersSelected, isMainUnitNameSelected, isOtherUnitNamesSelected]);
 
   return (
     <>
@@ -318,6 +314,56 @@ const removeRowForUpdate = (index: number) => {
           placeholder_text={ITEMS_SEARCH_PLACEHOLDER} 
           value={searchQuery}
         />
+        <div className="d-flex mt-2">
+        <Checkbox 
+          label={ITEMS_TABLE_FIELDS[0]} 
+          onChange={(e) => setIsIdSelected(e.target.checked)} 
+          form_id="id" 
+          form_message="" 
+          checked={isIdSelected}
+          className ="ms-1 text-primary" 
+        />
+        <Checkbox 
+          label={ITEMS_TABLE_FIELDS[1]} 
+          onChange={(e) => setIsNameSelected(e.target.checked)} 
+          form_id="name" 
+          form_message="" 
+          checked={isNameSelected} 
+          className ="ms-1 text-primary"
+        />
+        <Checkbox 
+          label={ITEMS_TABLE_FIELDS[5]} 
+          onChange={(e) => setIsDescriptionSelected(e.target.checked)} 
+          form_id="description" 
+          form_message="" 
+          checked={isDescriptionSelected} 
+          className ="ms-1 text-primary"
+        />
+        <Checkbox 
+          label={ITEMS_TABLE_FIELDS[3]} 
+          onChange={(e) => setIsMainUnitNameSelected(e.target.checked)} 
+          form_id="main_unit_name" 
+          form_message="" 
+          checked={isMainUnitNameSelected} 
+          className ="ms-1 text-primary"
+        />
+        <Checkbox 
+          label={ITEMS_TABLE_FIELDS[4]} 
+          onChange={(e) => setIsOtherUnitNamesSelected(e.target.checked)} 
+          form_id="other_unit_names" 
+          form_message="" 
+          checked={isOtherUnitNamesSelected} 
+          className ="ms-1 text-primary"
+        />
+        <Checkbox 
+          label={ITEMS_TABLE_FIELDS[6]} 
+          onChange={(e) => setIsOtherParametersSelected(e.target.checked)} 
+          form_id="other_parameters" 
+          form_message="" 
+          checked={isOtherParametersSelected}
+          className ="ms-1 text-primary"
+        />
+        </div>
         <div className="scrollable-table">
         <Table striped bordered hover className='mt-3' size='sm'>
           <thead>

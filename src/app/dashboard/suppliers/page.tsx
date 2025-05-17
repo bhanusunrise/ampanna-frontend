@@ -9,6 +9,7 @@ import ExtraContactNos from '@/app/components/Forms/suppliers/extra_contactnos';
 import ExtraAddresses from '@/app/components/Forms/suppliers/extra_addresses';
 import ExtraEmails from '@/app/components/Forms/suppliers/extra_emails';
 import ExtraWebsites from '@/app/components/Forms/suppliers/extra_websites';
+import Checkbox from '@/app/components/Forms/check_box';
 
 const SuppliersPage = () => {
   const [Suppliers, setSuppliers] = useState<SupplierInterface[]>([]);
@@ -24,7 +25,6 @@ const SuppliersPage = () => {
   const [isContactnosSelected, setIsContactnosSelected] = useState<boolean>(false);
   const [isEmailsSelected, setIsEmailsSelected] = useState<boolean>(false);
   const [isWebsitesSelected, setIsWebsitesSelected] = useState<boolean>(false);
-  const [isOtherParametersSelected, setIsOtherParametersSelected] = useState<boolean>(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -444,7 +444,7 @@ const SuppliersPage = () => {
       });
       setFilteredSuppliers(filtered);
     }
-  }, [searchQuery, Suppliers, isIdSelected, isNameSelected, isDescriptionSelected, isAddressesSelected, isContactnosSelected, isEmailsSelected, isWebsitesSelected, isOtherParametersSelected]);
+  }, [searchQuery, Suppliers, isIdSelected, isNameSelected, isDescriptionSelected, isAddressesSelected, isContactnosSelected, isEmailsSelected, isWebsitesSelected]);
 
   return (
     <>
@@ -459,6 +459,36 @@ const SuppliersPage = () => {
           placeholder_text={SUPPLIER_SEARCH_PLACEHOLDER} 
           value={searchQuery}
         />
+        <div className='d-flex mt-3'>
+          <Checkbox
+              label={SUPPLIER_TABLE_FIELDS[0]}
+              checked={isIdSelected}
+              onChange={(e) => setIsIdSelected(e.target.checked)} form_id={''} form_message={''} className='me-2 text-primary' />
+          <Checkbox
+              label={SUPPLIER_TABLE_FIELDS[1]}
+              checked={isNameSelected}
+              onChange={(e) => setIsNameSelected(e.target.checked)} form_id={''} form_message={''} className='me-2 text-primary' />
+          <Checkbox
+              label={SUPPLIER_TABLE_FIELDS[2]}
+              checked={isDescriptionSelected}
+              onChange={(e) => setIsDescriptionSelected(e.target.checked)} form_id={''} form_message={''} className='me-2 text-primary' />
+          <Checkbox
+              label={SUPPLIER_TABLE_FIELDS[3]}
+              checked={isContactnosSelected}
+              onChange={(e) => setIsContactnosSelected(e.target.checked)} form_id={''} form_message={''} className='me-2 text-primary' />
+          <Checkbox
+              label={SUPPLIER_TABLE_FIELDS[4]}
+              checked={isAddressesSelected}
+              onChange={(e) => setIsAddressesSelected(e.target.checked)} form_id={''} form_message={''} className='me-2 text-primary' />
+          <Checkbox
+              label={SUPPLIER_TABLE_FIELDS[5]}
+              checked={isEmailsSelected}
+              onChange={(e) => setIsEmailsSelected(e.target.checked)} form_id={''} form_message={''} className='me-2 text-primary' />
+          <Checkbox
+              label={SUPPLIER_TABLE_FIELDS[6]}
+              checked={isWebsitesSelected}
+              onChange={(e) => setIsWebsitesSelected(e.target.checked)} form_id={''} form_message={''} className='me-2 text-primary' />
+        </div>
         <div className="scrollable-table">
         <Table striped bordered hover className='mt-3' size='sm'>
           <thead>
