@@ -1,6 +1,7 @@
 'use client';
 
 import SearchInput from "@/app/components/Forms/calculator/search_input";
+import NumberInput from "@/app/components/Forms/number_input";
 import TextInput from "@/app/components/Forms/text_input";
 import { CALCULATOR_PAGE_NAME, CALCULATOR_TABLE_FIELDS, ITEMS_API, ITEMS_PAGE_NAME, ITEMS_SEARCH_PLACEHOLDER, SEARCH, STOCKS_API } from "@/app/constants/constants";
 import { BillInterface } from "@/app/interfaces/bill_interface";
@@ -19,6 +20,9 @@ function CalculatorPage() {
   const [stocks, setStocks] = useState<StockInterface[]>([]);
   const [selectedStock, setSelectedStock] = useState<StockInterface | null>(null);
   const [units, setUnits] = useState<UnitInterface[]>([]);
+  const [selectedAmount, setSelectedAmount] = useState<number>(1);
+  const [selectedSubtotal, setSelectedSubtotal] = useState<number>(0);
+
 
   const fetchStocksForSelectedItem = async () => {
     if (!selectedItem?._id) return;
@@ -29,6 +33,7 @@ function CalculatorPage() {
       if (jsonResponse.success && Array.isArray(jsonResponse.data)) {
         setStocks(jsonResponse.data);
         setSelectedStock(jsonResponse.data[0]);
+        setSelectedAmount(1);
       } else {
         setStocks([]); // Ensure stocks is always an array
       }
@@ -42,7 +47,14 @@ function CalculatorPage() {
     console.log("Selected value:", e.target.value);
     const newStock = stocks.find(stock => stock._id === e.target.value) || null;
     setSelectedStock(newStock);
+    handleAmountChange();
   };
+
+  const handleAmountChange = () => {
+    const newSubtotal = selectedStock?.selling_price * selectedAmount;
+    setSelectedSubtotal(newSubtotal);
+
+  }
   
 
   useEffect(() => {
@@ -53,6 +65,13 @@ function CalculatorPage() {
     console.log("selected stock:", selectedStock); // Will now log correctly
   }, [selectedStock]);
   
+  useEffect(() => {
+    console.log("selected amount:", selectedAmount); // Will now log correctly
+  }, [selectedAmount]);
+
+  useEffect(() => {
+    console.log("selected subtotal:", selectedSubtotal); // Will now log correctly
+  }, [selectedSubtotal]);
 
   return (
     <>
@@ -72,6 +91,8 @@ function CalculatorPage() {
             onSelectItem={(item: ItemInterface) => {
               setSelectedItem(item);
               fetchStocksForSelectedItem();
+              setSelectedAmount(1);
+              setSelectedSubtotal(selectedAmount * selectedStock?.selling_price || 0);
             }}
           />
         </div>
@@ -108,17 +129,26 @@ function CalculatorPage() {
                   {selectedStock?.selling_price.toString() || 'hi'}
               </td>
               <td>
-                <select className="form-select">
+                <select className="form-select" onChange={handleAmountChange}>
                    <option value={selectedItem?.main_unit_id} selected>{selectedItem?.main_unit_name}</option>
                   {selectedItem?.other_unit_ids.map((item, index) => (
                     <option key={index} value={item}>{selectedItem.other_unit_names?.[index] || item}</option>
                   ))}
                 </select>
               </td>
-              <td>4</td>
-              <td>5</td>
+              <td>
+                <NumberInput
+                  form_id="quantity"
+                  placeholder_text="0"
+                  value={selectedAmount}
+                  min_value={1}
+                  onChangeText={(e) => {setSelectedAmount(Number(e.target.value)); handleAmountChange();}}
+                  onLoad={() => setSelectedAmount(1)}
+                />
+              </td>
+              <td>{selectedAmount * selectedStock?.selling_price || 0 }</td>
               <td>6</td>
-              <td>7</td>
+              <td>{selectedAmount * selectedStock?.selling_price || 0}</td>
             </tr>
           </tbody>
 

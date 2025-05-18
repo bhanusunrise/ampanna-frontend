@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Form } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -10,9 +10,10 @@ interface NumberInputProps {
   form_id: string;
   form_message?: string; // Make form_message optional
   placeholder_text: string;
-  min_value: number;
-  max_value: number;
+  min_value?: number; // Make min_value optional
+  max_value?: number; // Make max_value optional
   value: number;
+  onLoad?: () => void; // Optional onLoad function
 }
 
 const NumberInput: React.FC<NumberInputProps> = ({
@@ -24,7 +25,15 @@ const NumberInput: React.FC<NumberInputProps> = ({
   min_value,
   max_value,
   value,
+  onLoad,
 }) => {
+  // Trigger onLoad when the component mounts
+  useEffect(() => {
+    if (onLoad) {
+      onLoad();
+    }
+  }, []); // Empty dependency array ensures it runs only once when mounted
+
   return (
     <>
       {label && <Form.Label htmlFor={form_id} className={'text-primary'}>{label}</Form.Label>} {/* Conditionally render label */}
@@ -34,11 +43,10 @@ const NumberInput: React.FC<NumberInputProps> = ({
         aria-describedby={form_message ? "passwordHelpBlock" : undefined}
         onChange={onChangeText}
         placeholder={placeholder_text}
-        min={min_value}
-        max={max_value}
         size="sm"
         value={value}
-        
+        {...(min_value !== undefined ? { min: min_value } : {})} // Conditionally apply min
+        {...(max_value !== undefined ? { max: max_value } : {})} // Conditionally apply max
       />
       {form_message && (
         <Form.Text id="passwordHelpBlock" muted>

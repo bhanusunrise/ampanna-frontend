@@ -6,8 +6,9 @@ export const CALCULATOR_TABLE_FIELDS = [
     "ඒකක මිළ",
     "ඒකකය",
     "අයිතම",
-    "වට්ටම",
     "එකතුව",
+    "වට්ටම",
+    "මුළු එකතුව",
     "  "
 ]
 
@@ -217,7 +218,7 @@ export const STOCK_DISCOUNT_LABAL = "වට්ටම්"
 export const STOCK_DISCOUNT_PLACEHOLDER = "වට්ටම් ඇතුලත් කරන්න"
 export const STOCK_DISCOUNT_START_DATE_LABAL = "ආරම්භක දිනය"
 export const STOCK_DISCOUNT_END_DATE_LABAL = "අවසන් දිනය"
-export const STOCK_DISCOUNT_PERCENTAGE_LABAL = "ප්‍රතිශතය"
+export const STOCK_DISCOUNT_PERCENTAGE_LABAL = "වට්ටම් මුදල"
 export const UPDATE_STOCK_MODEL_TITLE = STOCKS_PAGE_NAME + UPDATE
 
 
