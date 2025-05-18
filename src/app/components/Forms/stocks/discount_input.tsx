@@ -61,7 +61,6 @@ const ExtraDiscounts: React.FC<DiscountProps> = ({ discounts, onDiscountChange, 
                     form_id={`percentage-${index}`}
                     placeholder_text="Enter Discount %"
                     min_value={0}
-                    max_value={100}
                     value={discount.percentage}
                     onChangeText={(e) => onDiscountChange(index, 'percentage', Number(e.target.value))}
                   />

@@ -82,7 +82,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ label, form_id, placeholder_t
 
   return (
     <div className="position-relative">
-      {label && <Form.Label htmlFor={form_id} className="text-primary">{label}</Form.Label>}
+      {label && <Form.Label htmlFor={form_id} className="text-primary cursor-pointer">{label}</Form.Label>}
       <Form.Control
         type="text"
         id={form_id}
@@ -107,10 +107,10 @@ const SearchInput: React.FC<SearchInputProps> = ({ label, form_id, placeholder_t
 
       {/* Search Results Dropdown */}
       {showDropdown && (
-        <ListGroup className="position-absolute w-100 mt-1 bg-light shadow ease-in">
+        <ListGroup className="position-absolute w-100 mt-1 bg-light shadow ease-in cursor-pointer">
           {filteredItems.map(item => (
             <ListGroup.Item key={item._id} onClick={() => onSelectItem(item)} className="cursor-pointer">
-              {item.name} <span className="text-muted ml-10" style={{ fontSize: '0.8rem' }}>{" | " + item.description + " | " + item.main_unit_name + " | " + item.other_unit_names.join(', ') + " | " + item.other_parameters.map(param => param.parameter_name + ": " + param.value).join(', ') + ""}</span>
+              {item.name} <span className="text-muted ml-10 cursor-pointer" style={{ fontSize: '0.8rem' }}>{" | " + item.description + " | " + item.main_unit_name + " | " + item.other_unit_names.join(', ') + " | " + item.other_parameters.map(param => param.parameter_name + ": " + param.value).join(', ') + ""}</span>
             </ListGroup.Item>
           ))}
         </ListGroup>

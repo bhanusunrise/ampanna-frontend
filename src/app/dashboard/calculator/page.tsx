@@ -22,6 +22,8 @@ function CalculatorPage() {
   const [units, setUnits] = useState<UnitInterface[]>([]);
   const [selectedAmount, setSelectedAmount] = useState<number>(1);
   const [selectedSubtotal, setSelectedSubtotal] = useState<number>(0);
+  const [totalUnitDiscounts, setTotalUnitDiscounts] = useState<number>(0);
+  const [totalRowDiscounts, setTotalRowDiscounts] = useState<number>(0);
 
 
   const fetchStocksForSelectedItem = async () => {
@@ -43,17 +45,25 @@ function CalculatorPage() {
     }
   };
 
+
   const handleStockChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+
     console.log("Selected value:", e.target.value);
     const newStock = stocks.find(stock => stock._id === e.target.value) || null;
     setSelectedStock(newStock);
     handleAmountChange();
+
   };
 
   const handleAmountChange = () => {
-    const newSubtotal = selectedStock?.selling_price * selectedAmount;
+    const newSubtotal = selectedStock?.selling_price * selectedAmount || 0;
     setSelectedSubtotal(newSubtotal);
-
+  
+    const newUnitDiscounts = selectedStock?.discount.reduce((acc, discount) => acc + discount.percentage, 0) || 0;
+    setTotalUnitDiscounts(newUnitDiscounts);
+  
+    const newRowDiscounts = newUnitDiscounts * selectedAmount;
+    setTotalRowDiscounts(newRowDiscounts);
   }
   
 
@@ -66,6 +76,8 @@ function CalculatorPage() {
   }, [selectedStock]);
   
   useEffect(() => {
+    handleAmountChange();
+
     console.log("selected amount:", selectedAmount); // Will now log correctly
   }, [selectedAmount]);
 
@@ -73,6 +85,30 @@ function CalculatorPage() {
     console.log("selected subtotal:", selectedSubtotal); // Will now log correctly
   }, [selectedSubtotal]);
 
+
+  useEffect(() => {
+
+    setSelectedSubtotal(selectedStock?.selling_price * selectedAmount || 0);
+    if (!selectedStock?.discount) return; // Ensure selectedStock and discount exist
+  
+    const today = new Date();
+  
+    // Filter discounts that are valid today
+    const applicableDiscounts = selectedStock.discount.filter(discount => {
+      const startDate = new Date(discount.start_date);
+      const endDate = new Date(discount.end_date);
+      return today >= startDate && today <= endDate;
+    });
+  
+    // Sum up the discount amounts
+    const totalDiscount = applicableDiscounts.reduce((acc, discount) => acc + discount.percentage, 0);
+    
+    setTotalUnitDiscounts(totalDiscount);
+    setTotalRowDiscounts(totalDiscount * selectedAmount);
+  }, [selectedStock]); // Runs when selectedStock changes
+  
+
+  
   return (
     <>
     <div className="container">
@@ -126,7 +162,10 @@ function CalculatorPage() {
                 </select>
               </td>
               <td>
-                  {selectedStock?.selling_price.toString() || 'hi'}
+                  {selectedStock?.selling_price.toString() || '0'}
+              </td>
+              <td>
+                  {totalUnitDiscounts.toString() || '0'}
               </td>
               <td>
                 <select className="form-select" onChange={handleAmountChange}>
@@ -143,12 +182,12 @@ function CalculatorPage() {
                   value={selectedAmount}
                   min_value={1}
                   onChangeText={(e) => {setSelectedAmount(Number(e.target.value)); handleAmountChange();}}
-                  onLoad={() => setSelectedAmount(1)}
+                  onLoad={() => {setSelectedAmount(1)}}
                 />
               </td>
-              <td>{selectedAmount * selectedStock?.selling_price || 0 }</td>
-              <td>6</td>
-              <td>{selectedAmount * selectedStock?.selling_price || 0}</td>
+              <td>{selectedSubtotal }</td>
+              <td>{totalRowDiscounts}</td>
+              <td>{selectedSubtotal - totalRowDiscounts}</td>
             </tr>
           </tbody>
 
