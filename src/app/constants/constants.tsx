@@ -5,6 +5,7 @@ export const CALCULATOR_TABLE_FIELDS = [
     "තොගය",
     "ඒකක මිළ",
     "ඒකකය",
+    "අයිතම",
     "වට්ටම",
     "එකතුව",
     "  "

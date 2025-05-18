@@ -9,15 +9,16 @@ export async function GET(req: NextRequest) {
     // Connect to the database
     await dbConnect();
 
-    // Extract the item_id from query parameters
+    // Extract the item_id and sort_for_id from query parameters
     const { searchParams } = new URL(req.url);
     const itemId = searchParams.get("item_id");
+    const sortForId = searchParams.get("sort_for_id");
 
     // Define the query object
-    const query = itemId ? { item_id: itemId } : {}; // If item_id is provided, filter stocks
+    const query = itemId ? { item_id: itemId } : {};
 
     // Fetch stocks based on the query
-    const stocks = await Stock.find(query).lean().exec();
+    let stocks = await Stock.find(query).lean().exec();
 
     // Populate supplier and item names
     for (let stock of stocks) {
@@ -32,7 +33,15 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    // Return filtered stock data
+    // If sort_for_id is present, sort by _id in ascending order (oldest first)
+    if (sortForId) {
+      stocks.sort((a : any, b : any) => {
+        const idA = a._id.toString();
+        const idB = b._id.toString();
+        return idA.localeCompare(idB); // string comparison preserves order for ObjectIds
+      });
+    }
+
     return NextResponse.json(
       { success: true, data: stocks },
       { status: 200 }

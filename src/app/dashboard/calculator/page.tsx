@@ -28,6 +28,7 @@ function CalculatorPage() {
   
       if (jsonResponse.success && Array.isArray(jsonResponse.data)) {
         setStocks(jsonResponse.data);
+        setSelectedStock(jsonResponse.data[0]);
       } else {
         setStocks([]); // Ensure stocks is always an array
       }
@@ -38,9 +39,9 @@ function CalculatorPage() {
   };
 
   const handleStockChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    console.log("Selected value:", e.target.value);
     const newStock = stocks.find(stock => stock._id === e.target.value) || null;
-    setSelectedStock(newStock); // Setting new state
-    console.log("selected stock:", newStock);
+    setSelectedStock(newStock);
   };
   
 
@@ -91,16 +92,17 @@ function CalculatorPage() {
               <td>1</td>
               <td>{selectedItem?.name}</td>
               <td>
-                <select className="form-select" onChange={handleStockChange} value={selectedStock}>
-  {stocks.length === 0 ? (
-    <option value="">Cannot find a stock</option>
-  ) : (
-    stocks.map((stock, index) => (
-      <option key={index} value={stock._id}>{stock.name}</option>
-    ))
-  )}
-</select>
+                <select className="form-select" onChange={handleStockChange} value={selectedStock?._id}>
+          
+                  {stocks.length === 0 ? (
+                    <option value="">Cannot find a stock</option>
+                    ) : (
+                      stocks.map((stock, index) => (
+                        <option key={index} value={stock._id}>{stock.name}</option>
+                    ))
+                  )}
 
+                </select>
               </td>
               <td>
                   {selectedStock?.selling_price.toString() || 'hi'}
@@ -113,6 +115,8 @@ function CalculatorPage() {
                   ))}
                 </select>
               </td>
+              <td>4</td>
+              <td>5</td>
               <td>6</td>
               <td>7</td>
             </tr>
