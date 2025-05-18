@@ -1,12 +1,13 @@
 /** Calculator Table */
 export const CALCULATOR_TABLE_FIELDS = [
-    "Item_Code", 
-    "Item_Name", 
-    "Unit_Price",
-    "Unit",
-    "Quantity",
-    "Warrenty",
-    "Sub Total"
+    "#",
+    "භාණ්ඩය",
+    "තොගය",
+    "ඒකක මිළ",
+    "ඒකකය",
+    "වට්ටම",
+    "එකතුව",
+    "  "
 ]
 
 /** customer Table */

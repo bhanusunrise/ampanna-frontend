@@ -18,9 +18,14 @@ export async function POST(request: Request) {
             );
         }
 
-        // Get the maximum `_id` from the existing documents
-        const lastUnit = await Unit.findOne().sort({ _id: -1 }); // Sort by `_id` in descending order
-        const newId = lastUnit ? parseInt(lastUnit._id) + 1 : 1; // Increment `_id` or start from 1
+        const allUnits = await Unit.find({});
+        const maxId = allUnits.reduce((max, doc) => {
+            const idNum = parseInt(doc._id);
+                return idNum > max ? idNum : max;
+                                }, 0);
+        const newId = (maxId + 1).toString();
+                        
+        console.log('New ID:', newId); // Debug log
 
         // Create a new Unit object
         const newUnit = new Unit({

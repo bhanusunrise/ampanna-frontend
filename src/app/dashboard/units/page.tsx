@@ -129,6 +129,8 @@ const UnitCategoryPage = () => {
           unit_category_id: selectedUnitForAdd?.unit_category_id,
         }),
       });
+
+      console.log(selectedUnitForAdd);
       if (!response.ok) {
         throw new Error('Failed to add unit');
       }
@@ -136,6 +138,7 @@ const UnitCategoryPage = () => {
       if (success && data) {
         console.log('Added Unit:', data);
         fetchUnits();
+        setSelectedUnitForAdd({ ...selectedUnitForAdd, unit_name: "", description: "" });
       } else {
         throw new Error('Invalid API response format');
       }
@@ -380,7 +383,7 @@ const UnitCategoryPage = () => {
           <Modal.Header closeButton onClick={() => setShowDeleteModal(false)}>
             <Modal.Title className='text-danger'>{DELETE_CONFIRM}</Modal.Title>
           </Modal.Header>
-          <Modal.Body>{`${DELETE_CONFIRM_MESSEGE} ID = ${selectedUnitId}`}</Modal.Body>
+          <Modal.Body>{`${DELETE_CONFIRM_MESSEGE}`}</Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
               {BACK}

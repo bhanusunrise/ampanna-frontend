@@ -87,6 +87,7 @@ const UnitCategoryPage = () => {
       if (success && data) {
         console.log('Added Category:', data);
         fetchUnitCategories();
+        setSelectedCategoryForAdd({ ...selectedCategoryForAdd, unit_category_name: "" , description: "" });
       } else {
         throw new Error('Invalid API response format');
       }
@@ -299,7 +300,7 @@ const UnitCategoryPage = () => {
           <Modal.Header closeButton onClick={() => setShowDeleteModal(false)}>
             <Modal.Title className='text-danger'>{DELETE_CONFIRM}</Modal.Title>
           </Modal.Header>
-          <Modal.Body>{`${DELETE_CONFIRM_MESSEGE} ID = ${selectedCategoryId}`}</Modal.Body>
+          <Modal.Body>{`${DELETE_CONFIRM_MESSEGE}`}</Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
               {BACK}

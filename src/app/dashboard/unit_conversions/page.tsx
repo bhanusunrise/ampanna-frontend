@@ -170,7 +170,7 @@ const UnitConversionPage = () => {
         console.log('Added Conversion:', data);
         fetchUnitCategories();
         fetchUnitConversions();
-        setSelectedConversionForAdd({ first_unit_id: '', second_unit_id: '', multiplier: 0, description: '', first_unit_name: '', second_unit_name: '' });
+        setSelectedConversionForAdd({ multiplier: 0});
       } else {
         throw new Error('Invalid API response format');
       }
@@ -336,7 +336,7 @@ const UnitConversionPage = () => {
 
           <label className="form-label text-primary">{FIRST_UNIT_NAME_LABAL}</label>
 
-          <select className="form-select mb-2" onChange={(e) => setSelectedConversionForAdd(selectedConversionForAdd ? { ...selectedConversionForAdd, first_unit_id: e.target.value } : { first_unit_id: e.target.value, second_unit_id: '', multiplier: 0, description: '', first_unit_name: '', second_unit_name: '' })} value={selectedConversionForAdd?.first_unit_id}>
+          <select className="form-select mb-2" onChange={(e) => setSelectedConversionForAdd({ ...selectedConversionForAdd, first_unit_id: e.target.value })} value={selectedConversionForAdd?.first_unit_id}>
             
             {filteredUnits.map((unit) => (
               <option key={unit._id} value={unit._id}>
@@ -347,7 +347,7 @@ const UnitConversionPage = () => {
 
           <label className="form-label text-primary">{SECOND_UNIT_NAME_LABAL}</label>
 
-          <select className="form-select mb-2" onChange={(e) => setSelectedConversionForAdd(selectedConversionForAdd ? { ...selectedConversionForAdd, second_unit_id: e.target.value } : null)} value={selectedConversionForAdd?.second_unit_id}>
+          <select className="form-select mb-2" onChange={(e) => setSelectedConversionForAdd( { ...selectedConversionForAdd, second_unit_id: e.target.value } )} value={selectedConversionForAdd?.second_unit_id}>
             
             {filteredUnits.map((unit) => (
               <option key={unit._id} value={unit._id}>
