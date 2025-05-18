@@ -16,7 +16,7 @@ const BillSchema: Schema = new Schema(
                 _id: { type: String, required: false }, // Unique identifier for the bill item
                 stock_id: { type: String, required: true }, // Reference to stock
                 quantity: { type: Number, required: true }, // Quantity of the stock item
-                discount: { type: Number, required: true }, // Discount percentage
+                discount: { type: Number, required: false }, // Discount percentage
             },
         ],
         additional_discount: { type: Number, required: false, default: 0 }, // Default to 0

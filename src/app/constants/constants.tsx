@@ -98,6 +98,7 @@ export const ITEM_CATEGORY_API = "/api_new/operations/item_categories/"
 export const ITEMS_API = "/api_new/operations/items/"
 export const SUPPLIER_API = "/api_new/operations/suppliers/"
 export const STOCKS_API = "/api_new/operations/stocks/"
+export const BILL_API = "/api_new/operations/bills/"
 
 
 /*** UI Routes */

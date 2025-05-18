@@ -1,16 +1,34 @@
 'use client';
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CalculatorRow } from "@/app/interfaces/tables/calculator_row_interface";
-import { CALCULATOR_TABLE_FIELDS, ITEMS_SEARCH_PLACEHOLDER, SEARCH, STOCKS_API, UNIT_CONVERSION_API } from "@/app/constants/constants";
+import { CALCULATOR_TABLE_FIELDS, ITEMS_SEARCH_PLACEHOLDER, SEARCH, STOCKS_API, UNIT_CONVERSION_API, BILL_API } from "@/app/constants/constants";
 import ItemInterface from "@/app/interfaces/item_interface";
 import SearchInput from "@/app/components/Forms/calculator/search_input";
 import { Table } from "react-bootstrap";
 import NumberInput from "@/app/components/Forms/number_input";
 import UnitConversionInterface from "@/app/interfaces/unit_conversion_interface";
+import createBillPDF from "./helpers";
 
 function CalculatorPage() {
   const [rows, setRows] = useState<CalculatorRow[]>([]);
+  const [grandSubtotal, setGrandSubtotal] = useState(0);
+  const [grandDiscount, setGrandDiscount] = useState(0);
+  const [grandTotal, setGrandTotal] = useState(0);
+  const [additionalDiscount, setAdditionalDiscount] = useState(0);
+  const [isSaving, setIsSaving] = useState(false);
+
+
+
+  useEffect(() => {
+    const subtotal = rows.reduce((acc, row) => acc + row.subtotal, 0);
+    const discount = rows.reduce((acc, row) => acc + row.rowDiscount, 0);
+    const total = subtotal - discount;
+
+    setGrandSubtotal(subtotal);
+    setGrandDiscount(discount);
+    setGrandTotal(total);
+  }, [rows]);
 
   const handleItemSelect = async (item: ItemInterface) => {
     try {
@@ -52,6 +70,54 @@ function CalculatorPage() {
       console.error("Error fetching stock for item:", error);
     }
   };
+
+
+  const saveBill = async () => {
+    if (rows.length === 0) {
+      alert("Add at least one item before saving the bill.");
+      return;
+    }
+  
+    setIsSaving(true);
+  
+    const billPayload = {
+        date: new Date(),
+        additional_discount: additionalDiscount,
+        bill_item: rows.map((row) => ({
+          stock_id: row.stock?._id,
+          quantity: row.amount,
+          discount: row.unitDiscount ?? 0, // Ensure a valid number
+        })),
+      };
+      
+  
+    try {
+      const response = await fetch(`${BILL_API}create_bill`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(billPayload),
+      });
+  
+      const result = await response.json();
+  
+      if (result.success) {
+        createBillPDF(rows, grandSubtotal, grandDiscount, grandTotal)
+        alert("Bill saved successfully!");
+        setRows([]);
+        setAdditionalDiscount(0);
+      } else {
+        alert(`Failed to save bill: ${result.message}`);
+      }
+    } catch (err) {
+      console.error("Error saving bill:", err);
+      alert("An error occurred while saving the bill.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+  
 
   return (
     <>
@@ -215,6 +281,34 @@ function CalculatorPage() {
           ))}
         </tbody>
       </Table>
+      <div className="mt-4 text-end">
+  <h5 className="text-primary">Summary</h5>
+  <p><strong>Grand Subtotal:</strong> Rs. {grandSubtotal.toFixed(2)}</p>
+  <p><strong>Grand Discount:</strong> Rs. {grandDiscount.toFixed(2)}</p>
+  <p><strong>Grand Total:</strong> Rs. {grandTotal.toFixed(2)}</p>
+
+  <div className="mt-3">
+    <label htmlFor="additional-discount" className="form-label">Additional Discount (Rs.)</label>
+    <input
+      type="number"
+      id="additional-discount"
+      className="form-control mb-2"
+      value={additionalDiscount}
+      min={0}
+      onChange={(e) => setAdditionalDiscount(Number(e.target.value))}
+    />
+
+    <button
+      className="btn btn-success"
+      onClick={saveBill}
+      disabled={isSaving}
+    >
+      {isSaving ? "Saving..." : "Save Bill"}
+    </button>
+  </div>
+</div>
+
+
     </>
   );
 }
