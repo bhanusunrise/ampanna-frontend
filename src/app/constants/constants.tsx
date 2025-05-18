@@ -10,7 +10,7 @@ export const CALCULATOR_TABLE_FIELDS = [
     "එකතුව",
     "වට්ටම",
     "මුළු එකතුව",
-    "  "
+    "🗑️"
 ]
 
 /** customer Table */
