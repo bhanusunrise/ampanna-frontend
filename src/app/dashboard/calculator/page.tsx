@@ -1,201 +1,314 @@
 'use client';
 
-import SearchInput from "@/app/components/Forms/calculator/search_input";
-import NumberInput from "@/app/components/Forms/number_input";
-import TextInput from "@/app/components/Forms/text_input";
-import { CALCULATOR_PAGE_NAME, CALCULATOR_TABLE_FIELDS, ITEMS_API, ITEMS_PAGE_NAME, ITEMS_SEARCH_PLACEHOLDER, SEARCH, STOCKS_API } from "@/app/constants/constants";
-import { BillInterface } from "@/app/interfaces/bill_interface";
-import ItemInterface from "@/app/interfaces/item_interface";
-import StockInterface from "@/app/interfaces/stock_interface";
-import UnitInterface from "@/app/interfaces/unit_interface";
-import { set } from "mongoose";
 import { useEffect, useState } from "react";
+import { CalculatorRow } from "@/app/interfaces/tables/calculator_row_interface";
+import { CALCULATOR_TABLE_FIELDS, ITEMS_SEARCH_PLACEHOLDER, SEARCH, STOCKS_API, UNIT_CONVERSION_API, BILL_API } from "@/app/constants/constants";
+import ItemInterface from "@/app/interfaces/item_interface";
+import SearchInput from "@/app/components/Forms/calculator/search_input";
 import { Table } from "react-bootstrap";
-
-
+import NumberInput from "@/app/components/Forms/number_input";
+import UnitConversionInterface from "@/app/interfaces/unit_conversion_interface";
+import createBillPDF from "./helpers";
 
 function CalculatorPage() {
-  const [selectedItem, setSelectedItem] = useState<ItemInterface | null>(null);
-  const [bill, setBill] = useState<BillInterface | null>(null);
-  const [stocks, setStocks] = useState<StockInterface[]>([]);
-  const [selectedStock, setSelectedStock] = useState<StockInterface | null>(null);
-  const [units, setUnits] = useState<UnitInterface[]>([]);
-  const [selectedAmount, setSelectedAmount] = useState<number>(1);
-  const [selectedSubtotal, setSelectedSubtotal] = useState<number>(0);
-  const [totalUnitDiscounts, setTotalUnitDiscounts] = useState<number>(0);
-  const [totalRowDiscounts, setTotalRowDiscounts] = useState<number>(0);
+  const [rows, setRows] = useState<CalculatorRow[]>([]);
+  const [grandSubtotal, setGrandSubtotal] = useState(0);
+  const [grandDiscount, setGrandDiscount] = useState(0);
+  const [grandTotal, setGrandTotal] = useState(0);
+  const [additionalDiscount, setAdditionalDiscount] = useState(0);
+  const [isSaving, setIsSaving] = useState(false);
 
 
-  const fetchStocksForSelectedItem = async () => {
-    if (!selectedItem?._id) return;
+
+  useEffect(() => {
+    const subtotal = rows.reduce((acc, row) => acc + row.subtotal, 0);
+    const discount = rows.reduce((acc, row) => acc + row.rowDiscount, 0);
+    const total = subtotal - discount;
+
+    setGrandSubtotal(subtotal);
+    setGrandDiscount(discount);
+    setGrandTotal(total);
+  }, [rows]);
+
+  const handleItemSelect = async (item: ItemInterface) => {
     try {
-      const response = await fetch(`${STOCKS_API}fetch_all_stocks?item_id=${selectedItem._id}`);
+      const response = await fetch(`${STOCKS_API}fetch_all_stocks?item_id=${item._id}`);
       const jsonResponse = await response.json();
-  
-      if (jsonResponse.success && Array.isArray(jsonResponse.data)) {
-        setStocks(jsonResponse.data);
-        setSelectedStock(jsonResponse.data[0]);
-        setSelectedAmount(1);
-      } else {
-        setStocks([]); // Ensure stocks is always an array
+
+      if (jsonResponse.success && Array.isArray(jsonResponse.data) && jsonResponse.data.length > 0) {
+        const allStocks = jsonResponse.data;
+        const defaultStock = allStocks[0];
+        const today = new Date();
+
+        const applicableDiscounts = defaultStock.discount.filter(discount => {
+          const startDate = new Date(discount.start_date);
+          const endDate = new Date(discount.end_date);
+          return today >= startDate && today <= endDate;
+        });
+
+        const totalUnitDiscount = applicableDiscounts.reduce((acc, discount) => acc + discount.percentage, 0);
+        const amount = 1;
+        const subtotal = defaultStock.selling_price * amount;
+        const rowDiscount = totalUnitDiscount * amount;
+
+        const newRow: CalculatorRow = {
+            item,
+            stock: defaultStock,
+            allStocks,
+            amount,
+            subtotal,
+            unitDiscount: totalUnitDiscount,
+            rowDiscount,
+            baseSellingPrice: defaultStock.selling_price,
+            unitId: item.main_unit_id, // track current selected unit
+          };
+          
+
+        setRows(prev => [...prev, newRow]);
       }
     } catch (error) {
-      console.error("Error fetching selected stock:", error);
-      setStocks([]); // Handle errors gracefully
+      console.error("Error fetching stock for item:", error);
     }
   };
 
 
-  const handleStockChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-
-    console.log("Selected value:", e.target.value);
-    const newStock = stocks.find(stock => stock._id === e.target.value) || null;
-    setSelectedStock(newStock);
-    handleAmountChange();
-
+  const saveBill = async () => {
+    if (rows.length === 0) {
+      alert("Add at least one item before saving the bill.");
+      return;
+    }
+  
+    setIsSaving(true);
+  
+    const billPayload = {
+        date: new Date(),
+        additional_discount: additionalDiscount,
+        bill_item: rows.map((row) => ({
+          stock_id: row.stock?._id,
+          quantity: row.amount,
+          discount: row.unitDiscount ?? 0, // Ensure a valid number
+        })),
+      };
+      
+  
+    try {
+      const response = await fetch(`${BILL_API}create_bill`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(billPayload),
+      });
+  
+      const result = await response.json();
+  
+      if (result.success) {
+        createBillPDF(rows, grandSubtotal, grandDiscount, grandTotal)
+        alert("Bill saved successfully!");
+        setRows([]);
+        setAdditionalDiscount(0);
+      } else {
+        alert(`Failed to save bill: ${result.message}`);
+      }
+    } catch (err) {
+      console.error("Error saving bill:", err);
+      alert("An error occurred while saving the bill.");
+    } finally {
+      setIsSaving(false);
+    }
   };
-
-  const handleAmountChange = () => {
-    const newSubtotal = selectedStock?.selling_price * selectedAmount || 0;
-    setSelectedSubtotal(newSubtotal);
-  
-    const newUnitDiscounts = selectedStock?.discount.reduce((acc, discount) => acc + discount.percentage, 0) || 0;
-    setTotalUnitDiscounts(newUnitDiscounts);
-  
-    const newRowDiscounts = newUnitDiscounts * selectedAmount;
-    setTotalRowDiscounts(newRowDiscounts);
-  }
   
 
-  useEffect(() => {
-    fetchStocksForSelectedItem();
-  }, [selectedItem]);
-
-  useEffect(() => {
-    console.log("selected stock:", selectedStock); // Will now log correctly
-  }, [selectedStock]);
-  
-  useEffect(() => {
-    handleAmountChange();
-
-    console.log("selected amount:", selectedAmount); // Will now log correctly
-  }, [selectedAmount]);
-
-  useEffect(() => {
-    console.log("selected subtotal:", selectedSubtotal); // Will now log correctly
-  }, [selectedSubtotal]);
-
-
-  useEffect(() => {
-
-    setSelectedSubtotal(selectedStock?.selling_price * selectedAmount || 0);
-    if (!selectedStock?.discount) return; // Ensure selectedStock and discount exist
-  
-    const today = new Date();
-  
-    // Filter discounts that are valid today
-    const applicableDiscounts = selectedStock.discount.filter(discount => {
-      const startDate = new Date(discount.start_date);
-      const endDate = new Date(discount.end_date);
-      return today >= startDate && today <= endDate;
-    });
-  
-    // Sum up the discount amounts
-    const totalDiscount = applicableDiscounts.reduce((acc, discount) => acc + discount.percentage, 0);
-    
-    setTotalUnitDiscounts(totalDiscount);
-    setTotalRowDiscounts(totalDiscount * selectedAmount);
-  }, [selectedStock]); // Runs when selectedStock changes
-  
-
-  
   return (
     <>
-    <div className="container">
-      <div className="row">
-        <div className="col-md-12 col-sm-12">
-          <h3 className='text-primary'>{CALCULATOR_PAGE_NAME}</h3>
-        
-        </div>
-      </div>
-      <div className="row">
-        <div className="col-md-12 col-sm-12">
-          <SearchInput
-            label={SEARCH}
-            form_id="search"
-            placeholder_text={ITEMS_SEARCH_PLACEHOLDER}
-            onSelectItem={(item: ItemInterface) => {
-              setSelectedItem(item);
-              fetchStocksForSelectedItem();
-              setSelectedAmount(1);
-              setSelectedSubtotal(selectedAmount * selectedStock?.selling_price || 0);
-            }}
-          />
-        </div>
-      </div>
+      <SearchInput
+        label={SEARCH}
+        form_id="search"
+        placeholder_text={ITEMS_SEARCH_PLACEHOLDER}
+        onSelectItem={handleItemSelect}
+      />
 
-      <div className="row">
-        <div className="col-md-12 col-sm-12">
-        <Table striped bordered hover className='mt-3' size='sm'>
-          <thead>
-            <tr>
-              {CALCULATOR_TABLE_FIELDS.map((field, index) => (
-                <th key={index} className='text-primary'>{field}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td>{selectedItem?.name}</td>
+      <Table bordered hover>
+        <thead>
+          <tr>
+            {CALCULATOR_TABLE_FIELDS.map((field, index) => (
+              <th key={index} className="text-primary">{field}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, index) => (
+            <tr key={index}>
+              <td>{index + 1}</td>
+              <td>{row.item.name}</td>
               <td>
-                <select className="form-select" onChange={handleStockChange} value={selectedStock?._id}>
-          
-                  {stocks.length === 0 ? (
-                    <option value="">Cannot find a stock</option>
-                    ) : (
-                      stocks.map((stock, index) => (
-                        <option key={index} value={stock._id}>{stock.name}</option>
-                    ))
-                  )}
+                <select
+                  className="form-select"
+                  value={row.stock?._id}
+                  onChange={(e) => {
+                    const selectedStock = row.allStocks.find(s => s._id === e.target.value);
+                    if (!selectedStock) return;
 
-                </select>
-              </td>
-              <td>
-                  {selectedStock?.selling_price.toString() || '0'}
-              </td>
-              <td>
-                  {totalUnitDiscounts.toString() || '0'}
-              </td>
-              <td>
-                <select className="form-select" onChange={handleAmountChange}>
-                   <option value={selectedItem?.main_unit_id} selected>{selectedItem?.main_unit_name}</option>
-                  {selectedItem?.other_unit_ids.map((item, index) => (
-                    <option key={index} value={item}>{selectedItem.other_unit_names?.[index] || item}</option>
+                    const today = new Date();
+                    const applicableDiscounts = selectedStock.discount.filter(discount => {
+                      const start = new Date(discount.start_date);
+                      const end = new Date(discount.end_date);
+                      return today >= start && today <= end;
+                    });
+
+                    const unitDiscount = applicableDiscounts.reduce((acc, d) => acc + d.percentage, 0);
+                    const subtotal = selectedStock.selling_price * row.amount;
+                    const rowDiscount = unitDiscount * row.amount;
+
+                    const updatedRow: CalculatorRow = {
+                      ...row,
+                      stock: selectedStock,
+                      unitDiscount,
+                      subtotal,
+                      rowDiscount,
+                    };
+
+                    setRows(prev => {
+                      const newRows = [...prev];
+                      newRows[index] = updatedRow;
+                      return newRows;
+                    });
+                  }}
+                >
+                  {row.allStocks.map((stock, i) => (
+                    <option key={i} value={stock._id}>{stock.name}</option>
                   ))}
                 </select>
               </td>
+              <td>{row.stock?.selling_price || 0}</td>
+              <td>{row.unitDiscount}</td>
+              <td>
+              <select
+  className="form-select"
+  value={row.unitId || row.item.main_unit_id}
+  onChange={async (e) => {
+    const selectedUnitId = e.target.value;
+    let adjustedPrice = row.baseSellingPrice;
+
+    if (selectedUnitId !== row.item.main_unit_id) {
+      try {
+        const response = await fetch(
+          `${UNIT_CONVERSION_API}fetch_all_unit_conversions?first_unit_id=${row.item.main_unit_id}&second_unit_id=${selectedUnitId}`
+        );
+        const json = await response.json();
+
+        if (json.success && json.data.length > 0) {
+          const multiplier = json.data[0].multiplier;
+          adjustedPrice = row.baseSellingPrice / multiplier;
+        } else {
+          console.warn("Conversion not found. Falling back to base price.");
+        }
+      } catch (err) {
+        console.error("Error fetching conversion:", err);
+      }
+    }
+
+    const newSubtotal = adjustedPrice * row.amount;
+    const newRowDiscount = row.unitDiscount * row.amount;
+
+    const updatedRow = {
+      ...row,
+      unitId: selectedUnitId,
+      stock: {
+        ...row.stock,
+        selling_price: adjustedPrice,
+      },
+      subtotal: newSubtotal,
+      rowDiscount: newRowDiscount,
+    };
+
+    // ✅ Update rows state
+    setRows((prev) => {
+      const newRows = [...prev];
+      newRows[index] = updatedRow;
+      return newRows;
+    });
+  }}
+>
+  <option value={row.item.main_unit_id}>{row.item.main_unit_name}</option>
+  {row.item.other_unit_ids.map((id, i) => (
+    <option key={i} value={id}>{row.item.other_unit_names?.[i] || id}</option>
+  ))}
+</select>
+
+
+              </td>
               <td>
                 <NumberInput
-                  form_id="quantity"
+                  form_id={`quantity-${index}`}
                   placeholder_text="0"
-                  value={selectedAmount}
+                  value={row.amount}
                   min_value={1}
-                  onChangeText={(e) => {setSelectedAmount(Number(e.target.value)); handleAmountChange();}}
-                  onLoad={() => {setSelectedAmount(1)}}
+                  onChangeText={(e) => {
+                    const newAmount = Number(e.target.value);
+                    const subtotal = (row.stock?.selling_price || 0) * newAmount;
+                    const rowDiscount = row.unitDiscount * newAmount;
+
+                    const updatedRow = {
+                      ...row,
+                      amount: newAmount,
+                      subtotal,
+                      rowDiscount,
+                    };
+
+                    setRows(prev => {
+                      const newRows = [...prev];
+                      newRows[index] = updatedRow;
+                      return newRows;
+                    });
+                  }}
                 />
               </td>
-              <td>{selectedSubtotal }</td>
-              <td>{totalRowDiscounts}</td>
-              <td>{selectedSubtotal - totalRowDiscounts}</td>
+              <td>{row.subtotal}</td>
+              <td>{row.rowDiscount}</td>
+              <td>{row.subtotal - row.rowDiscount}</td>
+              <td>
+                <button
+                  className="btn btn-danger btn-sm"
+                  onClick={() => {
+                    setRows(prev => prev.filter((_, i) => i !== index));
+                  }}
+                >
+                  🗑️
+                </button>
+              </td>
             </tr>
-          </tbody>
+          ))}
+        </tbody>
+      </Table>
+      <div className="mt-4 text-end">
+  <h5 className="text-primary">Summary</h5>
+  <p><strong>Grand Subtotal:</strong> Rs. {grandSubtotal.toFixed(2)}</p>
+  <p><strong>Grand Discount:</strong> Rs. {grandDiscount.toFixed(2)}</p>
+  <p><strong>Grand Total:</strong> Rs. {grandTotal.toFixed(2)}</p>
 
-          </Table>
-        </div>
-      </div>
-    </div>
-    
+  <div className="mt-3">
+    <label htmlFor="additional-discount" className="form-label">Additional Discount (Rs.)</label>
+    <input
+      type="number"
+      id="additional-discount"
+      className="form-control mb-2"
+      value={additionalDiscount}
+      min={0}
+      onChange={(e) => setAdditionalDiscount(Number(e.target.value))}
+    />
+
+    <button
+      className="btn btn-success"
+      onClick={saveBill}
+      disabled={isSaving}
+    >
+      {isSaving ? "Saving..." : "Save Bill"}
+    </button>
+  </div>
+</div>
+
+
     </>
   );
 }
