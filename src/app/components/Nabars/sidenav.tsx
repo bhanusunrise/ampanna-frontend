@@ -10,7 +10,7 @@ import {
   STOCKS_UI, 
   SUPPLIER_UI, 
   SUPPLIERS_PAGE_NAME, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_UI, UNIT_CONVERSION_PAGE_NAME, UNIT_CONVERSION_UI, UNIT_PAGE_NAME, 
-  UNIT_UI
+  UNIT_UI, ACCOUNTS_UI, ACCOUNTS_PAGE_NAME
 } from '@/app/constants/constants';
 import { usePathname } from "next/navigation";
 
@@ -63,13 +63,13 @@ const SideNav = () => {
       <hr />
 
       {renderNavItem(CALCULATOR_UI, CgCalculator, CALCULATOR_PAGE_NAME)}
-      {renderNavItem(PROFILE_UI, CgProfile, "Profile")}
       {renderNavItem(STOCKS_UI, BiCoin, STOCKS_PAGE_NAME)}
       {renderNavItem(ITEMS_UI, Md10K, ITEMS_PAGE_NAME)}
       {renderNavItem(UNIT_UI, MdNumbers, UNIT_PAGE_NAME)}
       {renderNavItem(UNIT_CONVERSION_UI, MdRecycling, UNIT_CONVERSION_PAGE_NAME)}
       {renderNavItem(UNIT_CATEGORY_UI, CgToolbarTop, UNIT_CATEGORY_PAGE_NAME)}
       {renderNavItem(SUPPLIER_UI, MdCarCrash, SUPPLIERS_PAGE_NAME)}
+      {renderNavItem(ACCOUNTS_UI, CgToolbarTop, ACCOUNTS_PAGE_NAME)}
     </Nav>
   );
 };

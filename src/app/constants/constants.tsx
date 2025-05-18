@@ -110,7 +110,7 @@ export const SUPPLIER_UI = "/dashboard/suppliers"
 export const STOCKS_UI = "/dashboard/stocks"
 export const CALCULATOR_UI = "/dashboard/calculator"
 export const PROFILE_UI = "/dashboard/profile"
-export const BILLS_UI = "/dashboard/bills"
+export const ACCOUNTS_UI = "/dashboard/accounts"
 export const DASHBOARD_UI = "/dashboard"
 
 
@@ -230,7 +230,7 @@ export const CALCULATOR_PAGE_NAME = "කැල්කියුලේටරය"
 
 
 /** Bills */
-export const BILLS_PAGE_NAME = "බිල්"
+export const ACCOUNTS_PAGE_NAME = "ගිණුම්"
 
 
 /*** Buttons */
