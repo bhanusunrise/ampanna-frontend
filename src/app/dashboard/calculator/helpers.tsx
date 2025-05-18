@@ -1,9 +1,13 @@
 import { CalculatorRow } from "@/app/interfaces/tables/calculator_row_interface";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+//import "@/app/fonts/ns_sinhala"; 
 
 export default function createBillPDF(rows: CalculatorRow[], grandSubTotal: number, grandDiscount: number, grandTotal: number) {
   const doc = new jsPDF();
+
+  // Add custom font
+  //doc.addFont("ns_sinhala.ttf", "ns_sinhala", "normal");
 
   // Title
   doc.setFontSize(18);
@@ -14,19 +18,16 @@ export default function createBillPDF(rows: CalculatorRow[], grandSubTotal: numb
   doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 30);
 
   // Table headers
-  const tableColumn = ["#", "Item", "Unit", "Qty", "Price", "Discount", "Total"];
+  const tableColumn = ["#", "Item", "Qty", "Price", "Discount", "Total"];
   const tableRows: any[] = [];
 
   rows.forEach((row, index) => {
     const itemData = [
       index + 1,
       row.item.name,
-      row.unitId === row.item.main_unit_id
-        ? row.item.main_unit_name
-        : row.item.other_unit_names?.[row.item.other_unit_ids.indexOf(row.unitId)] || row.unitId,
       row.amount,
       row.stock?.selling_price?.toFixed(2) || 0,
-      `${row.unitDiscount}%`,
+      `${row.unitDiscount}`,
       (row.subtotal - row.rowDiscount).toFixed(2),
     ];
     tableRows.push(itemData);

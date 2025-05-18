@@ -2,12 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { CalculatorRow } from "@/app/interfaces/tables/calculator_row_interface";
-import { CALCULATOR_TABLE_FIELDS, ITEMS_SEARCH_PLACEHOLDER, SEARCH, STOCKS_API, UNIT_CONVERSION_API, BILL_API } from "@/app/constants/constants";
+import { CALCULATOR_TABLE_FIELDS, ITEMS_SEARCH_PLACEHOLDER, SEARCH, STOCKS_API, UNIT_CONVERSION_API, BILL_API, CALCULATOR_PAGE_NAME } from "@/app/constants/constants";
 import ItemInterface from "@/app/interfaces/item_interface";
 import SearchInput from "@/app/components/Forms/calculator/search_input";
 import { Table } from "react-bootstrap";
 import NumberInput from "@/app/components/Forms/number_input";
-import UnitConversionInterface from "@/app/interfaces/unit_conversion_interface";
 import createBillPDF from "./helpers";
 
 function CalculatorPage() {
@@ -86,6 +85,7 @@ function CalculatorPage() {
         bill_item: rows.map((row) => ({
           stock_id: row.stock?._id,
           quantity: row.amount,
+          unit_id: row.unitId || row.item.main_unit_id, // ✅ Include the selected unit ID
           discount: row.unitDiscount ?? 0, // Ensure a valid number
         })),
       };
@@ -121,6 +121,8 @@ function CalculatorPage() {
 
   return (
     <>
+
+      <h3 className='text-primary'>{CALCULATOR_PAGE_NAME}</h3>
       <SearchInput
         label={SEARCH}
         form_id="search"
