@@ -69,7 +69,7 @@ const SideNav = () => {
       {renderNavItem(UNIT_CONVERSION_UI, MdRecycling, UNIT_CONVERSION_PAGE_NAME)}
       {renderNavItem(UNIT_CATEGORY_UI, CgToolbarTop, UNIT_CATEGORY_PAGE_NAME)}
       {renderNavItem(SUPPLIER_UI, MdCarCrash, SUPPLIERS_PAGE_NAME)}
-      {renderNavItem(ACCOUNTS_UI, CgToolbarTop, ACCOUNTS_PAGE_NAME)}
+      {renderNavItem(ACCOUNTS_UI, CgProfile, ACCOUNTS_PAGE_NAME)}
     </Nav>
   );
 };
