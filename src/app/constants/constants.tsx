@@ -279,3 +279,8 @@ export const SELECT_BOX_PLACEHOLDER = "තෝරාගන්න"
 
 /** Logos */
 export const LOGO_WHITE_PATH = "/logo_white.png"
+
+
+/** Login */
+export const LOGIN_TITLE = "ඇතුලු වන්න"
+export const FORGET_PASSWORD = "මුරපදය අමතක වුණාද?"

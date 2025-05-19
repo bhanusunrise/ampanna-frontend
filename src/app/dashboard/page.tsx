@@ -1,3 +1,33 @@
+'use client'
+
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { validateToken } from '@/app/api_new/operations/accounts/functions';
+import Dashboard from './DashboardPage';
+import LoadingSpinner from '../components/LoadingSpinner/loading_spinner';
+
 export default function Page() {
-  return <p>Dashboard Page</p>;
+    const [isValidUser, setIsValidUser] = useState<boolean | null>(null);
+    const router = useRouter();
+
+    useEffect(() => {
+        const checkAuth = async () => {
+            const userInfo = await validateToken();
+            if (userInfo) {
+                setIsValidUser(true);
+            } else {
+                router.push('/');
+            }
+        };
+
+        checkAuth();
+    }, []);
+
+    if (isValidUser === null) {
+        return <>
+            <LoadingSpinner />
+        </>; // Show loading state while validation is in progress
+    }
+
+    return isValidUser ? <Dashboard /> : null;
 }

@@ -7,4 +7,5 @@ export interface AccountInterface {
     retype_password: string;
     is_allowed: boolean;
     is_master: boolean;
+    token: string;
 } 
