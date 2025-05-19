@@ -31,7 +31,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         >
           <Container fluid>
             {children}
-            <Footer />
           </Container>
 
         </Col>
