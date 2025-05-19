@@ -4,6 +4,7 @@ export interface AccountInterface {
     name: string;
     email: string;
     password: string;
+    retype_password: string;
     is_allowed: boolean;
     is_master: boolean;
 } 

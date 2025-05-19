@@ -82,6 +82,17 @@ export const STOCK_TABLE_FIELDS = [
     "සැකසීම්"
 ]
 
+/** Accounts Table Fields */
+
+export const ACCOUNTS_TABLE_FIELDS = [
+    "#",
+    "නම",
+    "ඊ මේල්",
+    "අවසරය",
+    "මට්ටම",
+    "සැකසීම්"
+]
+
 
 /** Not found records */
 export const NO_RECORDS_FOUND = "සොයාගත නොහැකිය"
@@ -99,6 +110,7 @@ export const ITEMS_API = "/api_new/operations/items/"
 export const SUPPLIER_API = "/api_new/operations/suppliers/"
 export const STOCKS_API = "/api_new/operations/stocks/"
 export const BILL_API = "/api_new/operations/bills/"
+export const ACCOUNTS_API = "/api_new/operations/accounts/"
 
 
 /*** UI Routes */
@@ -229,8 +241,25 @@ export const UPDATE_STOCK_MODEL_TITLE = STOCKS_PAGE_NAME + UPDATE
 export const CALCULATOR_PAGE_NAME = "කැල්කියුලේටරය"
 
 
-/** Bills */
-export const ACCOUNTS_PAGE_NAME = "ගිණුම්"
+/** Accounts */
+export const ACCOUNTS_PAGE_NAME = "ගිණුම"
+
+export const NEW_ACCOUNT = NEW + " "+ ACCOUNTS_PAGE_NAME
+export const ACCOUNT_NAME_LABAL = "නම"
+export const ACCOUNT_NAME_PLACEHOLDER = "නම ඇතුළත් කරන්න"
+export const ACCOUNT_EMAIL_LABAL = "ඊමේල්"
+export const ACCOUNT_EMAIL_PLACEHOLDER = "ඊමේල් ඇතුළත් කරන්න"
+export const ACCOUNT_PASSWORD_LABAL = "මුරපදය"
+export const ACCOUNT_PASSWORD_RETYPE_LABAL = "තහවුරු කරන්න"
+export const ACCOUNT_PASSWORD_PLACEHOLDER = "මුරපදය ඇතුළත් කරන්න"
+export const ACCOUNT_PASSWORD_RETYPE_PLACEHOLDER = "මුරපදය නැවත ඇතුළත් කරන්න"
+export const ACCOUNT_IS_ALLOWED_LABAL = "අවසරය"
+export const ACCOUNT_IS_MASTER_LABAL = "තත්වය"
+export const ACCOUNT_AUTHORIZED = "ඇත"
+export const ACCOUNT_NOT_AUTHORIZED = "නැත"
+export const ACCOUNT_IS_AN_ADMIN_LABAL = "ඇඩ්මින්"
+export const ACCOUNT_IS_NOT_AN_ADMIN_LABAL = "සාමාන්‍ය"
+export const UPDATE_ACCOUNT_MODEL_TITLE = ACCOUNTS_PAGE_NAME + UPDATE
 
 
 /*** Buttons */

@@ -15,7 +15,7 @@ interface PasswordInputProps {
 const PasswordInput: React.FC<PasswordInputProps> = ({ label, onChangeText, form_id, form_message, placeholder_text }) => {
   return (
           <>
-            <Form.Label htmlFor={form_id}>{label}</Form.Label><Form.Control
+            <Form.Label htmlFor={form_id} className='text-primary'>{label}</Form.Label><Form.Control
                 type="password" id={form_id} aria-describedby="passwordHelpBlock" onChange={onChangeText} placeholder={placeholder_text} size='sm'/><Form.Text id="passwordHelpBlock" muted>
                 {form_message}
             </Form.Text>

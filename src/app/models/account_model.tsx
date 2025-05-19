@@ -11,8 +11,9 @@ const AccountSchema: Schema = new Schema(
     {
         _id: { type: String, required: false },
         name: { type: String, required: true, unique: true }, // Unique and required name of the account
-        email: { type: String, required: false }, // Optional description
-        password: { type: String, required: false }, // Optional description
+        email: { type: String, required: true }, // Optional description
+        password: { type: String, required: true }, // Optional description
+        retype_password: { type: String, required: true }, // Optional description
         is_allowed : { type: Boolean, required: false }, // Optional description
         is_master : { type: Boolean, required: false }, // Optional description
 
@@ -21,4 +22,4 @@ const AccountSchema: Schema = new Schema(
 );
 
 // Export the Bill model
-export default mongoose.models.Bill || mongoose.model<IAccount>('Account', AccountSchema);
+export default mongoose.models.Account || mongoose.model<IAccount>('Account', AccountSchema);
