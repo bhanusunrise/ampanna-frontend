@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     }
 
     const info = await transporter.sendMail({
-      from: `"My App" <${process.env.APP_EMAIL}>`,
+      from: `"Ampanna.com" <${process.env.APP_EMAIL}>`,
       to,
       subject,
       text,
