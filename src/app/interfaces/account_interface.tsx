@@ -8,4 +8,5 @@ export interface AccountInterface {
     is_allowed: boolean;
     is_master: boolean;
     token: string;
+    otp_code : Number;
 } 

@@ -69,3 +69,7 @@ export async function distroyToken() {
     localStorage.removeItem('authToken');
 }
 
+
+export async function handleSendOTP(){
+
+}
