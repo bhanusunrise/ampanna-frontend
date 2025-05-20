@@ -7,7 +7,16 @@ import {
   ACCOUNT_EMAIL_PLACEHOLDER,
   CLEAR_BUTTON_LABAL,
   LOGIN_TITLE,
-  ACCOUNTS_API
+  ACCOUNTS_API,
+  SEND_OTP,
+  SENDING_OTP,
+  CHECK_OTP,
+  ACCOUNT_PASSWORD_LABAL,
+  ACCOUNT_PASSWORD_PLACEHOLDER,
+  ACCOUNT_PASSWORD_RETYPE_LABAL,
+  ACCOUNT_PASSWORD_RETYPE_PLACEHOLDER,
+  ENTER_OTP_LABAL,
+  ENTER_OTP_PLACEHOLDER
 } from "../constants/constants";
 import { useRouter } from 'next/navigation';
 import EmailInput from "../components/Forms/email_input";
@@ -182,17 +191,17 @@ export default function ForgetPassword() {
               {otpSent && !otpValidated && (
                 <>
                   <NumberInput
-                    label="Enter OTP"
+                    label={ENTER_OTP_LABAL}
                     value={otp}
                     onChangeText={(e) => setOtp(e.target.value)}
-                    placeholder_text="Enter the 6-digit OTP"
+                    placeholder_text={ENTER_OTP_PLACEHOLDER}
                   />
                   <div className="mt-2 text-end">
                     <button
                       className="btn btn-success"
                       onClick={handleOtpValidation}
                     >
-                      Validate OTP
+                      {CHECK_OTP}
                     </button>
                   </div>
                 </>
@@ -201,16 +210,16 @@ export default function ForgetPassword() {
               {otpValidated && (
                 <>
                   <PasswordInput
-                    label="New Password"
+                    label={ACCOUNT_PASSWORD_LABAL}
                     value={password}
                     onChangeText={(e) => setPassword(e.target.value)}
-                    placeholder_text="Enter new password"
+                    placeholder_text={ACCOUNT_PASSWORD_PLACEHOLDER}
                   />
                   <PasswordInput
-                    label="Retype Password"
+                    label={ACCOUNT_PASSWORD_RETYPE_LABAL}
                     value={retypePassword}
                     onChangeText={(e) => setRetypePassword(e.target.value)}
-                    placeholder_text="Retype new password"
+                    placeholder_text={ACCOUNT_PASSWORD_RETYPE_PLACEHOLDER}
                   />
                   <button
                     className="btn btn-success mt-3 w-100"
@@ -227,7 +236,7 @@ export default function ForgetPassword() {
                   onClick={handleEmailSend}
                   disabled={isSending || emailDisabled}
                 >
-                  {isSending ? 'Sending...' : 'Send OTP Code'}
+                  {isSending ? SENDING_OTP : SEND_OTP}
                 </button>
                 <button className="btn btn-secondary ms-2" onClick={handleClear}>
                   {CLEAR_BUTTON_LABAL}
