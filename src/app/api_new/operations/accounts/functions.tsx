@@ -70,6 +70,12 @@ export async function distroyToken() {
 }
 
 
-export async function handleSendOTP(){
+export function validatePassword(password: string): boolean {
+    const minLength = 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSymbol = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
+    return password.length >= minLength && hasUpperCase && hasLowerCase && hasNumber && hasSymbol;
 }

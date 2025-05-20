@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { dbConnect } from '@/app/lib/db';
 import AccountModel from '@/app/models/account_model';
-import { encryptPassword } from '../functions';
+import { encryptPassword, validatePassword } from '../functions';
 
 export async function POST(request: Request) {
     try {
@@ -14,6 +14,9 @@ export async function POST(request: Request) {
                 { status: 400 }
             );
         }
+
+        if(validatePassword(body.password) === false) 
+                return NextResponse.json({ success: false, message: 'Password does not meet the requirements.' }, { status: 400 });
 
         if(body.password !== body.retype_password) {
             return NextResponse.json(

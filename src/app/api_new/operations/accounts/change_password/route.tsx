@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { encryptPassword } from '../functions';
+import { encryptPassword, validatePassword } from '../functions';
 import AccountPasswordChange from '@/app/models/account_password_change_model';
 
 export async function POST(req: Request) {
@@ -16,6 +16,9 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
+    
+    if(validatePassword(password) === false) 
+        return NextResponse.json({ success: false, message: 'Password does not meet the requirements.' }, { status: 400 });
 
     if (password !== retype) {
       return NextResponse.json(
@@ -23,6 +26,7 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
+
 
 
     const user = await AccountPasswordChange.findOne({ email });
