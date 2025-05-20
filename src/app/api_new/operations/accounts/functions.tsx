@@ -68,3 +68,4 @@ export async function validateSuperUserToken() {
 export async function distroyToken() {
     localStorage.removeItem('authToken');
 }
+

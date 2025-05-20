@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@prisma/client": "^5.21.1",
+    "@types/nodemailer": "^6.4.17",
     "@vercel/edge-config": "^1.4.0",
     "bootstrap": "^5.3.3",
     "html2pdf.js": "^0.9.0",
@@ -22,6 +23,7 @@
     "mongoose": "^8.12.1",
     "mysql2": "^3.11.3",
     "next": "^14.2.14",
+    "nodemailer": "^7.0.3",
     "react": "^18",
     "react-bootstrap": "^2.10.5",
     "react-dom": "^18",
