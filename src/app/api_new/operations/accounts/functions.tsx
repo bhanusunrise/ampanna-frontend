@@ -64,3 +64,7 @@ export async function validateSuperUserToken() {
         return null; // Handle unauthorized or system errors gracefully
     }
 }
+
+export async function distroyToken() {
+    localStorage.removeItem('authToken');
+}

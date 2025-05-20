@@ -284,3 +284,5 @@ export const LOGO_WHITE_PATH = "/logo_white.png"
 /** Login */
 export const LOGIN_TITLE = "ඇතුලු වන්න"
 export const FORGET_PASSWORD = "මුරපදය අමතක වුණාද?"
+export const SIGN_OUT = "ඉවත්වන්න"
+export const SIGN_OUT_CONFIRMATION = "ඔබට ඉවත්වීමට අවශ්‍යද?"
