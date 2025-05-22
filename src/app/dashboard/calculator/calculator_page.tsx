@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { CalculatorRow } from "@/app/interfaces/tables/calculator_row_interface";
-import { CALCULATOR_TABLE_FIELDS, ITEMS_SEARCH_PLACEHOLDER, SEARCH, STOCKS_API, UNIT_CONVERSION_API, BILL_API, CALCULATOR_PAGE_NAME } from "@/app/constants/constants";
+import { CALCULATOR_TABLE_FIELDS, ITEMS_SEARCH_PLACEHOLDER, SEARCH, STOCKS_API, UNIT_CONVERSION_API, BILL_API, CALCULATOR_PAGE_NAME, CALCULATOR_SUB_TOTAL_LABAL, CALCULATOR_DISCOUNT_LABAL, CALCULATOR_TOTAL_LABAL, CALCULATOR_ADDITIONAL_DISCOUNT_LABAL } from "@/app/constants/constants";
 import ItemInterface from "@/app/interfaces/item_interface";
 import SearchInput from "@/app/components/Forms/calculator/search_input";
 import { Table } from "react-bootstrap";
@@ -129,6 +129,8 @@ function CalculatorPage() {
         placeholder_text={ITEMS_SEARCH_PLACEHOLDER}
         onSelectItem={handleItemSelect}
       />
+
+      <div className="scrollable-calculator-table">
 
       <Table bordered hover>
         <thead>
@@ -283,33 +285,48 @@ function CalculatorPage() {
           ))}
         </tbody>
       </Table>
-      <div className="mt-4 text-end">
-  <h5 className="text-primary">Summary</h5>
-  <p><strong>Grand Subtotal:</strong> Rs. {grandSubtotal.toFixed(2)}</p>
-  <p><strong>Grand Discount:</strong> Rs. {grandDiscount.toFixed(2)}</p>
-  <p><strong>Grand Total:</strong> Rs. {grandTotal.toFixed(2)}</p>
-
-  <div className="mt-3">
-    <label htmlFor="additional-discount" className="form-label">Additional Discount (Rs.)</label>
-    <input
-      type="number"
-      id="additional-discount"
-      className="form-control mb-2"
-      value={additionalDiscount}
-      min={0}
-      onChange={(e) => setAdditionalDiscount(Number(e.target.value))}
-    />
-
-    <button
-      className="btn btn-success"
-      onClick={saveBill}
-      disabled={isSaving}
-    >
-      {isSaving ? "Saving..." : "Save Bill"}
-    </button>
-  </div>
-</div>
-
+      </div>
+      <div className="d-flex justify-content-end align-items-center mt-4">
+        <div className="border rounded p-3 bg-light" style={{ minWidth: 400 }}>
+          <div className="d-flex justify-content-between mb-2">
+        <span className="text-primary"><strong>{CALCULATOR_SUB_TOTAL_LABAL}</strong></span>
+        <span>Rs. {grandSubtotal.toFixed(2)}</span>
+          </div>
+          <div className="d-flex justify-content-between mb-2">
+        <span className="text-primary"><strong>{CALCULATOR_DISCOUNT_LABAL}</strong></span>
+        <span>Rs. {grandDiscount.toFixed(2)}</span>
+          </div>
+          <div className="d-flex justify-content-between mb-3">
+        <span className="text-primary"><strong>{CALCULATOR_TOTAL_LABAL}</strong></span>
+        <span>Rs. {grandTotal.toFixed(2)}</span>
+          </div>
+          <div className="d-flex justify-content-between mb-3">
+        <label htmlFor="additional-discount" className="form-label mb-0 me-2 text-primary" style={{ minWidth: 160 }}>
+          <strong>
+          {CALCULATOR_ADDITIONAL_DISCOUNT_LABAL}
+          </strong>
+        </label>
+        <input
+          type="number"
+          id="additional-discount"
+          className="form-control"
+          value={additionalDiscount}
+          min={0}
+          style={{ width: 120 }}
+          onChange={(e) => setAdditionalDiscount(Number(e.target.value))}
+        />
+          </div>
+          <div className="d-flex justify-content-end">
+        <button
+          className="btn btn-success"
+          onClick={saveBill}
+          disabled={isSaving}
+        >
+          {isSaving ? "Saving..." : "Save Bill"}
+        </button>
+          </div>
+        </div>
+      </div>
 
     </>
   );

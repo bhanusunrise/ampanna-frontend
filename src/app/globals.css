@@ -3,6 +3,11 @@
   overflow-y: auto;
 }
 
+.scrollable-calculator-table {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
 .nav-item-hover {
   transition: all 0.3s ease-in-out;
   padding: 10px;

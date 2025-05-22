@@ -239,6 +239,10 @@ export const UPDATE_STOCK_MODEL_TITLE = STOCKS_PAGE_NAME + UPDATE
 
 /** Calculator */
 export const CALCULATOR_PAGE_NAME = "කැල්කියුලේටරය"
+export const CALCULATOR_SUB_TOTAL_LABAL = "එකතුව"
+export const CALCULATOR_DISCOUNT_LABAL = "වට්ටම"
+export const CALCULATOR_TOTAL_LABAL = "මුලු එකතුව"
+export const CALCULATOR_ADDITIONAL_DISCOUNT_LABAL = "අමතර වට්ටම"
 
 
 /** Accounts */
