@@ -1,13 +1,33 @@
-import BasicTable from "@/app/components/Tables/basic_table"
-import { CALCULATOR_TABLE_FIELDS } from "@/app/constants/constants"
-import React from "react"
+'use client'
 
-export default function page(){
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { validateToken } from '@/app/api_new/operations/accounts/functions';
+import CalculatorPage from './calculator_page';
+import LoadingSpinner from '../../components/LoadingSpinner/loading_spinner';
 
-    return (
-        <>
-            <h1>Calculator</h1>
-            <BasicTable table_fields={CALCULATOR_TABLE_FIELDS} table_records={[['Row 1', 'Row 2', 'Row 3'], ['Row 4', 'Row 5', 'Row 6']]} table_id='table_1'/>
-        </>
-    )
-}
+export default function Page() {
+    const [isValidUser, setIsValidUser] = useState<boolean | null>(null);
+    const router = useRouter();
+
+    useEffect(() => {
+        const checkAuth = async () => {
+            const userInfo = await validateToken();
+            if (userInfo) {
+                setIsValidUser(true);
+            } else {
+                router.push('/');
+            }
+        };
+
+        checkAuth();
+    }, []);
+
+    if (isValidUser === null) {
+        return <>
+            <LoadingSpinner />
+        </>; // Show loading state while validation is in progress
+    }
+
+    return isValidUser ? <CalculatorPage /> : null;
+  }

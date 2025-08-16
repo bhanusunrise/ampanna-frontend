@@ -1,3 +1,0 @@
-ALTER TABLE Unit_Conversions MODIFY value FLOAT(8, 2);
-ALTER TABLE Stocks MODIFY buying_price FLOAT(8, 2);
-ALTER TABLE Stocks MODIFY selling_price FLOAT(8, 2);
