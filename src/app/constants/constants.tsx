@@ -1,154 +1,129 @@
-/** Table Fields */
-export const ACTONS_FIELD = "සැකසීම්"
-
 /** Calculator Table */
 export const CALCULATOR_TABLE_FIELDS = [
-    "Item_Code", 
-    "Item_Name", 
-    "Unit_Price",
-    "Unit",
-    "Quantity",
-    "Warrenty",
-    "Sub Total"
+    "#",
+    "භාණ්ඩය",
+    "තොගය",
+    "ඒකක මිළ",
+    "ඒකක වට්ටම",
+    "ඒකකය",
+    "අයිතම",
+    "එකතුව",
+    "වට්ටම",
+    "මුළු එකතුව",
+    "🗑️"
 ]
 
 /** customer Table */
 export const SUPPLIER_TABLE_FIELDS = [
-    "සැපයුම්කරුගේ නම",
-    "දුරකතන අංකය",
-    "පදිංචි ලිපිනය",
-    "විද්‍යුත් තැපල් ලිපිනය",
-    "එකතු කිරීම",
-    "වෙනස් කිරීම",
-   /* "තත්වය"*/
+    "#",
+    "නම",
+    "විස්තරය",
+    "දුරකතන අංක",
+    "ලිපින",
+    "ඊ මේල්",
+    "වෙබ් අඩවි",
+    "සැකසීම්"
 ]
 
+/** Item Table */
 export const ITEMS_TABLE_FIELDS = [
+    "#",
     "භාණ්ඩය",
     "බාර් කෝඩය",
-    "ඒකක වර්ග",
-    "බහුල ඒකකය",
-    "එකතු කිරීම",
-    "වෙනස් කිරීම",
-    "තත්වය"
-]
-
-export const UNIT_TABLE_FIELDS = [
-    //"Unit ID",
     "ඒකකය",
-    "සංකේතය",
-    "ඒකක වර්ගය",
-    "තත්වය",
-    "එකතු කිරීම",
-    "වෙනස් කිරීම"
+    "වෙනත් ඒකක",
+    "විස්තරය",
+    "වෙනත් පරාමිතීන්",
+    "සැකසීම්"
 ]
 
+/** Unit Table */
+export const UNIT_TABLE_FIELDS = [
+    "#",
+    "ඒකකය",
+    "ඒකක වර්ගය",
+    "විස්තරය",
+    "සැකසීම්"
+]
 
+/** Unit Category Table */
 export const UNIT_CATEGORY_TABLE_FIELDS = [
+    "#",
     "ඒකක වර්ගය",
-    "වර්ගය",
-    "තත්වය",
-    "එකතු කිරීම",
-    "වෙනස් කිරීම"
+    "විස්තරය",
+    "සැකසීම්"
 ]
 
+/** Unit Conversion Table   */
 export const UNIT_CONVERSION_TABLE_FIELDS = [
+    "#",
+    "විස්තරය",
     "පළමු ඒකකය",
     "ගුණාකාරය",
     "දෙවන ඒකකය",
-    "තත්වය",
-    "එකතු කිරීම",
-    "වෙනස් කිරීම"
+    "සැකසීම්"
 ]
 
-export const ITEM_CATEGORIES_TABLE_FIELDS = [
-    "භාණ්ඩ වර්ගයේ නම",
-    "තත්වය",
-    "එකතු කිරීම",
-    "වෙනස් කිරීම"
+/** Stock Table */
+
+export const STOCK_TABLE_FIELDS = [
+    "#",
+    "තොගය",
+    "විස්තරය",
+    "සැපයුම්කරු",
+    "භාණ්ඩය",
+    "ලැබුණු දිනය",
+    "මුලු එකතුව",
+    "විකුණුම්",
+    "අබලන්",
+    "ගැනුම් මිළ",
+    "විකුණුම් මිළ",
+    "වට්ටම්",
+    "සැකසීම්"
 ]
+
+/** Accounts Table Fields */
+
+export const ACCOUNTS_TABLE_FIELDS = [
+    "#",
+    "නම",
+    "ඊ මේල්",
+    "අවසරය",
+    "මට්ටම",
+    "සැකසීම්"
+]
+
+
+/** Not found records */
+export const NO_RECORDS_FOUND = "සොයාගත නොහැකිය"
+
+export const UNIT_CATEGORIES_SEARCH_PLACEHOLDER = "බර, උස ..."
+export const ITEMS_SEARCH_PLACEHOLDER = "තීන්ත, සිමෙන්ති ..."
+
+
 /** API base routes */
-export const UNIT_API = "/api/units/"
-export const UNIT_CONVERSION_API = "/api/unit_conversions/"
-export const UNIT_CATEGORY_API = "/api/unit_categories/"
-export const ITEM_CATEGORY_API = "/api/item_categories/"
-export const ITEMS_API = "/api/items/"
-export const SUPPLIER_API = "/api/suppliers/"
+export const UNIT_API = "/api_new/operations/units/"
+export const UNIT_CONVERSION_API = "/api_new/operations/unit_conversions/"
+export const UNIT_CATEGORY_API = "/api_new/operations/unit_categories/"
+export const ITEM_CATEGORY_API = "/api_new/operations/item_categories/"
+export const ITEMS_API = "/api_new/operations/items/"
+export const SUPPLIER_API = "/api_new/operations/suppliers/"
+export const STOCKS_API = "/api_new/operations/stocks/"
+export const BILL_API = "/api_new/operations/bills/"
+export const ACCOUNTS_API = "/api_new/operations/accounts/"
 
 
-/** Default DB values */
-export const COMPULSARY = "අත්‍යාවශ්‍ය"
-export const OPTIONAL = "අවශ්‍ය"
-export const UNIT_CATEGORY_TYPES = [COMPULSARY, OPTIONAL]
-
-/** Default status values */
-export const ACTIVE_ITEM = "සක්‍රීය"
-export const DELETED_ITEM = "අක්‍රීය"
-
-/** Default null/ not null values */
-export const NULL_VALUE = "නැත"
-export const NOT_NULL_VALUE = "ඇත"
-
-
-/** Log messages */
-
-/** Base */
-
-const BASE_FILL_MESSAGE = " කොටස පුරවන්න"
-
-const BASE_SUCCESSFULLY_ADDED_MESSAGE = " එකතු කිරීම සාර්තකයි!"
-const BASE_FAILED_ADD_MESSAGE = " එකතු කිරීම අසාර්තකයි!"
-
-const BASE_SUCCESSFULLY_UPDATED_MESSAGE = " වෙනස් කිරීම සාර්තකයි!"
-const BASE_FAILED_UPDATE_MESSAGE = " වෙනස් කිරීම අසාර්තකයි!"
-
-const BASE_SUCCESSFULLY_DELETED_MESSAGE = " ඉවත් කිරීම සාර්තකයි! "
-const BASE_FAILED_DELETE_MESSAGE = " ඉවත් කිරීම අසාර්තකයි!"
-
-const BASE_SUCCESSFULLY_RESTORE_MESSAGE = " ප්‍රතිස්ථාපනය කිරීම සාර්ථකයි!"
-const BASE_FAILED_RESTORE_MESSAGE = " ප්‍රතිස්ථාපනය කිරීම අසාර්ථකයි!"
-
-const CANNOT_FIND = " සොයාගත නොහැකිය."
-const CANNOT_FIND_COUNT = "න් ගණන සොයාගත නොහැකිය"
-
-const DIDNT_CHANGED = " කිසිවක් වෙනස් වූයේ නැත."
-
-
-
-
-/** Unit Category */
-
-const UNIT_CATEGORY = "ඒකක වර්ගය"
-
-export const FILL_UNIT_CATEGORY = UNIT_CATEGORY + BASE_FILL_MESSAGE
-export const ADDED_UNIT_CATEGORY = UNIT_CATEGORY + BASE_SUCCESSFULLY_ADDED_MESSAGE
-export const FAILED_TO_ADD_UNIT_CATEGORY = UNIT_CATEGORY + BASE_FAILED_ADD_MESSAGE
-
-export const UPDATED_UNIT_CATEGORY = UNIT_CATEGORY + BASE_SUCCESSFULLY_UPDATED_MESSAGE
-export const FAILED_TO_UPDATE_UNIT_CATEGORY = UNIT_CATEGORY + BASE_FAILED_UPDATE_MESSAGE
-
-export const DELETED_UNIT_CATEGORY = UNIT_CATEGORY + BASE_SUCCESSFULLY_DELETED_MESSAGE
-export const FAILED_TO_DELETE_UNIT_CATEGORY = UNIT_CATEGORY + BASE_FAILED_DELETE_MESSAGE
-
-export const RESTORE_UNIT_CATEGORY = UNIT_CATEGORY + BASE_SUCCESSFULLY_RESTORE_MESSAGE
-export const FAILED_TO_RESTORE_UNIT_CATEGORY = UNIT_CATEGORY + BASE_FAILED_RESTORE_MESSAGE
-
-export const CANNOT_FIND_UNIT_CATEGORY = UNIT_CATEGORY + CANNOT_FIND
-export const DIDNT_CHANGED_UNIT_CATEGORY = UNIT_CATEGORY + DIDNT_CHANGED
-
-export const CANNOT_FIND_UNIT_CATEGORY_COUNT = UNIT_CATEGORY + CANNOT_FIND_COUNT
-
-
-
-
-
-
-/** PRIMARY Keys */
-
-/** Unit Category */
-export const UNIT_CATEGORY_PRIMARY_KEY_LETTER = "UNCT"
-export const UNIT_CATEGORY_PRIMARY_KEY_FIRST_VALUE = UNIT_CATEGORY_PRIMARY_KEY_LETTER + "1"
-
+/*** UI Routes */
+export const UNIT_CATEGORY_UI = "/dashboard/unit_categories"
+export const UNIT_UI = "/dashboard/units"
+export const UNIT_CONVERSION_UI = "/dashboard/unit_conversions"
+export const ITEMS_UI = "/dashboard/items"
+export const SUPPLIER_UI = "/dashboard/suppliers"
+export const STOCKS_UI = "/dashboard/stocks"
+export const CALCULATOR_UI = "/dashboard/calculator"
+export const PROFILE_UI = "/dashboard/profile"
+export const ACCOUNTS_UI = "/dashboard/accounts"
+export const DASHBOARD_UI = "/dashboard"
 
 
 
@@ -158,8 +133,7 @@ export const UNIT_CATEGORY_PRIMARY_KEY_FIRST_VALUE = UNIT_CATEGORY_PRIMARY_KEY_L
 const NEW = "නව"
 const FIRST = "පළමු"
 const SECOND = "දෙවන"
-const UPDATE = " වෙනස් කරන්න"
-export const RESTORE = "ප්‍රතිස්ථාපනය කිරීම"
+export const UPDATE = " වෙනස් කරන්න"
 export const RESTORE_CONFIRM = " ප්‍රතිස්ථාපනය කිරීම තහවුරු කරන්න"
 export const DELETE_CONFIRM = " ඉවත් කිරීම තහවුරු කරන්න"
 export const BACK = "ආපසු"
@@ -168,47 +142,40 @@ export const SEARCH = "සෙවුම් කරන්න"
 
 /** Unit Category */
 export const UNIT_CATEGORY_PAGE_NAME = "ඒකක වර්ග"
-export const ADD_UNIT_CATEGORY_PAGE_NAME = NEW + " ඒකක වර්ගය"
-
-export const UNIT_CATEGORY_NAME_LABAL = "ඒකක වර්ගයේ නම"
-export const UNIT_CATEGORY_TYPE_LABAL = "වර්ගය :"
+export const NEW_UNIT_CATEGORY_TITLE = NEW + " ඒකක වර්ගය"
+export const UNIT_CATEGORY_NAME_LABAL = "ඒකක වර්ගයේ නම :"
+export const UNIT_CATEGORY_DESCRIPTION_LABAL = "විස්තරය :"
 export const UNIT_CATEGORY_NAME_PLACEHOLDER = "ඒකක වර්ගයක් ඇතුලත් කරන්න"
-
+export const UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER = "විස්තරයක් ඇතුලත් කරන්න"
 export const UPDATE_UNIT_CATEGORY_MODEL_TITLE = UNIT_CATEGORY_PAGE_NAME + UPDATE
-
-
 
 
 /** Unit */
 export const UNIT_PAGE_NAME = "ඒකක"
-export const ADD_UNIT_PAGE_NAME = NEW + " ඒකකය"
-
+export const NEW_UNIT_TITLE = NEW + " ඒකකය"
 export const UNIT_NAME_LABAL = "ඒකකයේ නම"
 export const UNIT_ABBRAVIATION_LABAL = "සංකේතය"
 export const UNIT_NAME_PLACEHOLDER = "ඒකකයක් ඇතුලත් කරන්න"
 export const UNIT_ABBRAVIATION_PLACEHOLDER = "සංකේතයක් ඇතුලත් කරන්න"
-
 export const UPDATE_UNIT_MODEL_TITLE = UNIT_PAGE_NAME + UPDATE
+export const UNITS_SEARCH_PLACEHOLDER = "කිලෝග්‍රෑම්, මීටර් ..."
 
 
 /** Unit Conversion */
 export const UNIT_CONVERSION_PAGE_NAME = "ඒකක පරිවර්ථන"
 export const ADD_UNIT_CONVERSION = NEW + " ඒකක පරිවර්ථනය"
-
 export const FIRST_UNIT_NAME_LABAL = FIRST + " " + UNIT_NAME_LABAL
 export const SECOND_UNIT_NAME_LABAL = SECOND + " " + UNIT_NAME_LABAL
 export const MULTIPLIER_LABAL = "ගුණාකාරය"
 export const FIRST_UNIT_LABEL = FIRST + " " + UNIT_ABBRAVIATION_LABAL
 export const SECOND_UNIT_LABEL = SECOND + " " + UNIT_ABBRAVIATION_LABAL
 export const MULTIPLIER_PLACEHOLDER = "ගුණාකාරයක් ඇතුලත් කරන්න"
-
-export const UPDATE_UNIT_CONVERSION_MODEL_TITLE = UNIT_PAGE_NAME + UPDATE
+export const UPDATE_UNIT_CONVERSION_MODEL_TITLE = UNIT_CONVERSION_PAGE_NAME + UPDATE
 
 
 /** Items */
 export const ITEMS_PAGE_NAME = "භාණ්ඩ"
-export const ADD_ITEM_PAGE_NAME = NEW + " භාණ්ඩය"
-
+export const ADD_ITEM = NEW + " භාණ්ඩය"
 export const ITEM_CATEGORY_SELECTION_LABAL = "භාණ්ඩ වර්ගය"
 export const ITEM_INPUT_LABAL = "භාණ්ඩය"
 export const ITEM_INPUT_PLACEHOLDER = "භාණ්ඩයේ නම ඇතුළත් කරන්න"
@@ -217,26 +184,17 @@ export const ADD_UNIT_CATEGORY_LABAL = "ඒකක වර්ගය"
 export const ADD_UNITS_LABAL = "ඒකක"
 export const ADD_MOST_USED_UNIT_LABAL = "බහුල ඒකකය"
 export const UPDATE_ITEM_MODEL_TITLE = ITEMS_PAGE_NAME + UPDATE
-
-
-/** Item Categories */
-export const ITEM_CATEGORIES_PAGE_NAME = "භාණ්ඩ වර්ග"
-export const ADD_ITEM_CATEGORY = NEW + " භාණ්ඩ වර්ගය"
-
-export const ITEM_CATEGORY_NAME_LABAL = "භාණ්ඩ වර්ගයේ නම"
-export const ITEM_CATEGORY_NAME_PLACEHOLDER = "භාණ්ඩ වර්ගයක් ඇතුලත් කරන්න"
-export const UNIT_NAMES_LABAL = "ගණනය කිරීමට යොදාගන්න ඒකක"
-export const DEFAULT_UNIT_NAME_LABAL = "බහුලවම භාවිතා වන ඒකකය"
-
-export const UPDATE_ITEM_CATEGORY_MODEL_TITLE = ITEM_CATEGORIES_PAGE_NAME + UPDATE
+export const OTHER_PARAMETERS_NAME = "පරාමිතිය"
+export const OTHER_PARAMETERS_VALUE = "අගය"
+export const ADD_5_ROWS = "පේලි 5ක් එකතු කරන්න"
 
 
 /** Suppliers */
 
 export const SUPPLIERS_PAGE_NAME = "සැපයුම්කරුවන්"
 export const ADD_SUPPLIER = NEW + " සැපයුම්කරු"
-
-export const SUPPLIER_NAME_LABAL = "සැපයුම්කරු නම"
+export const SUPPLIER_SEARCH_PLACEHOLDER = "වගීෂ පේන්ට්ස්, චිරන්ත බ්ලොක් ගල් ..."
+export const SUPPLIER_NAME_LABAL = "නම"
 export const SUPPLIER_NAME_PLACEHOLDER = "සැපයුම්කරුයේ නම ඇතුලත් කරන්න"
 export const SUPPLIER_ADDRESS_LABAL = "සැපයුම්කරු ලිපිනය"
 export const SUPPLIER_ADDRESS_PLACEHOLDER = "සැපයුම්කරුයේ ලිපිනය ඇතුලත් කරන්න"
@@ -244,8 +202,68 @@ export const SUPPLIER_PHONE_LABAL = "සැපයුම්කරු දුරක
 export const SUPPLIER_PHONE_PLACEHOLDER = "දුරකථන ඇතුලත් කරන්න"
 export const SUPPLIER_EMAIL_LABAL = "ඊමේල් ලිපිනය"
 export const SUPPLIER_EMAIL_PLACEHOLDER = "ඊමේල් ලිපිනය ඇතුලත් කරන්න"
+export const UPDATE_SUPPLIER_MODEL_TITLE = SUPPLIERS_PAGE_NAME + UPDATE
 
 
+/** Stocks */
+export const STOCKS_PAGE_NAME = "තොග"
+export const ADD_STOCK = NEW + " තොගය"
+export const STOCK_SEARCH_PLACEHOLDER = "2025-පෙබරවාරි, 2025-මාර්තු ..."
+export const STOCK_NAME_LABAL = "තොගය"
+export const STOCK_NAME_PLACEHOLDER = "තොගයේ නම ඇතුලත් කරන්න"
+export const STOCK_DESCRIPTION_LABAL = "විස්තරය"
+export const STOCK_DESCRIPTION_PLACEHOLDER = "තොගයේ විස්තරය ඇතුලත් කරන්න"
+export const STOCK_SUPPLIER_LABAL = "සැපයුම්කරු"
+export const STOCK_SUPPLIER_PLACEHOLDER = "සැපයුම්කරු තෝරන්න"
+export const STOCK_PURCHASE_DATE_LABAL = "මිළදී ගත් දිනය"
+export const STOCK_PURCHASE_DATE_PLACEHOLDER = "මිළදී ගත් දිනය ඇතුලත් කරන්න"
+export const STOCK_TOTAL_AMOUNT_LABAL = "මුළු එකතුව"
+export const STOCK_TOTAL_AMOUNT_PLACEHOLDER = "මුළු එකතුව ඇතුලත් කරන්න"
+export const STOCK_SOLD_AMOUNT_LABAL = "විකුණුම්"
+export const STOCK_SOLD_AMOUNT_PLACEHOLDER = "විකුණුම් ඇතුලත් කරන්න"
+export const STOCK_DAMAGED_AMOUNT_LABAL = "අබලන්"
+export const STOCK_DAMAGED_AMOUNT_PLACEHOLDER = "අබලන් ඇතුලත් කරන්න"
+export const STOCK_ITEM_LABAL = "භාණ්ඩය"
+export const STOCK_ITEM_PLACEHOLDER = "භාණ්ඩය තෝරන්න"
+export const STOCK_BUYING_PRICE_LABAL = "ගැනුම් මිළ"
+export const STOCK_BUYING_PRICE_PLACEHOLDER = "ගැනුම් මිළ ඇතුලත් කරන්න"
+export const STOCK_SELLING_PRICE_LABAL = "විකිණුම් මිළ"
+export const STOCK_SELLING_PRICE_PLACEHOLDER = "විකිණුම් මිළ ඇතුලත් කරන්න"
+export const STOCK_DISCOUNT_LABAL = "වට්ටම්"
+export const STOCK_DISCOUNT_PLACEHOLDER = "වට්ටම් ඇතුලත් කරන්න"
+export const STOCK_DISCOUNT_START_DATE_LABAL = "ආරම්භක දිනය"
+export const STOCK_DISCOUNT_END_DATE_LABAL = "අවසන් දිනය"
+export const STOCK_DISCOUNT_PERCENTAGE_LABAL = "වට්ටම් මුදල"
+export const UPDATE_STOCK_MODEL_TITLE = STOCKS_PAGE_NAME + UPDATE
+
+
+/** Calculator */
+export const CALCULATOR_PAGE_NAME = "කැල්කියුලේටරය"
+export const CALCULATOR_SUB_TOTAL_LABAL = "එකතුව"
+export const CALCULATOR_DISCOUNT_LABAL = "වට්ටම"
+export const CALCULATOR_TOTAL_LABAL = "මුලු එකතුව"
+export const CALCULATOR_ADDITIONAL_DISCOUNT_LABAL = "අමතර වට්ටම"
+
+
+/** Accounts */
+export const ACCOUNTS_PAGE_NAME = "ගිණුම"
+
+export const NEW_ACCOUNT = NEW + " "+ ACCOUNTS_PAGE_NAME
+export const ACCOUNT_NAME_LABAL = "නම"
+export const ACCOUNT_NAME_PLACEHOLDER = "නම ඇතුළත් කරන්න"
+export const ACCOUNT_EMAIL_LABAL = "ඊමේල්"
+export const ACCOUNT_EMAIL_PLACEHOLDER = "ඊමේල් ඇතුළත් කරන්න"
+export const ACCOUNT_PASSWORD_LABAL = "මුරපදය"
+export const ACCOUNT_PASSWORD_RETYPE_LABAL = "තහවුරු කරන්න"
+export const ACCOUNT_PASSWORD_PLACEHOLDER = "මුරපදය ඇතුළත් කරන්න"
+export const ACCOUNT_PASSWORD_RETYPE_PLACEHOLDER = "මුරපදය නැවත ඇතුළත් කරන්න"
+export const ACCOUNT_IS_ALLOWED_LABAL = "අවසරය"
+export const ACCOUNT_IS_MASTER_LABAL = "තත්වය"
+export const ACCOUNT_AUTHORIZED = "ඇත"
+export const ACCOUNT_NOT_AUTHORIZED = "නැත"
+export const ACCOUNT_IS_AN_ADMIN_LABAL = "ඇඩ්මින්"
+export const ACCOUNT_IS_NOT_AN_ADMIN_LABAL = "සාමාන්‍ය"
+export const UPDATE_ACCOUNT_MODEL_TITLE = ACCOUNTS_PAGE_NAME + UPDATE
 
 
 /*** Buttons */
@@ -256,13 +274,25 @@ export const DELETE_BUTTON_LABAL = "🗑️"
 export const RESTORE_BUTTON_LABAL = "🔁"
 export const DELETE_BUTTON_DELETE_MODAL = "ඉවත් කරන්න"
 export const UPDATE_BUTTON_UPDATE_MODAL = "වෙනස් කරන්න"
+export const DELETE_CONFIRM_MESSEGE = "ඔබට විශ්වාසද ඉවත් කිරීම?"
 
 
 /** Select Box */
 export const SELECT_BOX_PLACEHOLDER = "තෝරාගන්න"
 
 
-
-
 /** Logos */
 export const LOGO_WHITE_PATH = "/logo_white.png"
+
+
+/** Login */
+export const LOGIN_TITLE = "ඇතුලු වන්න"
+export const FORGET_PASSWORD = "මුරපදය අමතක වුණාද?"
+export const SIGN_OUT = "ඉවත්වන්න"
+export const SIGN_OUT_CONFIRMATION = "ඔබට ඉවත්වීමට අවශ්‍යද?"
+export const SEND_OTP = "OTP කේතය යවන්න"
+export const SENDING_OTP = "කේතය යවමින් පවතී"
+export const CHECK_OTP = "කේතය පරීක්ෂා කරන්න"
+export const CHANGE_PASSWORD = "වෙනස් කරන්න"
+export const ENTER_OTP_LABAL = "OTP කේතය"
+export const ENTER_OTP_PLACEHOLDER = "OTP කේතය ඇතුලත් කරන්න"

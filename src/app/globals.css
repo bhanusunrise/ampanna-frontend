@@ -1,27 +1,57 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+.scrollable-table {
+  max-height: 400px;
+  overflow-y: auto;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.scrollable-calculator-table {
+  max-height: 400px;
+  overflow-y: auto;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+.nav-item-hover {
+  transition: all 0.3s ease-in-out;
+  padding: 10px;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+.nav-item-hover:hover {
+  border: 2px solid #FFFFFE !important; 
+  color:  #3B71CA !important; 
+  background-color: #FFFFFE !important; 
+}
+
+.active-nav {
+  border: 2px solid #3B71CA !important;
+  background-color: white !important;
+}
+
+.dashboard-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  min-height: 100vh;
+}
+
+.dashboard-box {
+  width: 200px;
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.icon-container {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.dashboard-link {
+  color: white;
+  font-size: 16px;
+  text-decoration: none;
+  font-weight: bold;
 }

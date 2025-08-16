@@ -1,23 +1,31 @@
-import mysql from 'mysql2/promise';
+import mongoose from "mongoose";
 
-let connection;
+if (!global.mongoose) {
+    global.mongoose = {
+        conn: null,
+        promise: null,
+    };
+}
 
 export async function dbConnect() {
 
-
-    const conString = {
-        host: process.env.DB_SERVER_NAME,
-        user: process.env.DB_USERNAME,
-        password: process.env.DB_PASSWORD,
-        database: process.env.DB_NAME,
-    };
+    const conString = process.env.CONNECTION_STRING;
 
     try {
-        connection = await mysql.createConnection(conString);
-        console.log("Newly Connected to MySQL");
-        return connection;
+        const promise = mongoose.connect(conString, {
+            useNewUrlParser: true,      // Ensure proper URL parsing
+            useUnifiedTopology: true,   // Handles different server topologies
+            dbName: process.env.DB_NAME,              // Ensure the correct database name (case-sensitive)
+            autoIndex: true,            // Ensure indexes are auto-created
+        });
+
+        global.mongoose.conn = await promise;
+        global.mongoose.promise = promise;
+
+        console.log("Newly Connected");
+        return global.mongoose.conn;
     } catch (error) {
-        console.error("Error connecting to MySQL:", error);
+        console.error("Error connecting to MongoDB:", error);
         throw new Error('Failed to connect to the database.');
     }
 }

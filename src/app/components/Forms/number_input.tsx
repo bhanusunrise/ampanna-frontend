@@ -1,18 +1,19 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Form } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface NumberInputProps {
-  label: string;
+  label?: string; // Make label optional
   onChangeText: (event: React.ChangeEvent<HTMLInputElement>) => void;
   form_id: string;
-  form_message: string;
+  form_message?: string; // Make form_message optional
   placeholder_text: string;
-  min_value: number;
-  max_value: number;
-  value: number; // Add value prop
+  min_value?: number; // Make min_value optional
+  max_value?: number; // Make max_value optional
+  value: number;
+  onLoad?: () => void; // Optional onLoad function
 }
 
 const NumberInput: React.FC<NumberInputProps> = ({
@@ -23,26 +24,35 @@ const NumberInput: React.FC<NumberInputProps> = ({
   placeholder_text,
   min_value,
   max_value,
-  value, // Destructure value prop
+  value,
+  onLoad,
 }) => {
+  // Trigger onLoad when the component mounts
+  useEffect(() => {
+    if (onLoad) {
+      onLoad();
+    }
+  }, []); // Empty dependency array ensures it runs only once when mounted
+
   return (
     <>
-      <Form.Label htmlFor={form_id}>{label}</Form.Label>
+      {label && <Form.Label htmlFor={form_id} className={'text-primary'}>{label}</Form.Label>} {/* Conditionally render label */}
       <Form.Control
         type="number"
         id={form_id}
-        aria-describedby="passwordHelpBlock"
+        aria-describedby={form_message ? "passwordHelpBlock" : undefined}
         onChange={onChangeText}
         placeholder={placeholder_text}
-        min={min_value}
-        max={max_value}
-        style={{ maxWidth: '300px' }}
-        size='sm'
-        value={value} // Set the value prop here
+        size="sm"
+        value={value}
+        {...(min_value !== undefined ? { min: min_value } : {})} // Conditionally apply min
+        {...(max_value !== undefined ? { max: max_value } : {})} // Conditionally apply max
       />
-      <Form.Text id="passwordHelpBlock" muted>
-        {form_message}
-      </Form.Text>
+      {form_message && (
+        <Form.Text id="passwordHelpBlock" muted>
+          {form_message}
+        </Form.Text>
+      )} {/* Conditionally render form_message */}
     </>
   );
 };

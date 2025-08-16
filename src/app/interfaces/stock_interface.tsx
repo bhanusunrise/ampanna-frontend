@@ -1,0 +1,18 @@
+// Data Type Object for Stock 
+
+export default interface StockInterface {
+    _id: string;
+    name: string;
+    description: string;
+    supplier_id: string; // Reference to supplier
+    item_id: string; // Reference to item
+    date: string; // Date for stock entry
+    total_quantity: number;
+    sold_quantity: number;
+    damaged_quantity: number;
+    buying_price: number; // Price per unit
+    selling_price: number; // Price per unit
+    discount: { _id: string; start_date: string; end_date: string; percentage: number }[]; // Array of discount objects
+    supplier_name: string; // Name of the supplier
+    item_name: string; // Name of the item
+}

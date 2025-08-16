@@ -1,274 +1,34 @@
-'use client';
+'use client'
 
-import React, { useEffect, useState } from 'react';
-import BasicTable from '@/app/components/Tables/basic_table';
-import {
-  ADD_BUTTON_LABAL,
-  ADD_UNIT_CATEGORY_PAGE_NAME,
-  CLEAR_BUTTON_LABAL,
-  UNIT_CATEGORY_NAME_PLACEHOLDER,
-  UNIT_CATEGORY_PAGE_NAME,
-  UNIT_CATEGORY_TABLE_FIELDS,
-  UNIT_CATEGORY_TYPES,
-  UNIT_CATEGORY_TYPE_LABAL, // Import the label constant for the select box
-} from '@/app/constants/constants';
-import {
-  fetchAllUnitCategories,
-  addUnitCategory,
-  updateUnitCategory,
-  deleteUnitCategory,
-  restoreUnitCategory,
-} from './functions';
-import NavigateButtons from '@/app/components/Buttons/navigate_button';
-import { Col, Row } from 'react-bootstrap';
-import AddButton from '@/app/components/Buttons/add_button';
-import TextInput from '@/app/components/Forms/text_input';
-import ClearButton from '@/app/components/Buttons/clear_button';
-import UpdateUnitCategoryModal from '@/app/components/Models/Unit_Categories/update_unit_cetegory_model';
-import DeleteModal from '@/app/components/Models/delete_model';
-import RestoreModal from '@/app/components/Models/restore_model';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { validateToken } from '@/app/api_new/operations/accounts/functions';
+import UnitCategoryPage from './unit_categories_page';
+import LoadingSpinner from '../../components/LoadingSpinner/loading_spinner';
 
 export default function Page() {
-  const [unitCategories, setUnitCategories] = useState<string[][]>([]);
-  const [filteredCategories, setFilteredCategories] = useState<string[][]>([]);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [unitCategoryName, setUnitCategoryName] = useState('');
-  const [unitCategoryType, setUnitCategoryType] = useState('');
-  const [showUpdateModal, setShowUpdateModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showRestoreModal, setShowRestoreModal] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<any>(null);
-  const [itemToDelete, setItemToDelete] = useState<any>(null);
-  const recordsPerPage = 10;
+    const [isValidUser, setIsValidUser] = useState<boolean | null>(null);
+    const router = useRouter();
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toISOString().split('T')[0];
-  };
+    useEffect(() => {
+        const checkAuth = async () => {
+            const userInfo = await validateToken();
+            if (userInfo) {
+                setIsValidUser(true);
+            } else {
+                router.push('/');
+            }
+        };
 
-  const reloadData = async () => {
-    const fetchedCategories = await fetchAllUnitCategories();
-    const formattedCategories = fetchedCategories.map((category: any) => [
-      category.unit_category_id,
-      category.unit_category_name,
-      category.default_status,
-      category.status,
-      formatDate(category.createdAt),
-      formatDate(category.updatedAt),
-    ]);
-    setUnitCategories(formattedCategories);
-    setFilteredCategories(formattedCategories);
-  };
+        checkAuth();
+    }, []);
 
-  useEffect(() => {
-    reloadData();
-  }, []);
-
-  const handleNext = () => {
-    if (currentPage < Math.ceil(filteredCategories.length / recordsPerPage) - 1) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handlePrevious = () => {
-    if (currentPage > 0) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const currentRecords = filteredCategories.slice(
-    currentPage * recordsPerPage,
-    (currentPage + 1) * recordsPerPage
-  );
-  const totalPages = Math.ceil(filteredCategories.length / recordsPerPage);
-  const startingIndex = currentPage * recordsPerPage;
-
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const query = event.target.value.toLowerCase();
-    setSearchQuery(query);
-    const filtered = unitCategories.filter((category) =>
-      category[1].toLowerCase().includes(query)
-    );
-    setFilteredCategories(filtered);
-    setCurrentPage(0);
-  };
-
-  const handleAddCategory = async () => {
-    if (!unitCategoryName || !unitCategoryType) {
-      console.log('Please fill in all fields');
-      return;
+    if (isValidUser === null) {
+        return <>
+            <LoadingSpinner />
+        </>; // Show loading state while validation is in progress
     }
 
-    const result = await addUnitCategory(unitCategoryName, unitCategoryType);
-    if (result.success) {
-      await reloadData();
-      setUnitCategoryName('');
-      setUnitCategoryType('');
-    }
-  };
-
-  const handleUpdate = (rowIndex: number) => {
-    const selectedCategoryData = filteredCategories[rowIndex];
-    setSelectedCategory({
-      unit_category_id: selectedCategoryData[0],
-      unit_category_name: selectedCategoryData[1],
-    });
-    setShowUpdateModal(true);
-  };
-
-  const handleUpdateCategory = async (updatedCategory: {
-    unit_category_name: string;
-    default_status: string;
-  }) => {
-    const result = await updateUnitCategory(
-      selectedCategory.unit_category_id,
-      updatedCategory.unit_category_name,    );
-    if (result.success) {
-      handleCloseUpdateModal();
-      await reloadData();
-     
-    }
-  };
-
-  const handleDelete = (rowIndex: number) => {
-    const categoryToDelete = filteredCategories[rowIndex];
-    setItemToDelete({
-      unit_category_id: categoryToDelete[0],
-      unit_category_name: categoryToDelete[1],
-    });
-    setShowDeleteModal(true);
-  };
-
-  const confirmDelete = async () => {
-    if (itemToDelete) {
-      const result = await deleteUnitCategory(itemToDelete.unit_category_id);
-      if (result.success) {
-        await reloadData();
-        handleCloseDeleteModal();
-      }
-    }
-  };
-
-  const handleRestore = (rowIndex: number) => {
-    const categoryToRestore = filteredCategories[rowIndex];
-    setItemToDelete({
-      unit_category_id: categoryToRestore[0],
-      unit_category_name: categoryToRestore[1],
-    });
-    setShowRestoreModal(true);
-  };
-
-  const confirmRestore = async () => {
-    if (itemToDelete) {
-      const result = await restoreUnitCategory(itemToDelete.unit_category_id);
-      if (result.success) {
-        await reloadData();
-        handleCloseRestoreModal();
-      }
-    }
-  };
-
-  const handleCloseUpdateModal = () => {
-    setShowUpdateModal(false);
-    setSelectedCategory(null);
-  };
-
-  const handleCloseDeleteModal = () => {
-    setShowDeleteModal(false);
-    setItemToDelete(null);
-  };
-
-  const handleCloseRestoreModal = () => {
-    setShowRestoreModal(false);
-    setItemToDelete(null);
-  };
-
-  return (
-    <>
-      <Row>
-        <Col md={3}>
-          <h3 className="text-primary">{UNIT_CATEGORY_PAGE_NAME}</h3>
-        </Col>
-        <Col md={6} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', flexWrap: 'nowrap' }}>
-          <TextInput
-            form_id="search_category"
-            onChangeText={handleSearch}
-            form_message=""
-            placeholder_text="Search"
-            label=""
-            value={searchQuery}
-          />
-        </Col>
-      </Row>
-      <Row>
-        <Col md={9}>
-          <BasicTable
-            table_fields={UNIT_CATEGORY_TABLE_FIELDS}
-            table_records={currentRecords}
-            table_id="unit_categories_table"
-            startingIndex={startingIndex}
-            onUpdate={handleUpdate}
-            onDelete={handleDelete}
-            onRestore={handleRestore}
-          />
-          <NavigateButtons
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onNext={handleNext}
-            onPrevious={handlePrevious}
-          />
-        </Col>
-        <Col md={3}>
-          <h3 className="text-primary">{ADD_UNIT_CATEGORY_PAGE_NAME}</h3>
-          <TextInput
-            form_id="unit_category_name"
-            onChangeText={(e) => setUnitCategoryName(e.target.value)}
-            form_message=""
-            placeholder_text={UNIT_CATEGORY_NAME_PLACEHOLDER}
-            label="Category Name"
-            value={unitCategoryName}
-          />
-          <br/>
-          <ClearButton
-            label={CLEAR_BUTTON_LABAL}
-            onClickButton={() => {
-              setUnitCategoryName('');
-              setUnitCategoryType('');
-            }}
-            btn_id="clear_category"
-          />
-          <AddButton label={ADD_BUTTON_LABAL} onClickButton={handleAddCategory} btn_id="add_category" />
-        </Col>
-      </Row>
-
-      {selectedCategory && (
-        <UpdateUnitCategoryModal
-          show={showUpdateModal}
-          handleClose={handleCloseUpdateModal}
-          handleUpdateUnitCategory={handleUpdateCategory}
-          unit_category_name={selectedCategory.unit_category_name}
-          default_status={selectedCategory.default_status}
-        />
-      )}
-
-      {itemToDelete && (
-        <DeleteModal
-          show={showDeleteModal}
-          handleClose={handleCloseDeleteModal}
-          handleDelete={confirmDelete}
-          itemName={itemToDelete.unit_category_name}
-        />
-      )}
-
-      {itemToDelete && (
-        <RestoreModal
-          show={showRestoreModal}
-          handleClose={handleCloseRestoreModal}
-          handleRestore={confirmRestore}
-          itemName={itemToDelete.unit_category_name}
-        />
-      )}
-    </>
-  );
-}
+    return isValidUser ? <UnitCategoryPage /> : null;
+  
+  }

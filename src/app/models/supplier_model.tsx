@@ -1,0 +1,25 @@
+import mongoose, { Schema, Document } from 'mongoose';
+import SupplierInterface from '../interfaces/supplier_interface';
+
+// Extend the imported interface to include Document
+export interface ISupplier extends Omit<SupplierInterface, '_id'>, Document {
+    _id: string; // Ensure compatibility with the Document type
+}
+
+// Define the Supplier schema
+const SupplierSchema: Schema = new Schema(
+    {
+        _id: { type: String, required: false },
+        name: { type: String, required: true, unique: true }, // Supplier name must be unique
+        addresses: { type: [String], required: false }, // List of addresses
+        contactnos: { type: [Number], required: false }, // List of contact numbers
+        emails: { type: [String], required: false }, // List of email addresses
+        websites: { type: [String], required: false }, // List of website URLs
+        description: { type: String, required: false }
+        
+    },
+    { collection: 'suppliers' } // Explicitly set collection name
+);
+
+// Export the Supplier model
+export default mongoose.models.Supplier || mongoose.model<ISupplier>('Supplier', SupplierSchema);
