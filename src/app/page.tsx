@@ -11,7 +11,6 @@ export default function Login() {
   const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [isAlertActive, setIsAlertActive] = useState(false);
 
   const handleClear = () => {
     setUsername('');

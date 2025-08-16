@@ -1,9 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { dbConnect } from "@/app/lib/db";
 import Item from "@/app/models/item_model";
-import Unit from "@/app/models/unit_model";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     // Connect to the database
     await dbConnect();

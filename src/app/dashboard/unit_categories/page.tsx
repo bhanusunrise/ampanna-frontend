@@ -21,7 +21,7 @@ export default function Page() {
         };
 
         checkAuth();
-    }, []);
+    }, [router]);
 
     if (isValidUser === null) {
         return <>

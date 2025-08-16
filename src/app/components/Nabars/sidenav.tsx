@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Modal, Nav, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Button, Modal, Nav} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BiCoin } from 'react-icons/bi';
 import { CgCalculator, CgProfile, CgToolbarTop } from 'react-icons/cg';
@@ -7,7 +7,7 @@ import { Md10K, MdCarCrash, MdNumbers, MdRecycling } from 'react-icons/md';
 import { FiAlignJustify } from "react-icons/fi";
 import { GoSignOut } from "react-icons/go";
 import { 
-  CALCULATOR_PAGE_NAME, CALCULATOR_UI, ITEMS_PAGE_NAME, ITEMS_UI, LOGO_WHITE_PATH, PROFILE_UI, STOCKS_PAGE_NAME, 
+  CALCULATOR_PAGE_NAME, CALCULATOR_UI, ITEMS_PAGE_NAME, ITEMS_UI, LOGO_WHITE_PATH, STOCKS_PAGE_NAME, 
   STOCKS_UI, 
   SUPPLIER_UI, 
   SUPPLIERS_PAGE_NAME, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_UI, UNIT_CONVERSION_PAGE_NAME, UNIT_CONVERSION_UI, UNIT_PAGE_NAME, 

@@ -18,10 +18,10 @@ export async function GET(req: NextRequest) {
     const query = itemId ? { item_id: itemId } : {};
 
     // Fetch stocks based on the query
-    let stocks = await Stock.find(query).lean().exec();
+    const stocks = await Stock.find(query).lean().exec();
 
     // Populate supplier and item names
-    for (let stock of stocks) {
+    for (const stock of stocks) {
       if (stock.supplier_id) {
         const supplier = await Supplier.findById(stock.supplier_id).lean().exec();
         stock.supplier_name = supplier?.name || "Unknown Supplier";

@@ -1,11 +1,10 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ADD_BUTTON_LABAL, ADD_STOCK, ADD_SUPPLIER, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, ITEMS_API, NEW_UNIT_TITLE, NO_RECORDS_FOUND, SEARCH, STOCK_BUYING_PRICE_LABAL, STOCK_BUYING_PRICE_PLACEHOLDER, STOCK_DAMAGED_AMOUNT_LABAL, STOCK_DAMAGED_AMOUNT_PLACEHOLDER, STOCK_DESCRIPTION_LABAL, STOCK_DESCRIPTION_PLACEHOLDER, STOCK_DISCOUNT_LABAL, STOCK_ITEM_LABAL, STOCK_NAME_LABAL, STOCK_NAME_PLACEHOLDER, STOCK_PURCHASE_DATE_LABAL, STOCK_SEARCH_PLACEHOLDER, STOCK_SELLING_PRICE_LABAL, STOCK_SELLING_PRICE_PLACEHOLDER, STOCK_SOLD_AMOUNT_LABAL, STOCK_SOLD_AMOUNT_PLACEHOLDER, STOCK_SUPPLIER_LABAL, STOCK_SUPPLIER_PLACEHOLDER, STOCK_TABLE_FIELDS, STOCK_TOTAL_AMOUNT_LABAL, STOCK_TOTAL_AMOUNT_PLACEHOLDER, STOCKS_API, STOCKS_PAGE_NAME, SUPPLIER_API, UNIT_CATEGORIES_SEARCH_PLACEHOLDER, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_STOCK_MODEL_TITLE, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
+import { ADD_BUTTON_LABAL, ADD_STOCK, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, ITEMS_API, NO_RECORDS_FOUND, SEARCH, STOCK_BUYING_PRICE_LABAL, STOCK_BUYING_PRICE_PLACEHOLDER, STOCK_DAMAGED_AMOUNT_LABAL, STOCK_DAMAGED_AMOUNT_PLACEHOLDER, STOCK_DESCRIPTION_LABAL, STOCK_DESCRIPTION_PLACEHOLDER, STOCK_DISCOUNT_LABAL, STOCK_ITEM_LABAL, STOCK_NAME_LABAL, STOCK_NAME_PLACEHOLDER, STOCK_PURCHASE_DATE_LABAL, STOCK_SEARCH_PLACEHOLDER, STOCK_SELLING_PRICE_LABAL, STOCK_SELLING_PRICE_PLACEHOLDER, STOCK_SOLD_AMOUNT_LABAL, STOCK_SOLD_AMOUNT_PLACEHOLDER, STOCK_SUPPLIER_LABAL, STOCK_SUPPLIER_PLACEHOLDER, STOCK_TABLE_FIELDS, STOCK_TOTAL_AMOUNT_LABAL, STOCK_TOTAL_AMOUNT_PLACEHOLDER, STOCKS_API, STOCKS_PAGE_NAME, SUPPLIER_API, UNIT_CATEGORY_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_STOCK_MODEL_TITLE } from '@/app/constants/constants';
 import { Button, Modal, Table } from 'react-bootstrap';
 import TextInput from '@/app/components/Forms/text_input';
 import StockInterface from '@/app/interfaces/stock_interface';
-import { set } from 'mongoose';
 import SupplierInterface from '@/app/interfaces/supplier_interface';
 import NumberInput from '@/app/components/Forms/number_input';
 import ExtraDiscounts from '@/app/components/Forms/stocks/discount_input';
@@ -333,51 +332,51 @@ const handleRemoveDiscountRowForAdd = (index: number) => {
           <Checkbox 
               label={STOCK_TABLE_FIELDS[0]}
               checked={isIdSelected}
-              onChange={(e) => setIsIdSelected(!isIdSelected)} form_id={''} form_message={''}   className={'me-2 text-primary'}       />
+              onChange={() => setIsIdSelected(!isIdSelected)} form_id={''} form_message={''}   className={'me-2 text-primary'}       />
           <Checkbox
               label={STOCK_TABLE_FIELDS[1]}
               checked={isNameSelected}
-              onChange={(e) => setIsNameSelected(!isNameSelected)} form_id={''} form_message={''}  className={'me-2 text-primary'}        />
+              onChange={() => setIsNameSelected(!isNameSelected)} form_id={''} form_message={''}  className={'me-2 text-primary'}        />
           <Checkbox
               label={STOCK_TABLE_FIELDS[2]}
               checked={isDescriptionSelected}
-              onChange={(e) => setIsDescriptionSelected(!isDescriptionSelected)} form_id={''} form_message={''}  className={'me-2 text-primary'}        />
+              onChange={() => setIsDescriptionSelected(!isDescriptionSelected)} form_id={''} form_message={''}  className={'me-2 text-primary'}        />
           <Checkbox
               label={STOCK_TABLE_FIELDS[3]}
               checked={isSupplierNameSelected}
-              onChange={(e) => setIsSupplierNameSelected(!isSupplierNameSelected)} form_id={''} form_message={''}  className={'me-2 text-primary'}        />
+              onChange={() => setIsSupplierNameSelected(!isSupplierNameSelected)} form_id={''} form_message={''}  className={'me-2 text-primary'}        />
           <Checkbox
               label={STOCK_TABLE_FIELDS[4]}
               checked={isItemNameSelected}
-              onChange={(e) => setIsItemNameSelected(!isItemNameSelected)} form_id={''} form_message={''}   className={'me-2 text-primary'}       />
+              onChange={() => setIsItemNameSelected(!isItemNameSelected)} form_id={''} form_message={''}   className={'me-2 text-primary'}       />
           <Checkbox
               label={STOCK_TABLE_FIELDS[5]}
               checked={isDateSelected}
-              onChange={(e) => setIsDateSelected(!isDateSelected)} form_id={''} form_message={''}  className={'me-2 text-primary'}        />
+              onChange={() => setIsDateSelected(!isDateSelected)} form_id={''} form_message={''}  className={'me-2 text-primary'}        />
           <Checkbox
               label={STOCK_TABLE_FIELDS[6]}
               checked={isTotalQuantitySelected}
-              onChange={(e) => setIsTotalQuantitySelected(!isTotalQuantitySelected)} form_id={''} form_message={''}  className={'me-2 text-primary'}        />
+              onChange={() => setIsTotalQuantitySelected(!isTotalQuantitySelected)} form_id={''} form_message={''}  className={'me-2 text-primary'}        />
           <Checkbox
               label={STOCK_TABLE_FIELDS[7]}
               checked={isSoldQuantitySelected}
-              onChange={(e) => setIsSoldQuantitySelected(!isSoldQuantitySelected)} form_id={''} form_message={''}   className={'me-2 text-primary'}       />
+              onChange={() => setIsSoldQuantitySelected(!isSoldQuantitySelected)} form_id={''} form_message={''}   className={'me-2 text-primary'}       />
           <Checkbox
               label={STOCK_TABLE_FIELDS[8]}
               checked={isDamagedQuantitySelected}
-              onChange={(e) => setIsDamagedQuantitySelected(!isDamagedQuantitySelected)} form_id={''} form_message={''}    className={'me-2 text-primary'}      />
+              onChange={() => setIsDamagedQuantitySelected(!isDamagedQuantitySelected)} form_id={''} form_message={''}    className={'me-2 text-primary'}      />
           <Checkbox
               label={STOCK_TABLE_FIELDS[9]}
               checked={isBuyingPriceSelected}
-              onChange={(e) => setIsBuyingPriceSelected(!isBuyingPriceSelected)} form_id={''} form_message={''}  className={'me-2 text-primary'}        />
+              onChange={() => setIsBuyingPriceSelected(!isBuyingPriceSelected)} form_id={''} form_message={''}  className={'me-2 text-primary'}        />
           <Checkbox
               label={STOCK_TABLE_FIELDS[10]}
               checked={isSellingPriceSelected}
-              onChange={(e) => setIsSellingPriceSelected(!isSellingPriceSelected)} form_id={''} form_message={''}   className={'me-2 text-primary'}       />
+              onChange={() => setIsSellingPriceSelected(!isSellingPriceSelected)} form_id={''} form_message={''}   className={'me-2 text-primary'}       />
           <Checkbox
               label={STOCK_TABLE_FIELDS[11]}
               checked={isDiscountSelected}
-              onChange={(e) => setIsDiscountSelected(!isDiscountSelected)} form_id={''} form_message={''}  className={'me-2 text-primary'}        />
+              onChange={() => setIsDiscountSelected(!isDiscountSelected)} form_id={''} form_message={''}  className={'me-2 text-primary'}        />
         
           
         </div>

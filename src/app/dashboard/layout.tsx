@@ -2,7 +2,6 @@
 
 import SideNav from '@/app/components/Nabars/sidenav';
 import { Col, Container, Row } from 'react-bootstrap';
-import Footer from '../components/Footers/Footer';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
