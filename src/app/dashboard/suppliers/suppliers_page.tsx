@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ADD_BUTTON_LABAL, ADD_SUPPLIER, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, NEW_UNIT_TITLE, NO_RECORDS_FOUND, SEARCH, SUPPLIER_API, SUPPLIER_NAME_LABAL, SUPPLIER_NAME_PLACEHOLDER, SUPPLIER_SEARCH_PLACEHOLDER, SUPPLIER_TABLE_FIELDS, SUPPLIERS_PAGE_NAME, UNIT_CATEGORIES_SEARCH_PLACEHOLDER, UNIT_CATEGORY_API, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_NAME_LABAL, UNIT_CATEGORY_NAME_PLACEHOLDER, UNIT_CATEGORY_PAGE_NAME, UNIT_CATEGORY_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_SUPPLIER_MODEL_TITLE, UPDATE_UNIT_CATEGORY_MODEL_TITLE } from '@/app/constants/constants';
+import { ADD_BUTTON_LABAL, ADD_SUPPLIER, BACK, DELETE_BUTTON_DELETE_MODAL, DELETE_BUTTON_LABAL, DELETE_CONFIRM, DELETE_CONFIRM_MESSEGE, NO_RECORDS_FOUND, SEARCH, SUPPLIER_API, SUPPLIER_NAME_LABAL, SUPPLIER_NAME_PLACEHOLDER, SUPPLIER_SEARCH_PLACEHOLDER, SUPPLIER_TABLE_FIELDS, SUPPLIERS_PAGE_NAME, UNIT_CATEGORY_DESCRIPTION_LABAL, UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER, UNIT_CATEGORY_TABLE_FIELDS, UPDATE, UPDATE_BUTTON_LABAL, UPDATE_SUPPLIER_MODEL_TITLE } from '@/app/constants/constants';
 import { Badge, Button, Modal, Table } from 'react-bootstrap';
 import TextInput from '@/app/components/Forms/text_input';
 import SupplierInterface from '@/app/interfaces/supplier_interface';
@@ -567,20 +567,32 @@ const SuppliersPage = () => {
 
           <TextInput
             form_id="supplier_name"
-            onChangeText={(e) => setSelectedSupplierForAdd({ ...selectedSupplierForAdd, name: e.target.value })}
+            onChangeText={(e) =>
+              setSelectedSupplierForAdd((prev) =>
+                prev
+                  ? { ...prev, name: e.target.value, _id: prev._id ?? '' }
+                  : { _id: '', addresses: [], contactnos: [], emails: [], websites: [], name: e.target.value, description: '' }
+              )
+            }
             form_message=""
             placeholder_text={SUPPLIER_NAME_PLACEHOLDER}
             label={SUPPLIER_NAME_LABAL}
-            value={selectedSupplierForAdd?.name}
+            value={selectedSupplierForAdd?.name ?? ''}
           />
 
            <TextInput
             form_id="description"
-            onChangeText={(e) => setSelectedSupplierForAdd({ ...selectedSupplierForAdd, description: e.target.value })}
+            onChangeText={(e) =>
+              setSelectedSupplierForAdd((prev) =>
+                prev
+                  ? { ...prev, description: e.target.value, _id: prev._id ?? '' }
+                  : { _id: '', addresses: [], contactnos: [], emails: [], websites: [], name: '', description: e.target.value }
+              )
+            }
             form_message=""
             placeholder_text={UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER}
             label={UNIT_CATEGORY_DESCRIPTION_LABAL}
-            value={selectedSupplierForAdd?.description}
+            value={selectedSupplierForAdd?.description ?? ''}
           />
 
           

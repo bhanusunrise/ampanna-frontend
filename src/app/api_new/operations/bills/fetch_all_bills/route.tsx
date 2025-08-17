@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { dbConnect } from "@/app/lib/db";
 import Bill from "@/app/models/bill_model";
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     // Connect to the database
     await dbConnect();

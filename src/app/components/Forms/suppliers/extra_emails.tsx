@@ -3,9 +3,7 @@
 import React from 'react';
 import { Table, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import EmailInput from '../email_input'; // Assuming EmailInput is in the same directory
-
-
+import EmailInput from '../email_input';
 
 interface ExtraEmailsProps {
   emails: string[];
@@ -24,7 +22,7 @@ const ExtraEmails: React.FC<ExtraEmailsProps> = ({ emails, onEmailChange, onAddE
               <td>
                 <EmailInput
                   form_id={`email-${index}`}
-
+                  form_message=""                     // <-- add this
                   placeholder_text="example@mail.com"
                   value={email}
                   onChangeText={(e) => onEmailChange(index, e.target.value)}

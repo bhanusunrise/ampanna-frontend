@@ -1,4 +1,4 @@
-'use client';  // Ensure this component is rendered on the client
+'use client';
 
 import React, { useEffect } from 'react';
 import { Button } from 'react-bootstrap';
@@ -14,26 +14,24 @@ const AddButton: React.FC<AddButtonProps> = ({ label, onClickButton, btn_id }) =
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
-        onClickButton(); // Trigger the button click when Enter key is pressed
+        onClickButton?.(); // safe call if provided
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
-
-    // Cleanup the event listener when the component unmounts
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onClickButton]);
 
   return (
-    <Button variant="primary" onClick={onClickButton} id={btn_id} className={'ms-2'}>
+    <Button
+      variant="primary"
+      id={btn_id}
+      className="ms-2"
+      onClick={() => onClickButton?.()} // safe call if provided
+    >
       {label}
     </Button>
   );
 };
 
 export default AddButton;
-
-
-

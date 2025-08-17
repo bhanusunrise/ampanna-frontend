@@ -29,10 +29,8 @@ const NumberInput: React.FC<NumberInputProps> = ({
 }) => {
   // Trigger onLoad when the component mounts
   useEffect(() => {
-    if (onLoad) {
-      onLoad();
-    }
-  }, []); // Empty dependency array ensures it runs only once when mounted
+    onLoad?.();
+  }, [onLoad]); // Empty dependency array ensures it runs only once when mounted
 
   return (
     <>

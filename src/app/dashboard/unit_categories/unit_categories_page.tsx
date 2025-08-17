@@ -87,7 +87,11 @@ const UnitCategoryPage = () => {
       if (success && data) {
         console.log('Added Category:', data);
         fetchUnitCategories();
-        setSelectedCategoryForAdd({ ...selectedCategoryForAdd, unit_category_name: "" , description: "" });
+        setSelectedCategoryForAdd({
+          _id: selectedCategoryForAdd?._id ?? "",
+          unit_category_name: "",
+          description: ""
+        });
       } else {
         throw new Error('Invalid API response format');
       }
@@ -230,20 +234,32 @@ const UnitCategoryPage = () => {
           {/* Form to add a new unit category */}
           <TextInput                                                               
             form_id="unit_category_name"
-            onChangeText={(e) => setSelectedCategoryForAdd({ ...selectedCategoryForAdd, unit_category_name: e.target.value })}
+            onChangeText={(e) =>
+              setSelectedCategoryForAdd({
+                _id: selectedCategoryForAdd?._id ?? "",
+                unit_category_name: e.target.value,
+                description: selectedCategoryForAdd?.description ?? ""
+              })
+            }
             form_message=""
             placeholder_text={UNIT_CATEGORY_NAME_PLACEHOLDER}
             label={UNIT_CATEGORY_NAME_LABAL}
-            value={selectedCategoryForAdd?.unit_category_name}
+            value={selectedCategoryForAdd?.unit_category_name ?? ""}
           />
 
-           <TextInput                                                         
+          <TextInput                                                         
             form_id="description"
-            onChangeText={(e) => setSelectedCategoryForAdd({ ...selectedCategoryForAdd, description: e.target.value })}
+            onChangeText={(e) =>
+              setSelectedCategoryForAdd({
+                _id: selectedCategoryForAdd?._id ?? "",
+                unit_category_name: selectedCategoryForAdd?.unit_category_name ?? "",
+                description: e.target.value
+              })
+            }
             form_message=""
             placeholder_text={UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER}
             label={UNIT_CATEGORY_DESCRIPTION_LABAL}
-            value={selectedCategoryForAdd?.description}
+            value={selectedCategoryForAdd?.description ?? ""}
           />
 
           <Button variant='success' className='mt-3' onClick={addUnitCategory}>
