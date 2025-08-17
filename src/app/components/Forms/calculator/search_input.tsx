@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Form, ListGroup, Row, Col } from 'react-bootstrap';
 import Checkbox from '@/app/components/Forms/check_box';
 import ItemInterface from '@/app/interfaces/item_interface';
-import { ITEMS_API, ITEMS_TABLE_FIELDS } from '@/app/constants/constants';
+import { ITEMS_API, ITEMS_TABLE_FIELDS, OUT_OF_STOCK, STOCKS_API } from '@/app/constants/constants';
 
 interface SearchInputProps {
   label?: string;
@@ -27,6 +27,10 @@ const SearchInput: React.FC<SearchInputProps> = ({ label, form_id, placeholder_t
   const [isMainUnitNameSelected, setIsMainUnitNameSelected] = useState<boolean>(false);
   const [isOtherUnitNamesSelected, setIsOtherUnitNamesSelected] = useState<boolean>(false);
 
+  // Availability cache: item_id -> true (has stock) | false (no stock)
+  const [availability, setAvailability] = useState<Record<string, boolean>>({});
+
+  // Fetch all items once
   useEffect(() => {
     const fetchItems = async () => {
       try {
@@ -45,6 +49,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ label, form_id, placeholder_t
     fetchItems();
   }, []);
 
+  // Filter items based on query + toggles
   useEffect(() => {
     if (searchQuery) {
       const searchLower = searchQuery.toLowerCase();
@@ -78,7 +83,46 @@ const SearchInput: React.FC<SearchInputProps> = ({ label, form_id, placeholder_t
     } else {
       setShowDropdown(false);
     }
-  }, [searchQuery, items, isIdSelected, isNameSelected, isDescriptionSelected, isOtherParametersSelected, isMainUnitNameSelected, isOtherUnitNamesSelected]);
+  }, [
+    searchQuery,
+    items,
+    isIdSelected,
+    isNameSelected,
+    isDescriptionSelected,
+    isOtherParametersSelected,
+    isMainUnitNameSelected,
+    isOtherUnitNamesSelected
+  ]);
+
+  // For visible results, look up stock availability and cache it
+  useEffect(() => {
+    if (!showDropdown || filteredItems.length === 0) return;
+
+    // Check only the first N to limit requests when list is long
+    const toCheck = filteredItems
+      .slice(0, 15)
+      .map(i => i._id)
+      .filter(id => availability[id] === undefined);
+
+    if (toCheck.length === 0) return;
+
+    (async () => {
+      const updates: Record<string, boolean> = {};
+      await Promise.all(
+        toCheck.map(async (id) => {
+          try {
+            const resp = await fetch(`${STOCKS_API}fetch_all_stocks?item_id=${id}`);
+            const { success, data } = await resp.json();
+            updates[id] = !!(success && Array.isArray(data) && data.length > 0);
+          } catch {
+            // If check fails, be conservative and mark as unavailable
+            updates[id] = false;
+          }
+        })
+      );
+      setAvailability(prev => ({ ...prev, ...updates }));
+    })();
+  }, [showDropdown, filteredItems, availability]);
 
   return (
     <div className="position-relative">
@@ -92,27 +136,45 @@ const SearchInput: React.FC<SearchInputProps> = ({ label, form_id, placeholder_t
         onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
         size="sm"
       />
-      
-      {/* Filtering Options Inside the Search Component */}
+
+      {/* Filtering Options */}
       <Row className="mt-2">
         <Col md={12} className='d-flex gap-2'>
-          <Checkbox label={ITEMS_TABLE_FIELDS[0]} onChange={(e) => setIsIdSelected(e.target.checked)} form_id="id-filter" form_message="" checked={isIdSelected} className='text-primary'/>
-          <Checkbox label={ITEMS_TABLE_FIELDS[1]} onChange={(e) => setIsNameSelected(e.target.checked)} form_id="name-filter" form_message="" checked={isNameSelected} className='text-primary'/>
-          <Checkbox label={ITEMS_TABLE_FIELDS[2]} onChange={(e) => setIsDescriptionSelected(e.target.checked)} form_id="description-filter" form_message="" checked={isDescriptionSelected} className='text-primary'/>
-          <Checkbox label={ITEMS_TABLE_FIELDS[3]} onChange={(e) => setIsOtherParametersSelected(e.target.checked)} form_id="other-params-filter" form_message="" checked={isOtherParametersSelected} className='text-primary'/>
-          <Checkbox label={ITEMS_TABLE_FIELDS[4]} onChange={(e) => setIsMainUnitNameSelected(e.target.checked)} form_id="main-unit-name-filter" form_message="" checked={isMainUnitNameSelected} className='text-primary'/>
-          <Checkbox label={ITEMS_TABLE_FIELDS[5]} onChange={(e) => setIsOtherUnitNamesSelected(e.target.checked)} form_id="other-unit-names-filter" form_message="" checked={isOtherUnitNamesSelected} className='text-primary'/>
+          <Checkbox label={ITEMS_TABLE_FIELDS[0]} onChange={(e) => setIsIdSelected(e.target.checked)} form_id="id-filter" form_message="" checked={isIdSelected} className='text-primary' />
+          <Checkbox label={ITEMS_TABLE_FIELDS[1]} onChange={(e) => setIsNameSelected(e.target.checked)} form_id="name-filter" form_message="" checked={isNameSelected} className='text-primary' />
+          <Checkbox label={ITEMS_TABLE_FIELDS[2]} onChange={(e) => setIsDescriptionSelected(e.target.checked)} form_id="description-filter" form_message="" checked={isDescriptionSelected} className='text-primary' />
+          <Checkbox label={ITEMS_TABLE_FIELDS[3]} onChange={(e) => setIsOtherParametersSelected(e.target.checked)} form_id="other-params-filter" form_message="" checked={isOtherParametersSelected} className='text-primary' />
+          <Checkbox label={ITEMS_TABLE_FIELDS[4]} onChange={(e) => setIsMainUnitNameSelected(e.target.checked)} form_id="main-unit-name-filter" form_message="" checked={isMainUnitNameSelected} className='text-primary' />
+          <Checkbox label={ITEMS_TABLE_FIELDS[5]} onChange={(e) => setIsOtherUnitNamesSelected(e.target.checked)} form_id="other-unit-names-filter" form_message="" checked={isOtherUnitNamesSelected} className='text-primary' />
         </Col>
       </Row>
 
       {/* Search Results Dropdown */}
       {showDropdown && (
         <ListGroup className="position-absolute w-100 mt-1 bg-light shadow ease-in cursor-pointer">
-          {filteredItems.map(item => (
-            <ListGroup.Item key={item._id} onClick={() => onSelectItem(item)} className="cursor-pointer">
-              {item.name} <span className="text-muted ml-10 cursor-pointer" style={{ fontSize: '0.8rem' }}>{" | " + item.description + " | " + item.main_unit_name + " | " + item.other_unit_names.join(', ') + " | " + item.other_parameters.map(param => param.parameter_name + ": " + param.value).join(', ') + ""}</span>
-            </ListGroup.Item>
-          ))}
+          {filteredItems.map(item => {
+            const hasStock = availability[item._id]; // undefined = unknown (still checking)
+            const isUnavailable = hasStock === false;
+
+            return (
+              <ListGroup.Item
+                key={item._id}
+                onClick={() => {
+                  if (!isUnavailable) onSelectItem(item);
+                }}
+                className="cursor-pointer d-flex justify-content-between align-items-center"
+                style={isUnavailable ? { pointerEvents: 'none', opacity: 0.5 } : {}}
+              >
+                <span>
+                  {item.name}{' '}
+                  <span className="text-muted ml-10" style={{ fontSize: '0.8rem' }}>
+                    {" | " + item.description + " | " + item.main_unit_name + " | " + item.other_unit_names.join(', ') + " | " + item.other_parameters.map(param => param.parameter_name + ": " + param.value).join(', ')}
+                  </span>
+                </span>
+                {isUnavailable && <span className="badge bg-secondary">{OUT_OF_STOCK}</span>}
+              </ListGroup.Item>
+            );
+          })}
         </ListGroup>
       )}
     </div>

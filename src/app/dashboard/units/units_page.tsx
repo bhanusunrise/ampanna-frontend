@@ -138,7 +138,13 @@ const UnitsPage = () => {
       if (success && data) {
         console.log('Added Unit:', data);
         fetchUnits();
-        setSelectedUnitForAdd({ ...selectedUnitForAdd, unit_name: "", description: "" });
+        setSelectedUnitForAdd({
+          _id: "",
+          unit_name: "",
+          description: "",
+          unit_category_id: "",
+          unit_category_name: ""
+        });
       } else {
         throw new Error('Invalid API response format');
       }
@@ -291,16 +297,33 @@ const UnitsPage = () => {
 
           <TextInput
             form_id="unit_name"
-            onChangeText={(e) => setSelectedUnitForAdd({ ...selectedUnitForAdd, unit_name: e.target.value })}
+            onChangeText={(e) => setSelectedUnitForAdd({
+              _id: selectedUnitForAdd?._id ?? "",
+              unit_name: e.target.value,
+              description: selectedUnitForAdd?.description ?? "",
+              unit_category_id: selectedUnitForAdd?.unit_category_id ?? "",
+              unit_category_name: selectedUnitForAdd?.unit_category_name ?? ""
+            })}
             form_message=""
             placeholder_text={UNIT_NAME_PLACEHOLDER}
             label={UNIT_NAME_LABAL}
-            value={selectedUnitForAdd?.unit_name}
+            value={selectedUnitForAdd?.unit_name ?? ""}
           />
 
           <label className="form-label mt-2 text-primary">{UNIT_CATEGORY_NAME_LABAL}</label>
 
-          <select className="form-select mb-2" onChange={(e) => setSelectedUnitForAdd({ ...selectedUnitForAdd, unit_category_id: e.target.value })}>
+          <select
+            className="form-select mb-2"
+            onChange={(e) =>
+              setSelectedUnitForAdd({
+                _id: selectedUnitForAdd?._id ?? "",
+                unit_name: selectedUnitForAdd?.unit_name ?? "",
+                description: selectedUnitForAdd?.description ?? "",
+                unit_category_id: e.target.value,
+                unit_category_name: selectedUnitForAdd?.unit_category_name ?? ""
+              })
+            }
+          >
            
             {unitCategories.map((category) => (
               <option key={category._id} value={category._id}>
@@ -311,11 +334,17 @@ const UnitsPage = () => {
 
            <TextInput
             form_id="description"
-            onChangeText={(e) => setSelectedUnitForAdd({ ...selectedUnitForAdd, description: e.target.value })}
+            onChangeText={(e) => setSelectedUnitForAdd({
+              _id: selectedUnitForAdd?._id ?? "",
+              unit_name: selectedUnitForAdd?.unit_name ?? "",
+              description: e.target.value,
+              unit_category_id: selectedUnitForAdd?.unit_category_id ?? "",
+              unit_category_name: selectedUnitForAdd?.unit_category_name ?? ""
+            })}
             form_message=""
             placeholder_text={UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER}
             label={UNIT_CATEGORY_DESCRIPTION_LABAL}
-            value={selectedUnitForAdd?.description}
+            value={selectedUnitForAdd?.description ?? ""}
           />
 
           <Button variant='success' className='mt-3' onClick={addUnit}>

@@ -43,7 +43,7 @@ export async function POST(request: Request) {
             is_master: false,
         });
 
-        const savedUser = await newUser.save();
+        await newUser.save();
 
         return NextResponse.json(
             { success: true },

@@ -15,13 +15,12 @@ export default function Login() {
             <h1>Login</h1>
             
             <TextInput 
-                label="Username :" 
-                onChangeText={login_handle} 
-                form_id="login_username" 
-                form_message="" 
-                placeholder_text='charuka2000'
-            />
-            <PasswordInput label='Password' onChangeText={login_handle} form_id='login_password' form_message='' placeholder_text='********'/>
+                    label="Username :"
+                    onChangeText={login_handle}
+                    form_id="login_username"
+                    form_message=""
+                    placeholder_text='charuka2000' value={''}            />
+            <PasswordInput label='Password' onChangeText={login_handle} form_id='login_password' form_message='' placeholder_text='********' value={''}/>
             <br/>
             <Row>
                 <Col><ClearButton label='Reset' onClickButton={login_handle} btn_id='Reset'/></Col>
