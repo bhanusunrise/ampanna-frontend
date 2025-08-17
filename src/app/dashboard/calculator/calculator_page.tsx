@@ -72,7 +72,7 @@ async function computeAvailableInSelectedUnit(row: CalculatorRow): Promise<numbe
   const damaged = Number(row.stock?.damaged_quantity || 0);
   const availableMain = Math.max(0, total - sold - damaged);
 
-  const selectedUnit = row.unitId || row.item.main_unit_id;
+  const selectedUnit = row.selectedUnitId || row.item.main_unit_id;
   const mainUnit = row.item.main_unit_id;
 
   if (selectedUnit === mainUnit) return availableMain;
@@ -133,7 +133,8 @@ function CalculatorPage() {
           unitDiscount: totalUnitDiscount,
           rowDiscount,
           baseSellingPrice: defaultStock.selling_price,
-          unitId: item.main_unit_id, // track current selected unit
+          selectedUnitId: item.main_unit_id, // use the interface's field name
+          conversionMultiplier: 1,           // main unit -> main unit
         };
 
         setRows(prev => [...prev, newRow]);
@@ -143,10 +144,15 @@ function CalculatorPage() {
     }
   };
 
-  /** When unit changes: update unitId, clamp amount to the new unit's availability, and recalc totals. */
+  /** When unit changes: update selectedUnitId, clamp amount to the new unit's availability, and recalc totals. */
   const handleUnitChange = async (row: CalculatorRow, index: number, selectedUnitId: string) => {
     try {
-      const updatedRow = { ...row, unitId: selectedUnitId };
+      const updatedRow: CalculatorRow = { ...row, selectedUnitId };
+
+      // keep an up-to-date multiplier (main -> selected) for anyone else consuming it
+      const mul = await getMultiplier(row.item.main_unit_id, selectedUnitId);
+      updatedRow.conversionMultiplier = mul ?? 1;
+
       const maxAllowed = await computeAvailableInSelectedUnit(updatedRow);
       const clampedAmount = Math.max(1, Math.min(updatedRow.amount || 1, maxAllowed));
 
@@ -193,7 +199,6 @@ function CalculatorPage() {
       });
 
       if (n > maxAllowed) {
-        // Optional: quick heads-up if user tried to exceed
         console.warn(`Requested ${n}, but only ${maxAllowed} available in this unit.`);
       }
     } catch (e: any) {
@@ -215,7 +220,7 @@ function CalculatorPage() {
       if (!stockId) throw new Error("Row has no stock selected.");
 
       const mainUnit = row.item.main_unit_id;
-      const unitId = row.unitId || mainUnit;
+      const unitId = row.selectedUnitId || mainUnit;
       const needMain = await toMainUnitQty(row.amount || 0, unitId, mainUnit);
 
       const total = Number(row.stock?.total_quantity || 0);
@@ -246,7 +251,6 @@ function CalculatorPage() {
       return;
     }
 
-    // Final guard: re-check everything with conversions & aggregation
     try {
       await validateAllRowsAgainstStock();
     } catch (e: any) {
@@ -262,7 +266,7 @@ function CalculatorPage() {
       bill_item: rows.map((row) => ({
         stock_id: row.stock?._id,
         quantity: row.amount,
-        unit_id: row.unitId || row.item.main_unit_id,
+        unit_id: row.selectedUnitId || row.item.main_unit_id,
         discount: row.unitDiscount ?? 0,
       })),
     };
@@ -277,7 +281,6 @@ function CalculatorPage() {
       const result = await response.json();
 
       if (result?.success) {
-        // Print the bill with additional discount
         createBillPDF(rows, grandSubtotal, grandDiscount, grandTotal, additionalDiscount);
         alert("Bill saved successfully!");
         setRows([]);
@@ -322,7 +325,7 @@ function CalculatorPage() {
                     className="form-select"
                     value={row.stock?._id}
                     onChange={(e) => {
-                      const selectedStock = row.allStocks.find(s => s._id === e.target.value);
+                      const selectedStock = row.allStocks.find((s: any) => s._id === e.target.value);
                       if (!selectedStock) return;
 
                       const today = new Date();
@@ -351,7 +354,7 @@ function CalculatorPage() {
                       });
                     }}
                   >
-                    {row.allStocks.map((stock, i) => (
+                    {row.allStocks.map((stock: any, i: number) => (
                       <option key={i} value={stock._id}>{stock.name}</option>
                     ))}
                   </select>
@@ -361,7 +364,7 @@ function CalculatorPage() {
                 <td>
                   <select
                     className="form-select"
-                    value={row.unitId || row.item.main_unit_id}
+                    value={row.selectedUnitId || row.item.main_unit_id}
                     onChange={(e) => handleUnitChange(row, index, e.target.value)}
                   >
                     {/* main unit first */}
@@ -376,8 +379,7 @@ function CalculatorPage() {
                   <NumberInput
                     value={row.amount}
                     min_value={1}
-                    onChangeText={(e: any) => handleAmountChange(row, index, Number(e.target.value))}
-                  />
+                    onChangeText={(e: any) => handleAmountChange(row, index, Number(e.target.value))} form_id={""} placeholder_text={""}                  />
                 </td>
                 <td>{row.subtotal}</td>
                 <td>{row.rowDiscount}</td>
@@ -386,13 +388,13 @@ function CalculatorPage() {
                   <button
                     className="btn btn-danger btn-sm"
                     onClick={() => {
-  setRows(prev =>
-    prev.filter((rowToKeep, i) => {
-      void rowToKeep;          // mark as used (no-op)
-      return i !== index;      // same logic
-    })
-  );
-}}
+                      setRows(prev =>
+                        prev.filter((rowToKeep, i) => {
+                          void rowToKeep; // satisfy lint
+                          return i !== index;
+                        })
+                      );
+                    }}
                   >
                     🗑️
                   </button>
@@ -419,7 +421,6 @@ function CalculatorPage() {
               <strong>{CALCULATOR_ADDITIONAL_DISCOUNT_LABAL}</strong>
             </label>
 
-            {/* Rs. prefix + right-aligned input */}
             <InputGroup style={{ width: 200 }}>
               <InputGroup.Text>Rs.</InputGroup.Text>
               <Form.Control
@@ -440,7 +441,6 @@ function CalculatorPage() {
 
           <div className="d-flex justify-content-between mb-3">
             <span className="text-primary"><strong>{CALCULATOR_TOTAL_LABAL}</strong></span>
-            {/* Live-updating grand total after additional discount */}
             <span>Rs. {netTotal.toFixed(2)}</span>
           </div>
 

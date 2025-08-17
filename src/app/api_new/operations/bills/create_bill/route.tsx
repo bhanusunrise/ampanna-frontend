@@ -9,7 +9,7 @@ import Stock from '@/app/models/stock_model';
 import Item from '@/app/models/item_model';
 import UnitConversion from '@/app/models/unit_conversion_model';
 
-// ----- Atomic counter (unchanged from your current file) -----
+// ----- Atomic counter (same collection name you used) -----
 const CounterSchema =
   (mongoose.models.Counter as mongoose.Model<any>)?.schema ||
   new mongoose.Schema(
@@ -21,6 +21,27 @@ const Counter =
   (mongoose.models.Counter as mongoose.Model<any>) ||
   mongoose.model('Counter', CounterSchema);
 
+// Typed shapes for lean() results we use
+type CounterLean = { _id: string; seq: number };
+type UnitConversionLean = {
+  _id: string;
+  first_unit_id: string;
+  second_unit_id: string;
+  multiplier: number;
+};
+type StockLean = {
+  _id: string;
+  item_id: string;
+  total_quantity: number;
+  sold_quantity: number;
+  damaged_quantity: number;
+  name?: string;
+};
+type ItemLean = {
+  _id: string;
+  main_unit_id: string;
+};
+
 /**
  * Get the next bill ID as a string, atomically.
  * Initializes the counter from the current max(_id) in `bills` if missing.
@@ -29,11 +50,13 @@ async function getNextBillId(): Promise<string> {
   const key = 'bills';
 
   // Try to increment existing counter atomically first
-  let updated = await Counter.findOneAndUpdate(
+  let updated: CounterLean | null = await Counter.findOneAndUpdate(
     { _id: key },
     { $inc: { seq: 1 } },
     { new: true, upsert: false }
-  ).lean();
+  )
+    .lean<CounterLean>()
+    .exec();
 
   if (!updated) {
     // No counter yet -> initialize from current max numeric _id in Bill
@@ -45,18 +68,26 @@ async function getNextBillId(): Promise<string> {
         { $limit: 1 },
         { $project: { _id_num: 1 } },
       ]);
-      startSeq = last.length ? last[0]._id_num : 0;
+      startSeq = last.length && typeof last[0]._id_num === 'number' ? last[0]._id_num : 0;
     } catch {
       startSeq = 0;
     }
 
-    await Counter.create({ _id: key, seq: startSeq });
+    // Ensure a seed doc exists (idempotent)
+    await Counter.updateOne(
+      { _id: key },
+      { $setOnInsert: { seq: startSeq } },
+      { upsert: true }
+    ).exec();
 
+    // Now increment and return the new value
     updated = await Counter.findOneAndUpdate(
       { _id: key },
       { $inc: { seq: 1 } },
       { new: true }
-    ).lean();
+    )
+      .lean<CounterLean>()
+      .exec();
   }
 
   return String(updated!.seq);
@@ -80,9 +111,12 @@ async function toMainUnitQuantity(
   const direct = await UnitConversion.findOne({
     first_unit_id: fromUnitId,
     second_unit_id: toMainUnitId,
-  }).lean();
+  })
+    .select('multiplier')
+    .lean<UnitConversionLean>()
+    .exec();
 
-  if (direct?.multiplier && typeof direct.multiplier === 'number') {
+  if (direct && typeof direct.multiplier === 'number') {
     return quantity * direct.multiplier;
   }
 
@@ -90,9 +124,12 @@ async function toMainUnitQuantity(
   const reverse = await UnitConversion.findOne({
     first_unit_id: toMainUnitId,
     second_unit_id: fromUnitId,
-  }).lean();
+  })
+    .select('multiplier')
+    .lean<UnitConversionLean>()
+    .exec();
 
-  if (reverse?.multiplier && typeof reverse.multiplier === 'number' && reverse.multiplier !== 0) {
+  if (reverse && typeof reverse.multiplier === 'number' && reverse.multiplier !== 0) {
     return quantity / reverse.multiplier;
   }
 
@@ -143,8 +180,8 @@ export async function POST(request: Request) {
     // Start transaction (so bill save + stock deductions are atomic)
     session.startTransaction();
 
-    // Get sequential bill id (as you already do)
-    const newId = await getNextBillId(); // :contentReference[oaicite:3]{index=3}
+    // Get sequential bill id
+    const newId = await getNextBillId();
 
     // Prepare processed items for Bill document
     const processedBillItems = bill_item.map((it: any, idx: number) => ({
@@ -157,10 +194,16 @@ export async function POST(request: Request) {
 
     // For each bill row: compute deduction in MAIN UNIT and update stock.sold_quantity
     for (const row of processedBillItems) {
-      const stock = await Stock.findById(row.stock_id).session(session).lean();
+      const stock = await Stock.findById(row.stock_id)
+        .session(session)
+        .lean<StockLean>()
+        .exec();
       if (!stock) throw new Error(`Stock ${row.stock_id} not found.`);
 
-      const itemDoc = await Item.findById(stock.item_id).session(session).lean();
+      const itemDoc = await Item.findById(stock.item_id)
+        .session(session)
+        .lean<ItemLean>()
+        .exec();
       if (!itemDoc) throw new Error(`Item ${stock.item_id} not found for stock ${row.stock_id}.`);
 
       const mainUnitId = itemDoc.main_unit_id as string;
@@ -176,13 +219,13 @@ export async function POST(request: Request) {
       ensureAvailable(total, sold, damaged, deductMainQty);
 
       // Increment sold_quantity by the amount (in main unit)
-      const updated = await Stock.findOneAndUpdate(
+      const updatedStock = await Stock.findOneAndUpdate(
         { _id: row.stock_id },
         { $inc: { sold_quantity: deductMainQty } },
         { new: true, session }
       );
 
-      if (!updated) {
+      if (!updatedStock) {
         throw new Error(`Failed to update stock ${row.stock_id}.`);
       }
     }
@@ -205,7 +248,6 @@ export async function POST(request: Request) {
     await session.abortTransaction().catch(() => {});
     session.endSession();
 
-    // Carry over your clean duplicate handling & general error
     if (error?.code === 11000) {
       return NextResponse.json(
         { success: false, message: 'Duplicate bill ID. Please retry.' },

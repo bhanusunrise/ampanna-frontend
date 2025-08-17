@@ -27,7 +27,7 @@ export default function ForgetPassword() {
   const router = useRouter();
 
   const [email, setEmail] = useState('');
-  const [otp, setOtp] = useState('');
+  const [otp, setOtp] = useState<number>(0);          // <-- number
   const [password, setPassword] = useState('');
   const [retypePassword, setRetypePassword] = useState('');
   const [emailDisabled, setEmailDisabled] = useState(false);
@@ -38,7 +38,7 @@ export default function ForgetPassword() {
 
   const handleClear = () => {
     setEmail('');
-    setOtp('');
+    setOtp(0);                                        // <-- reset as number
     setPassword('');
     setRetypePassword('');
     setEmailDisabled(false);
@@ -97,15 +97,13 @@ export default function ForgetPassword() {
   };
 
   const handleOtpValidation = async () => {
-    if (!otp) return alert("Please enter the OTP.");
+    if (!otp) return alert("Please enter the OTP.");  // works with number (0 is falsy)
 
     try {
       const res = await fetch(`${ACCOUNTS_API}validate_otp`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, otp }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, otp }),         // otp is number
       });
 
       const data = await res.json();
@@ -185,17 +183,20 @@ export default function ForgetPassword() {
                 value={email}
                 onChangeText={(e) => setEmail(e.target.value)}
                 placeholder_text={ACCOUNT_EMAIL_PLACEHOLDER}
-                disabled={emailDisabled}
+                form_id=""
+                form_message=""
               />
 
               {otpSent && !otpValidated && (
                 <>
                   <NumberInput
                     label={ENTER_OTP_LABAL}
-                    value={otp}
-                    onChangeText={(e) => setOtp(e.target.value)}
-                    placeholder_text={ENTER_OTP_PLACEHOLDER}
-                  />
+                    value={otp} // <-- number
+                    onChangeText={(e) => {
+                      const v = e.target.value;
+                      setOtp(v === '' ? 0 : Number(v)); // <-- parse to number
+                    } }
+                    placeholder_text={ENTER_OTP_PLACEHOLDER} form_id={""}                  />
                   <div className="mt-2 text-end">
                     <button
                       className="btn btn-success"
@@ -214,12 +215,16 @@ export default function ForgetPassword() {
                     value={password}
                     onChangeText={(e) => setPassword(e.target.value)}
                     placeholder_text={ACCOUNT_PASSWORD_PLACEHOLDER}
+                    form_id=""
+                    form_message=""
                   />
                   <PasswordInput
                     label={ACCOUNT_PASSWORD_RETYPE_LABAL}
                     value={retypePassword}
                     onChangeText={(e) => setRetypePassword(e.target.value)}
                     placeholder_text={ACCOUNT_PASSWORD_RETYPE_PLACEHOLDER}
+                    form_id=""
+                    form_message=""
                   />
                   <button
                     className="btn btn-success mt-3 w-100"
@@ -249,6 +254,3 @@ export default function ForgetPassword() {
     </Container>
   );
 }
-
-
-

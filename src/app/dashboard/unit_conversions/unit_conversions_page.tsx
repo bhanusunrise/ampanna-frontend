@@ -137,7 +137,7 @@ const UnitConversionsPage = () => {
         setShowUpdateModal(false);
         fetchUnitCategories();
         fetchUnitConversions();
-        setSelectedConversionForUpdate({ first_unit_id: '', second_unit_id: '', multiplier: 0, description: '', first_unit_name: '', second_unit_name: '' });
+        setSelectedConversionForUpdate({ _id: '', first_unit_id: '', second_unit_id: '', multiplier: 0, description: '', first_unit_name: '', second_unit_name: '' });
       } else {
         throw new Error('Invalid API response format');
       }
@@ -170,7 +170,7 @@ const UnitConversionsPage = () => {
         console.log('Added Conversion:', data);
         fetchUnitCategories();
         fetchUnitConversions();
-        setSelectedConversionForAdd({ multiplier: 0});
+        setSelectedConversionForAdd(null);
       } else {
         throw new Error('Invalid API response format');
       }
@@ -315,7 +315,15 @@ const UnitConversionsPage = () => {
 
           <label className="form-label text-primary">{UNIT_CATEGORY_NAME_LABAL}</label>
 
-          <select className="form-select mb-2" onChange={(e) => {setSelectedCategory({ ...selectedCategory, _id: e.target.value }); fetchUnitsForSelectedCategory(e.target.value)}} value={selectedCategory?._id}>
+          <select
+            className="form-select mb-2"
+            onChange={(e) => {
+              const selected = unitCategories.find(category => category._id === e.target.value) || null;
+              setSelectedCategory(selected);
+              fetchUnitsForSelectedCategory(e.target.value);
+            }}
+            value={selectedCategory?._id}
+          >
             
             {unitCategories.map((category) => (
               <option key={category._id} value={category._id}>
@@ -326,18 +334,38 @@ const UnitConversionsPage = () => {
 
           <TextInput 
             form_id="unit_category_name" 
-            onChangeText={(e) => setSelectedConversionForAdd({ ...selectedConversionForAdd, description: e.target.value })} 
+            onChangeText={(e) => setSelectedConversionForAdd({
+              _id: selectedConversionForAdd?._id ?? '',
+              first_unit_id: selectedConversionForAdd?.first_unit_id ?? '',
+              first_unit_name: selectedConversionForAdd?.first_unit_name ?? '',
+              second_unit_id: selectedConversionForAdd?.second_unit_id ?? '',
+              second_unit_name: selectedConversionForAdd?.second_unit_name ?? '',
+              multiplier: selectedConversionForAdd?.multiplier ?? 0,
+              description: e.target.value
+            })} 
             form_message="" 
             placeholder_text={UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER} 
             label={UNIT_CATEGORY_DESCRIPTION_LABAL} 
-            value={selectedConversionForAdd?.description}
-            className="text-primary"
+            value={selectedConversionForAdd?.description ?? ''}
           />
 
           <label className="form-label text-primary">{FIRST_UNIT_NAME_LABAL}</label>
 
-          <select className="form-select mb-2" onChange={(e) => setSelectedConversionForAdd({ ...selectedConversionForAdd, first_unit_id: e.target.value })} value={selectedConversionForAdd?.first_unit_id}>
-            
+          <select
+            className="form-select mb-2"
+            onChange={(e) =>
+              setSelectedConversionForAdd({
+                _id: selectedConversionForAdd?._id ?? '',
+                first_unit_id: e.target.value,
+                first_unit_name: selectedConversionForAdd?.first_unit_name ?? '',
+                second_unit_id: selectedConversionForAdd?.second_unit_id ?? '',
+                second_unit_name: selectedConversionForAdd?.second_unit_name ?? '',
+                multiplier: selectedConversionForAdd?.multiplier ?? 0,
+                description: selectedConversionForAdd?.description ?? ''
+              })
+            }
+            value={selectedConversionForAdd?.first_unit_id}
+          >
             {filteredUnits.map((unit) => (
               <option key={unit._id} value={unit._id}>
                 {unit.unit_name}
@@ -347,13 +375,26 @@ const UnitConversionsPage = () => {
 
           <label className="form-label text-primary">{SECOND_UNIT_NAME_LABAL}</label>
 
-          <select className="form-select mb-2" onChange={(e) => setSelectedConversionForAdd( { ...selectedConversionForAdd, second_unit_id: e.target.value } )} value={selectedConversionForAdd?.second_unit_id}>
-            
+          <select
+            className="form-select mb-2"
+            onChange={(e) =>
+              setSelectedConversionForAdd({
+                _id: selectedConversionForAdd?._id ?? '',
+                first_unit_id: selectedConversionForAdd?.first_unit_id ?? '',
+                first_unit_name: selectedConversionForAdd?.first_unit_name ?? '',
+                second_unit_id: e.target.value,
+                second_unit_name: selectedConversionForAdd?.second_unit_name ?? '',
+                multiplier: selectedConversionForAdd?.multiplier ?? 0,
+                description: selectedConversionForAdd?.description ?? ''
+              })
+            }
+            value={selectedConversionForAdd?.second_unit_id}
+          >
             {filteredUnits.map((unit) => (
               <option key={unit._id} value={unit._id}>
                 {unit.unit_name}
               </option>
-            ))}            
+            ))}
           </select>
 
 
@@ -361,11 +402,25 @@ const UnitConversionsPage = () => {
 
           <NumberInput
             form_id="multiplier"
-            onChangeText={(e) => setSelectedConversionForAdd({ ...selectedConversionForAdd, multiplier: e.target.value })}
+            onChangeText={(e) =>
+              setSelectedConversionForAdd(prev =>
+                prev
+                  ? { ...prev, multiplier: Number(e.target.value) }
+                  : {
+                      _id: '',
+                      first_unit_id: '',
+                      first_unit_name: '',
+                      second_unit_id: '',
+                      second_unit_name: '',
+                      multiplier: Number(e.target.value),
+                      description: ''
+                    }
+              )
+            }
             form_message=""
             placeholder_text={MULTIPLIER_PLACEHOLDER}
             label={MULTIPLIER_LABAL}
-            value={selectedConversionForAdd?.multiplier} min_value={0} max_value={999999}          />
+            value={selectedConversionForAdd?.multiplier ?? 0} min_value={0} max_value={999999}          />
 
           <Button variant='success' className='mt-3' onClick={addUnitConversion}>
             {ADD_BUTTON_LABAL}
@@ -400,7 +455,7 @@ const UnitConversionsPage = () => {
 
           <NumberInput
             form_id="multiplier"
-            onChangeText={(e) => setSelectedConversionForUpdate({...selectedConversionForUpdate, multiplier: e.target.value })}
+            onChangeText={(e) => setSelectedConversionForUpdate({...selectedConversionForUpdate, multiplier: Number(e.target.value) })}
             form_message=""
             placeholder_text={MULTIPLIER_PLACEHOLDER}
             label={MULTIPLIER_LABAL}

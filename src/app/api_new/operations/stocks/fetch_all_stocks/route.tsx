@@ -4,48 +4,65 @@ import Stock from "@/app/models/stock_model";
 import Supplier from "@/app/models/supplier_model";
 import Item from "@/app/models/item_model";
 
+type StockLean = {
+  _id: string | { toString(): string };
+  item_id?: string;
+  supplier_id?: string;
+  total_quantity?: number;
+  sold_quantity?: number;
+  damaged_quantity?: number;
+  selling_price?: number;
+  name?: string;
+
+  // fields we add in this route:
+  supplier_name?: string;
+  item_name?: string;
+};
+
+type SupplierLean = { _id: string; name?: string };
+type ItemLean = { _id: string; name?: string };
+
 export async function GET(req: NextRequest) {
   try {
-    // Connect to the database
     await dbConnect();
 
-    // Extract the item_id and sort_for_id from query parameters
     const { searchParams } = new URL(req.url);
     const itemId = searchParams.get("item_id");
     const sortForId = searchParams.get("sort_for_id");
 
-    // Define the query object
-    const query = itemId ? { item_id: itemId } : {};
+    const query: Partial<Pick<StockLean, "item_id">> = itemId ? { item_id: itemId } : {};
 
-    // Fetch stocks based on the query
-    const stocks = await Stock.find(query).lean().exec();
+    // Explicitly type lean() results to avoid array|doc unions
+    const stocks = await Stock.find(query).lean<StockLean[]>().exec();
 
-    // Populate supplier and item names
+    // Enrich with supplier/item names
     for (const stock of stocks) {
       if (stock.supplier_id) {
-        const supplier = await Supplier.findById(stock.supplier_id).lean().exec();
+        const supplier = await Supplier.findById(stock.supplier_id)
+          .select("name")
+          .lean<SupplierLean>()
+          .exec();
         stock.supplier_name = supplier?.name || "Unknown Supplier";
       }
 
       if (stock.item_id) {
-        const item = await Item.findById(stock.item_id).lean().exec();
+        const item = await Item.findById(stock.item_id)
+          .select("name")
+          .lean<ItemLean>()
+          .exec();
         stock.item_name = item?.name || "Unknown Item";
       }
     }
 
-    // If sort_for_id is present, sort by _id in ascending order (oldest first)
     if (sortForId) {
-      stocks.sort((a : any, b : any) => {
-        const idA = a._id.toString();
-        const idB = b._id.toString();
-        return idA.localeCompare(idB); // string comparison preserves order for ObjectIds
+      stocks.sort((a, b) => {
+        const idA = typeof a._id === "string" ? a._id : a._id.toString();
+        const idB = typeof b._id === "string" ? b._id : b._id.toString();
+        return idA.localeCompare(idB);
       });
     }
 
-    return NextResponse.json(
-      { success: true, data: stocks },
-      { status: 200 }
-    );
+    return NextResponse.json({ success: true, data: stocks }, { status: 200 });
   } catch (error) {
     console.error("Error fetching Stocks:", error);
     return NextResponse.json(

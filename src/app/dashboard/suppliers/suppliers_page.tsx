@@ -567,20 +567,32 @@ const SuppliersPage = () => {
 
           <TextInput
             form_id="supplier_name"
-            onChangeText={(e) => setSelectedSupplierForAdd({ ...selectedSupplierForAdd, name: e.target.value })}
+            onChangeText={(e) =>
+              setSelectedSupplierForAdd((prev) =>
+                prev
+                  ? { ...prev, name: e.target.value, _id: prev._id ?? '' }
+                  : { _id: '', addresses: [], contactnos: [], emails: [], websites: [], name: e.target.value, description: '' }
+              )
+            }
             form_message=""
             placeholder_text={SUPPLIER_NAME_PLACEHOLDER}
             label={SUPPLIER_NAME_LABAL}
-            value={selectedSupplierForAdd?.name}
+            value={selectedSupplierForAdd?.name ?? ''}
           />
 
            <TextInput
             form_id="description"
-            onChangeText={(e) => setSelectedSupplierForAdd({ ...selectedSupplierForAdd, description: e.target.value })}
+            onChangeText={(e) =>
+              setSelectedSupplierForAdd((prev) =>
+                prev
+                  ? { ...prev, description: e.target.value, _id: prev._id ?? '' }
+                  : { _id: '', addresses: [], contactnos: [], emails: [], websites: [], name: '', description: e.target.value }
+              )
+            }
             form_message=""
             placeholder_text={UNIT_CATEGORY_DESCRIPTION_PLACEHOLDER}
             label={UNIT_CATEGORY_DESCRIPTION_LABAL}
-            value={selectedSupplierForAdd?.description}
+            value={selectedSupplierForAdd?.description ?? ''}
           />
 
           
